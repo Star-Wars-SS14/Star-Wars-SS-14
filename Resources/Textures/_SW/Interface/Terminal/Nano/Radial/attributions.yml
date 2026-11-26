@@ -1,0 +1,4 @@
+- files: ["back_hover.png", "back_normal.png", "button_hover.png", "button_normal.png", "close_hover.png", "close_normal.png"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Recoloured by Tools/_SW/make_terminal_hud.py from Textures/Interface/Nano/Radial"
+  source: "https://github.com/Star-Wars-SS14/Star-Wars-SS-14"

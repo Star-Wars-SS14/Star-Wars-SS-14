@@ -1,6 +1,7 @@
 - type: job
   id: SWBlackSunMercenary
   name: Наемник черного солнца
+  description: job-description-sw-black-sun-mercenary
   playTimeTracker: Job_BlackSun_Mercenary
   requirements:
   - !type:OverallPlaytimeRequirement

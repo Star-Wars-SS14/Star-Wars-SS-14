@@ -82,8 +82,9 @@ public sealed class SWGovernorSystem : EntitySystem
             Revision++;
         });
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
-        foreach (var group in _proto.Index(scenario.Map).Worlds
-                     .Where(w => w.Sector != null && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy)
+        var map = _proto.Index(scenario.Map);
+        foreach (var group in map.Worlds
+                     .Where(w => w.Sector != null && map.GetWorldFaction(w) == "republic" && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy)
                      .GroupBy(w => w.Sector!.Value.Id))
         {
             _sectorWorlds[group.Key] = group.Select(w => w.Id).ToArray();

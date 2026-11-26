@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
@@ -426,33 +427,43 @@ public sealed partial class SWSenateStateSystem : EntitySystem
     public string? GetSectorHolder(string sectorId) =>
         _sectorHolders.TryGetValue(sectorId, out var holder) ? holder : null;
 
-    public bool TryClaim(string sectorId, string holder)
+    public bool TryClaim(string sectorId, string holder, EntityUid? actor = null)
     {
         if (!_sectorGlobals.ContainsKey(sectorId) || _sectorHolders.ContainsKey(sectorId))
             return false;
 
         _sectorHolders[sectorId] = holder;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(sectorId, actor));
         return true;
     }
 
-    public void Unclaim(string sectorId) => _sectorHolders.Remove(sectorId);
+    public void Unclaim(string sectorId)
+    {
+        if (_sectorHolders.Remove(sectorId))
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(sectorId, null));
+    }
 
     private readonly HashSet<string> _barredChancellors = new();
 
-    public bool TryTakeChancellor(string holder)
+    public bool TryTakeChancellor(string holder, EntityUid? actor = null)
     {
         if (Chancellor != null || _barredChancellors.Contains(holder))
             return false;
 
         Chancellor = holder;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, actor));
         _electionForced = false;
+        CancelVacantChancellorElections();
         return true;
     }
 
     public void ResignChancellor()
     {
         if (Chancellor is { } holder)
+        {
             _cards.RevokeHolder(holder, SWSenatePosition.Chancellor);
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, null));
+        }
         Chancellor = null;
     }
 
@@ -585,6 +596,7 @@ public sealed partial class SWSenateStateSystem : EntitySystem
             Author = author,
             Effects = effects,
             Stage = SWBillStage.Passed,
+            IsDecree = true,
         };
 
         _bills.Add(bill);
@@ -645,6 +657,23 @@ public sealed partial class SWSenateStateSystem : EntitySystem
     }
 
     // --- Chancellor elections ---
+
+    private void CancelVacantChancellorElections()
+    {
+        _vacancyHours = 0f;
+        _chancellorElect = null;
+        foreach (var bill in _bills.Where(b => b.IsElection && b.Stage == SWBillStage.Voting))
+        {
+            bill.Stage = SWBillStage.Rejected;
+            bill.ReturnReason = "Выборы отменены: должность канцлера занята.";
+            foreach (var session in _sessions.Where(s => !s.IsAmendmentSession && s.BillId == bill.Id))
+            {
+                session.Status = SWSessionStatus.Rejected;
+                _announcedSessions.Remove(session.Id);
+            }
+            RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат", bill.ReturnReason));
+        }
+    }
 
     private void TickChancellorElection(float frameTime)
     {
@@ -838,12 +867,13 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    public bool ConfirmChancellorElect(string name, string sectorId)
+    public bool ConfirmChancellorElect(string name, string sectorId, EntityUid? actor = null)
     {
         if (_chancellorElect == null || _chancellorElect != name || Chancellor != null)
             return false;
 
         Chancellor = name;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, actor));
         _chancellorElect = null;
         _electionForced = false;
         Unclaim(sectorId);
@@ -946,13 +976,13 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         {
             // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
             bill.Stage = SWBillStage.AwaitingSignature;
-            RaiseVotesResolved(bill, true);
+            RaiseVotesResolved(bill, true, bill.TiebreakVotesFor, bill.TiebreakVotesAgainst);
         }
         else
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, bill.TiebreakVotesFor, bill.TiebreakVotesAgainst);
         }
 
         AdvanceAmendmentAgenda(bill.Id);
@@ -1006,8 +1036,10 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         return list;
     }
 
-    private void RaiseVotesResolved(SWSenateBill bill, bool passed) =>
-        RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes)));
+    private long _voteResolutionSerial;
+
+    private void RaiseVotesResolved(SWSenateBill bill, bool passed, int? votesFor = null, int? votesAgainst = null) =>
+        RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes), ++_voteResolutionSerial, votesFor, votesAgainst));
 
     private void ResolveBill(SWSenateBill bill, bool allowTiebreak)
     {
@@ -1030,23 +1062,25 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         {
             // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
             bill.Stage = SWBillStage.AwaitingSignature;
-            RaiseVotesResolved(bill, true);
+            RaiseVotesResolved(bill, true, votesFor, votesAgainst);
         }
         else if (votesAgainst > votesFor)
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, votesFor, votesAgainst);
         }
         else if (allowTiebreak)
         {
+            bill.TiebreakVotesFor = votesFor;
+            bill.TiebreakVotesAgainst = votesAgainst;
             bill.AwaitingTiebreak = true;
         }
         else
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, votesFor, votesAgainst);
         }
     }
 
@@ -1274,8 +1308,8 @@ public sealed partial class SWSenateStateSystem : EntitySystem
 
     public static string ReservedLabel(int hour)
     {
-        if (hour == 14)
-            return "Обед";
+        if (hour == SWSenateCommitteeSystem.AfternoonCommitteeHour)
+            return "Обед / работа комитетов";
         if (hour == 8)
             return "Собрание Кабинета и комитетов";
         return "Личное время";
@@ -1486,6 +1520,16 @@ public sealed partial class SWSenateStateSystem : EntitySystem
 
             var session = _sessions.FirstOrDefault(s =>
                 s.Status != SWSessionStatus.Rejected && hour < s.EndHour && s.StartHour < hour + 1);
+
+            if (session != null)
+            {
+                row.SessionId = session.Id;
+                row.SessionStartHour = session.StartHour;
+                row.SessionDuration = session.Duration;
+                row.SessionTitle = GetSessionName(session);
+                row.SessionConfirmed = session.Status == SWSessionStatus.Confirmed;
+                row.SessionEmergency = session.Emergency;
+            }
 
             if (session is { Emergency: true })
             {
@@ -1821,7 +1865,9 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         if (bill.Stage == SWBillStage.AwaitingSignature)
             return Loc.GetString("sw-senate-bill-stage-signature");
         if (bill.Stage == SWBillStage.Rejected)
-            return Loc.GetString("sw-senate-bill-stage-rejected");
+            return bill.IsElection && bill.ReturnReason != null
+                ? bill.ReturnReason
+                : Loc.GetString("sw-senate-bill-stage-rejected");
         if (bill.AwaitingTiebreak)
             return Loc.GetString("sw-senate-bill-stage-tiebreak");
 
@@ -1918,6 +1964,8 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         if (!_time.ModeActive)
             return;
 
+        if (Chancellor != null)
+            CancelVacantChancellorElections();
         ResolveExpiredSessions();
         AnnounceStartedSessions();
         TickChancellorElection(frameTime);

@@ -125,6 +125,7 @@
   - type: Sprite
     sprite: Clothing/OuterClothing/Suits/rad.rsi
   - type: Armor
+    priceMultiplier: 0.1 #SW the radiation crate sold for more than it costs
     modifiers:
       coefficients:
         Heat: 0.90

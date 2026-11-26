@@ -1,6 +1,7 @@
 - type: job
   id: SWJedi
   name: Джедай
+  description: job-description-sw-jedi
   playTimeTracker: Job_Jedi
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -18,7 +19,6 @@
   - !type:AddComponentSpecial
     components:
     - type: Stamina
-      critThreshold: 400
       baseCritThreshold: 400
     - type: SWFactionMember
       faction: RepublicFaction

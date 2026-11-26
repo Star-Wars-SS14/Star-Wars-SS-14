@@ -1,0 +1,145 @@
+# The points a tutorial map has to have.
+
+- type: entity
+  abstract: true
+  parent: MarkerBase
+  id: SWTutorialPointBase
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialSpawnPoint
+  name: tutorial spawn point
+  description: Where the student appears on the tutorial map.
+  components:
+  - type: SWTutorialPoint
+    point: spawn
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointDoor
+  name: tutorial point door
+  description: The goal of the first step.
+  components:
+  - type: SWTutorialPoint
+    point: door
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointRifle
+  name: tutorial point rifle
+  description: The scenario puts the rifle here.
+  components:
+  - type: SWTutorialPoint
+    point: rifle
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointTargetFar
+  name: tutorial point far target
+  description: The scenario puts the target here.
+  components:
+  - type: SWTutorialPoint
+    point: targetFar
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointTargetNear
+  name: tutorial point near target
+  description: The target moves here if the student keeps missing.
+  components:
+  - type: SWTutorialPoint
+    point: targetNear
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointRangeExit
+  name: tutorial point range exit
+  description: The way out of the firing range, where the arrow leads after the target.
+  components:
+  - type: SWTutorialPoint
+    point: rangeExit
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointRangeWay
+  name: tutorial point range way
+  description: An arrow on the way out of the range, close enough to be on screen from the firing counter.
+  components:
+  - type: SWTutorialPoint
+    point: rangeWay
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointFriend
+  name: tutorial point friend
+  description: A friend stands here.
+  components:
+  - type: SWTutorialPoint
+    point: friend
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointDroid
+  name: tutorial point droid
+  description: A droid stands here.
+  components:
+  - type: SWTutorialPoint
+    point: droid
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointHeal
+  name: tutorial point wound
+  description: The student walks here before being hit.
+  components:
+  - type: SWTutorialPoint
+    point: heal
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointTower
+  name: tutorial point tower
+  description: The student holds this place in the fight.
+  components:
+  - type: SWTutorialPoint
+    point: tower
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointAlly
+  name: tutorial point ally
+  description: A friendly bot appears here for the fight.
+  components:
+  - type: SWTutorialPoint
+    point: ally
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointEnemy
+  name: tutorial point enemy
+  description: A droid of the wave appears here.
+  components:
+  - type: SWTutorialPoint
+    point: enemy
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointRespawn
+  name: tutorial point respawn
+  description: The student comes to here after dying.
+  components:
+  - type: SWTutorialPoint
+    point: respawn
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialPointShuttle
+  name: tutorial point shuttle
+  description: The goal of the last step.
+  components:
+  - type: SWTutorialPoint
+    point: shuttle

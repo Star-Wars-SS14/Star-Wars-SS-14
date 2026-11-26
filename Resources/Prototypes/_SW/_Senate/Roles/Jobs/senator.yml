@@ -75,7 +75,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: ChancellorGear
+  startingGear: ChancellorGearJob
   icon: "JobIconChancellor"
   supervisors: job-supervisors-empire
   access:
@@ -89,7 +89,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: SpeakerGear
+  startingGear: SpeakerGearJob
   icon: "JobIconSpeaker"
   supervisors: job-supervisors-empire
   access:
@@ -103,7 +103,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: SenatorGear
+  startingGear: SenatorGearJob
   icon: "JobIconSenator"
   supervisors: job-supervisors-empire
   access:
@@ -145,6 +145,39 @@
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     jumpsuit: ClothingUniformJumpsuitCentcomOfficial
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: SenatorGearJob
+  equipment:
+    id: SWSenatorPDA
+    ears: SWClothingHeadsetSenate
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: ChancellorGearJob
+  equipment:
+    id: SWChancellorPDA
+    ears: SWClothingHeadsetSenateLeader
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: SpeakerGearJob
+  equipment:
+    id: SWSpeakerPDA
+    ears: SWClothingHeadsetSenateLeader
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern

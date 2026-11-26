@@ -1,24 +1,24 @@
 - type: lobbyBackground
   id: SpaceWar
   background: /Textures/_SW/LobbyScreens/spacewar.webp
-  artist: Pancake
+  artist: sw-lobby-artist-pancake
   title: sw-space-war-title
 
 - type: lobbyBackground
   id: NoWord
   background: /Textures/_SW/LobbyScreens/no_word.png
-  artist: Bao
+  artist: sw-lobby-artist-bao
   title: sw-no-word-title
 
 - type: lobbyBackground
   id: Caricature
   background: /Textures/_SW/LobbyScreens/caricature.jpg
-  artist: Pancake
+  artist: sw-lobby-artist-pancake
   title: sw-caricature-title
 
 - type: lobbyBackground
   id: Mandalor
   background: /Textures/_SW/LobbyScreens/lina.png
-  artist: mortedeuss
+  artist: sw-lobby-artist-mortedeuss
   title: sw-mandalor-title
 

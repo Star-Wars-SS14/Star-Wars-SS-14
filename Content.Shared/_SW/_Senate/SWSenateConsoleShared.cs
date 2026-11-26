@@ -65,12 +65,16 @@ public sealed class SWSectorEntry
     public string Name = string.Empty;
     public Color Color;
     public bool Claimed;
+    public string Description = string.Empty;
+    public string? Representative;
+    public bool Shipyard;
     public List<SWStatEntry> Stats = new();
 }
 
 [Serializable, NetSerializable]
 public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
 {
+    public string Faction = "none";
     public int FinanceBaseTaxRate;
     public List<SWFinanceTaxEntry> FinanceActiveTaxes = new();
     public List<SWFinanceTaxEntry> FinanceActiveReliefs = new();
@@ -158,6 +162,8 @@ public sealed class SWSectorSelectConsoleState : BoundUserInterfaceState
     public bool IsSenatorCard;
     public string? CurrentSector;
     public string? CurrentSectorName;
+    public bool ModeActive;
+    public bool DayActive;
 
     public SWSectorSelectConsoleState(List<SWSectorEntry> sectors, bool hasCard, bool isSenatorCard, string? currentSector, string? currentSectorName)
     {
@@ -195,6 +201,7 @@ public sealed class SWMinistryEntry
     public Color Color;
     public int KindGroup;
     public string KindLabel = string.Empty;
+    public string? ParentId;
     public string? ParentName;
     public bool Claimed;
     public string? Holder;
@@ -210,14 +217,18 @@ public sealed class SWMinistrySelectConsoleState : BoundUserInterfaceState
     public bool IsMinisterCard;
     public string? Current;
     public string? CurrentName;
+    public bool ModeActive;
+    public bool DayActive;
 
-    public SWMinistrySelectConsoleState(List<SWMinistryEntry> ministries, bool hasCard, bool isMinisterCard, string? current, string? currentName)
+    public SWMinistrySelectConsoleState(List<SWMinistryEntry> ministries, bool hasCard, bool isMinisterCard, string? current, string? currentName, bool modeActive, bool dayActive)
     {
         Ministries = ministries;
         HasCard = hasCard;
         IsMinisterCard = isMinisterCard;
         Current = current;
         CurrentName = currentName;
+        ModeActive = modeActive;
+        DayActive = dayActive;
     }
 }
 
@@ -289,6 +300,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // КОНТРОЛЬ (Internal Security ministry only).
     public bool IsSecurity;
+    public SWSecurityMapState? SecurityMap;
     public SWSecurityPosture Posture;
     public string PostureName = string.Empty;
     public Color PostureColor;
@@ -407,6 +419,9 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int BudgetDayTotal;
     public int BudgetSectorPool;
     public int BudgetMinistryPool;
+    public int BudgetRepublicPool;
+    public int BudgetRepublicRemaining;
+    public int BudgetRepublicPct;
     public int BudgetSectorPct;
     public int BudgetReservePct;
     public int BudgetReservePool;
@@ -437,6 +452,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // ЮСТИЦИЯ (Justice ministry only).
     public bool IsJustice;
+    public SWJusticeInspectionState? JusticeInspections;
     public SWJusticeStance JusticeStance;
     public string JusticeStanceName = string.Empty;
     public Color JusticeStanceColor;
@@ -683,14 +699,16 @@ public sealed class SWBudgetSubmitMessage : BoundUserInterfaceMessage
     public int Revision;
     public int SectorPct;
     public int ReservePct;
+    public int RepublicPct;
     public Dictionary<string, int> Weights = new();
 
     public SWBudgetSubmitMessage() { }
-    public SWBudgetSubmitMessage(int revision, int sectorPct, int reservePct, Dictionary<string, int> weights)
+    public SWBudgetSubmitMessage(int revision, int sectorPct, int reservePct, int republicPct, Dictionary<string, int> weights)
     {
         Revision = revision;
         SectorPct = sectorPct;
         ReservePct = reservePct;
+        RepublicPct = republicPct;
         Weights = weights;
     }
 }
@@ -1237,6 +1255,19 @@ public sealed class SWSecurityRejectEmergencyMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public sealed class SWSecuritySabotageDecisionMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+    public bool Approve;
+
+    public SWSecuritySabotageDecisionMessage(int caseId, bool approve)
+    {
+        CaseId = caseId;
+        Approve = approve;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class SWDefenseOperationEntry
 {
     public string Id = string.Empty;
@@ -1461,6 +1492,7 @@ public sealed class SWSenateRosterEntry
 [Serializable, NetSerializable]
 public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
 {
+    public NetEntity? CardIdentity;
     public List<SWSituationalStatView> SituationalStats = new();
     public bool HasCard;
     public bool IsSenateCard;
@@ -1503,9 +1535,13 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool EmergencyProposed;
     public bool CanApproveEmergency;
     public string PendingPostureName = string.Empty;
+    public bool CanApproveSecuritySabotage;
+    public List<SWSecuritySabotageRequestView> SecuritySabotageRequests = new();
     public bool HealthEmergencyProposed;
     public bool CanApproveHealthEmergency;
     public List<Content.Shared._SW._Senate.Ministries.SWHealthQuarantineView> HealthQuarantines = new();
+    public Content.Shared._SW._Senate.Empire.SWEmpireDiplomacyState ImperialDiplomacy = new();
+    public bool CanDecideDiplomacy;
     public bool StimulusProposed;
     public bool CanApproveStimulus;
     public bool EmissionProposed;
@@ -1532,6 +1568,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool BudgetProjectPending;
     public int BudgetSectorPool;
     public int BudgetMinistryPool;
+    public int BudgetRepublicPool;
+    public int BudgetRepublicRemaining;
+    public int BudgetRepublicPct;
     public int BudgetSectorPct;
     public int BudgetRejects;
     public bool CanRejectBudget;
@@ -2486,6 +2525,12 @@ public sealed class SWScheduleRow
     public Color Color;
     public bool IsNow;
     public bool Free;
+    public int? SessionId;
+    public double SessionStartHour;
+    public double SessionDuration;
+    public string SessionTitle = string.Empty;
+    public bool SessionConfirmed;
+    public bool SessionEmergency;
 }
 
 [Serializable, NetSerializable]
@@ -3134,6 +3179,7 @@ public sealed class SWPlannerMeetingEntry
     public bool Invited;
     public SWInviteStatus MyStatus;
     public List<string> ParticipantLines = new();
+    public List<string> InviteeNames = new();
     public string Warning = string.Empty;
 }
 
@@ -3146,6 +3192,7 @@ public sealed class SWPlannerConsoleState : BoundUserInterfaceState
     public string GameTime = string.Empty;
     public int Today;
     public int NowSlot = -1;
+    public int EarliestStartSlot = SWPlannerSlots.PerDay;
     public ulong MyBusyToday;
     public ulong MyBusyTomorrow;
     public List<SWPlannerPersonEntry> Roster = new();
@@ -3251,6 +3298,23 @@ public sealed class SWPlannerRemoveBlockMessage : BoundUserInterfaceMessage
     public SWPlannerRemoveBlockMessage(int blockId)
     {
         BlockId = blockId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerRescheduleBlockMessage : BoundUserInterfaceMessage
+{
+    public int BlockId;
+    public int Day;
+    public int Slot;
+    public int Duration;
+
+    public SWPlannerRescheduleBlockMessage(int blockId, int day, int slot, int duration)
+    {
+        BlockId = blockId;
+        Day = day;
+        Slot = slot;
+        Duration = duration;
     }
 }
 
@@ -3613,3 +3677,5 @@ public sealed class SWSenateDiploReplyMessage : BoundUserInterfaceMessage
         Text = text;
     }
 }
+
+

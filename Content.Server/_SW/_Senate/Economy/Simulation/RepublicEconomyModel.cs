@@ -14,7 +14,7 @@ public sealed partial class RepublicEconomyModel
     public const double StepHours = .25;
     private const double Epsilon = 1e-9;
     private static readonly string[] Foods = { "fresh_food", "rations", "synth_food" };
-    private readonly EconomyDefinition _definition;
+    private EconomyDefinition _definition;
     private readonly Dictionary<string, EconomyGood> _goods;
     private readonly Dictionary<string, EconomyWorld> _worlds;
     private readonly Dictionary<string, EconomyEdge> _edges;
@@ -74,7 +74,7 @@ public sealed partial class RepublicEconomyModel
     }
     private sealed class Ledger
     {
-        public double Initial, Manufactured, Transformed, Consumed, Losses;
+        public double Initial, Manufactured, Transformed, Consumed, Losses, ExternalIn, ExternalOut;
     }
     private sealed record Proposal(double Amount, Dictionary<Resource, double> Needs);
 
@@ -261,6 +261,10 @@ public sealed partial class RepublicEconomyModel
             Add(result, new Key(batch.Recipe.World, output.Good), output.Quantity * batch.Cycles);
         foreach (var cargo in _cargo)
             Add(result, cargo.Target, cargo.Quantity);
+        // Physical addressed freight occupies its final warehouse capacity even while
+        // crossing intermediate legs. Scheduled shipments must not displace it.
+        foreach (var cargo in _projectCargo.Where(c => c.Project.Request.IndustryDelivery != null))
+            Add(result, new Key(cargo.Project.Request.World, cargo.Good), cargo.Quantity);
         return result;
     }
 
@@ -529,6 +533,9 @@ public sealed partial class RepublicEconomyModel
         // Already-paid relief claims only its local surplus before ordinary freight departs.
         // Medical research and vaccine kits retain their existing precedence above.
         GatherProjectMaterials(modifiers, reliefOnly: true);
+        // Urgent Imperial freight competes for the same physical stock and capacity,
+        // after medical and relief allocations but before ordinary scheduled transport.
+        DispatchProjects(modifiers, industryUrgentOnly: true);
         var reserved = Reservations();
         var desired = _definition.Shipping.Select(f => (CrossingAllowed(f.Source, f.Target, f.Good) ? 1 : 0) * f.Rate * TransportMultiplier(f.Source) * StepHours * (f.Good == null ? 1 : Factor(new Key(f.Target, f.Good), reserved))).ToArray();
         for (var i = 0; i < desired.Length; i++)
@@ -755,9 +762,10 @@ public sealed partial class RepublicEconomyModel
             Add(incoming, new Key(cargo.Leg.To, cargo.Good), cargo.Quantity);
             Add(flows, cargo.Flow, cargo.Quantity);
         }
-        // Snapshot only event-kit goods; the same reserve calculation gates actual project gathering.
+        // Imperial industry publishes project-safe surplus for every commodity. The
+        // Republic retains its smaller event-kit telemetry to avoid extra snapshot work.
         _projectSupplyReserves.Clear();
-        var eventSupply = _stores.Keys.Where(k => k.Good is "parts" or "circuits" or "machinery" or "water" or "ship_fuel")
+        var eventSupply = _stores.Keys.Where(k => _definition.IncludeFullProjectSupply || k.Good is "parts" or "circuits" or "machinery" or "water" or "ship_fuel")
             .Select(k => new EconomyProjectSupplyState(k.World, k.Good, ProjectAvailable(k, _lastDemandModifiers))).ToArray();
         return new EconomySnapshot(_hour,
             Array.AsReadOnly(_stores.Select(s => new EconomyInventoryState(s.Key.World, s.Key.Good,
@@ -768,7 +776,8 @@ public sealed partial class RepublicEconomyModel
             Array.AsReadOnly(_orders.Select(o => new EconomyOrderState(o.Key.World, o.Key.Good, o.Value.Total, o.Value.Delivered, o.Value.Completed)).ToArray()),
             Array.AsReadOnly(_definition.Edges.Select(e => new EconomyEdgeState(e.Id, Get(_edgeUsed, e.Id), EdgeCapacity(e.Id), Get(_edgeEmpty, e.Id))).ToArray()),
             Array.AsReadOnly(_ledgers.Select(l => new EconomyLedgerState(l.Key, l.Value.Initial, l.Value.Manufactured, l.Value.Transformed,
-                l.Value.Consumed, l.Value.Losses, Get(stock, l.Key), Get(wip, l.Key), Get(transit, l.Key))).ToArray()),
+                l.Value.Consumed, l.Value.Losses, Get(stock, l.Key), Get(wip, l.Key), Get(transit, l.Key))
+                { ExternalIn = l.Value.ExternalIn, ExternalOut = l.Value.ExternalOut }).ToArray()),
             _batches.Count, _cargo.Count + _projectCargo.Count,
             Array.AsReadOnly(_stores.Keys.Union(_activity.Keys).Union(incoming.Keys).Select(k =>
             {

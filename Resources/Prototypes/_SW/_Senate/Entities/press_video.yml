@@ -1,0 +1,47 @@
+- type: entity
+  id: SWPressVideoEye
+  categories: [ HideSpawnMenu ]
+  name: эфирный обзор
+  components:
+  - type: Visibility
+    layer: 8
+  - type: Eye
+    drawFov: true
+    pvsScale: 0.8
+
+- type: entity
+  id: SWPressVideoCamera
+  parent: [ BaseItem, PowerCellSlotSmallItem ]
+  name: репортёрская видеокамера
+  description: Переносная камера прямого эфира. Работает от малого элемента питания.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/camera_bug.rsi
+    state: camera_bug
+  - type: Item
+    sprite: Objects/Devices/camera_bug.rsi
+  - type: SWPressCamera
+  - type: ActivatableUI
+    key: enum.SWPressCameraUiKey.Key
+    requireActiveHand: false
+  - type: UserInterface
+    interfaces:
+      enum.SWPressCameraUiKey.Key:
+        type: SWPressCameraBoundUserInterface
+
+- type: entity
+  id: SWPressVideoTripod
+  parent: [ BaseStructureDynamic, PowerCellSlotSmallItem ]
+  name: видеокамера на штативе
+  description: Передвижная камера прямого эфира. Её можно тянуть за собой или закрепить ключом. Работает от малого элемента питания.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/camera_bug.rsi
+    state: camera_bug
+  - type: SWPressCamera
+  - type: ActivatableUI
+    key: enum.SWPressCameraUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWPressCameraUiKey.Key:
+        type: SWPressCameraBoundUserInterface

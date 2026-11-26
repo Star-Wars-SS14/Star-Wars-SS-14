@@ -41,6 +41,13 @@ public sealed partial class SWMinistryEconomySystem
         foreach (var world in _proto.Index(scenario.Map).Worlds)
             _industrialWorlds[world.Id] = (world.Name, world.Sector?.Id ?? string.Empty);
     }
+    private bool CanDevelopWorld(string id)
+    {
+        var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
+        var map = _proto.Index(scenario.Map);
+        var world = map.Worlds.FirstOrDefault(w => w.Id == id);
+        return world != null && world.Sector != null && map.GetWorldFaction(world) == "republic";
+    }
     private string IndustrialWorldName(string id) => _industrialWorlds.TryGetValue(id, out var w) && !string.IsNullOrWhiteSpace(w.Name) ? w.Name : "Неизвестный мир";
     private string IndustrialSector(string id) => _industrialWorlds.TryGetValue(id, out var w) ? w.Sector : string.Empty;
     private string IndustrialSectorName(string id) => _proto.TryIndex<SWSectorPrototype>(id, out var p) && !string.IsNullOrWhiteSpace(p.Name) ? p.Name : "Неизвестный сектор";
@@ -56,7 +63,7 @@ public sealed partial class SWMinistryEconomySystem
         if (snapshot == null || definition == null || ReferenceEquals(snapshot, _industrialSnapshot)) return;
         EnsureIndustrialWorlds();
         _industrialSnapshot = snapshot;
-        var activeWorlds = definition.Worlds.Where(w => w.Active).Select(w => w.Id).ToArray();
+        var activeWorlds = definition.Worlds.Where(w => w.Active && CanDevelopWorld(w.Id)).Select(w => w.Id).ToArray();
         _industrialCandidates = SWGovernorPolicy.Evaluate(definition, snapshot, activeWorlds,
             new SWGovernorPersonality(true, false, false)).ToList();
         var stores = snapshot.Inventory.ToDictionary(i => (i.World, i.Good));
@@ -166,14 +173,14 @@ public sealed partial class SWMinistryEconomySystem
     private bool QueueIndustrialPaid(EconomyProjectRequest request, int cost)
     {
         var before = _dilemma.GetMinistryBudget(EconomyMinistryId);
-        if (cost < 0 || !_dilemma.SpendMinistry(EconomyMinistryId, cost)) return false;
+        if (!CanDevelopWorld(request.World) || cost < 0 || !_dilemma.SpendMinistry(EconomyMinistryId, cost)) return false;
         if (_economy.QueueProject(request)) return true;
         _dilemma.SetMinistryBudget(EconomyMinistryId, before);
         return false;
     }
-    private static string? ActiveRouteEndpoint(EconomyDefinition definition, EconomyEdge edge) =>
-        definition.Worlds.Any(w => w.Id == edge.A && w.Active) ? edge.A
-        : definition.Worlds.Any(w => w.Id == edge.B && w.Active) ? edge.B : null;
+    private string? ActiveRouteEndpoint(EconomyDefinition definition, EconomyEdge edge) =>
+        definition.Worlds.Any(w => w.Id == edge.A && w.Active) && CanDevelopWorld(edge.A) ? edge.A
+        : definition.Worlds.Any(w => w.Id == edge.B && w.Active) && CanDevelopWorld(edge.B) ? edge.B : null;
 
     public List<SWEconomyRouteView> BuildIndustrialRoutes()
     {

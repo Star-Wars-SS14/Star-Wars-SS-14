@@ -210,7 +210,8 @@
   name: Balmorran Leader
   components:
   - type: SpawnPoint
-    job_id: SWBalmorranLeader
+    # SW: job SWBalmorranLeader is not defined, the Balmorran jobs were never added.
+    # job_id: SWBalmorranLeader
   - type: Sprite
     layers:
     - state: green
@@ -221,7 +222,8 @@
   name: Balmorran Officer
   components:
   - type: SpawnPoint
-    job_id: SWBalmorranOfficer
+    # SW: job SWBalmorranOfficer is not defined, the Balmorran jobs were never added.
+    # job_id: SWBalmorranOfficer
   - type: Sprite
     layers:
     - state: green
@@ -232,7 +234,8 @@
   name: Balmorran Medic
   components:
   - type: SpawnPoint
-    job_id: SWBalmorranMedic
+    # SW: job SWBalmorranMedic is not defined, the Balmorran jobs were never added.
+    # job_id: SWBalmorranMedic
   - type: Sprite
     layers:
     - state: green
@@ -243,7 +246,8 @@
   name: Balmorran Soldier
   components:
   - type: SpawnPoint
-    job_id: SWBalmorranSoldier
+    # SW: job SWBalmorranSoldier is not defined, the Balmorran jobs were never added.
+    # job_id: SWBalmorranSoldier
   - type: Sprite
     layers:
     - state: green
@@ -254,7 +258,8 @@
   name: Balmorran Recruit
   components:
   - type: SpawnPoint
-    job_id: SWBalmorranRecruit
+    # SW: job SWBalmorranRecruit is not defined, the Balmorran jobs were never added.
+    # job_id: SWBalmorranRecruit
   - type: Sprite
     layers:
     - state: green
@@ -391,6 +396,17 @@
   components:
   - type: SpawnPoint
     job_id: SWCivialian
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointNeutralBartender
+  parent: SpawnPointJobBase
+  name: Neutral Bartender
+  components:
+  - type: SpawnPoint
+    job_id: SWNeutralBartender
   - type: Sprite
     layers:
     - state: green

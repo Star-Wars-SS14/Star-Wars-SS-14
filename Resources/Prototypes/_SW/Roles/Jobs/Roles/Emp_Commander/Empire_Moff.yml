@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireMoff
   name: Мофф Сил Империи
+  description: job-description-sw-empire-moff
   playTimeTracker: Job_Empire_Moff
   requirements:
   - !type:OverallPlaytimeRequirement

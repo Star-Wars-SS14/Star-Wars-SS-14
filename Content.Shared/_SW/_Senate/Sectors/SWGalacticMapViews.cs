@@ -18,9 +18,37 @@ public static class SWGalacticMapViews
         PoliticalAreas = source.PoliticalAreas,
     };
 
+    /// <summary>Geography is public. Runtime economy, units and surface access are filtered separately.</summary>
+    public static SWGalacticMapPrototype ForFaction(SWGalacticMapPrototype source, string faction, Func<string, string>? sectorName = null)
+    {
+        if (faction is not ("republic" or "empire")) return new SWGalacticMapPrototype { Size = source.Size };
+        return new SWGalacticMapPrototype
+        {
+            Size = source.Size, Worlds = source.Worlds.ToList(), Routes = source.Routes.ToList(),
+            Regions = source.Regions, Corridors = source.Corridors, PoliticalAreas = source.PoliticalAreas,
+        };
+    }
+
+    public static SWGalacticMapPrototype PoliticalSector(SWGalacticMapPrototype source, string sectorId)
+    {
+        // System-local coordinates are meaningful only inside that system. Mixing them with
+        // sector coordinates piles unrelated worlds and routes on top of each other.
+        var overview = Overview(source);
+        return Group(overview, overview.Worlds.Where(w => w.PoliticalSectorId == sectorId).ToArray());
+    }
+
     public static SWGalacticMapPrototype Sector(SWGalacticMapPrototype source, string sectorId)
     {
-        var owned = source.Worlds.Where(w => w.Sector?.Id == sectorId).ToArray();
+        return Group(source, source.Worlds.Where(w => w.Sector?.Id == sectorId).ToArray());
+    }
+
+    public static SWGalacticMapPrototype System(SWGalacticMapPrototype source, string systemId)
+    {
+        return Group(source, source.Worlds.Where(w => w.SystemId == systemId).ToArray());
+    }
+
+    private static SWGalacticMapPrototype Group(SWGalacticMapPrototype source, SWGalacticMapWorld[] owned)
+    {
         var ids = owned.Select(w => w.Id).ToHashSet();
         var routes = source.Routes.Where(r => ids.Contains(r.From) || ids.Contains(r.To)).ToArray();
         var external = routes.SelectMany(r => new[] { r.From, r.To }).Where(id => !ids.Contains(id)).ToHashSet();
@@ -96,7 +124,9 @@ public static class SWGalacticMapViews
     private static SWGalacticMapWorld Copy(SWGalacticMapWorld world, Vector2 position) => new()
     {
         Id = world.Id, Name = world.Name, Position = position, Sector = world.Sector,
-        Anchor = world.Anchor, Overview = world.Overview, LocalPosition = world.LocalPosition,
-        Kind = world.Kind, Description = world.Description,
+        Anchor = world.Anchor, LabelPriority = world.LabelPriority, Overview = world.Overview, LocalPosition = world.LocalPosition,
+        Kind = world.Kind, Description = world.Description, SystemId = world.SystemId, SystemName = world.SystemName,
+        Faction = world.Faction, PoliticalStatus = world.PoliticalStatus,
+        PoliticalSectorId = world.PoliticalSectorId, PoliticalSectorName = world.PoliticalSectorName,
     };
 }

@@ -2,6 +2,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
 using Content.Shared._SW.Artillery;
 using Content.Shared.Communications;
+using Content.Shared.Popups;
 
 namespace Content.Client._SW.Artillery.UI
 {
@@ -53,6 +54,7 @@ namespace Content.Client._SW.Artillery.UI
             int x, y;
             if (!Int32.TryParse(xInString, out x) || !Int32.TryParse(yInString, out y))
             {
+                EntMan.System<SharedPopupSystem>().PopupCursor(Loc.GetString("sw-artillery-bad-coordinates"), PopupType.Medium);
                 return;
             }
             SendMessage(new ArtilleryConsoleCallArtileryMessage(x, y));

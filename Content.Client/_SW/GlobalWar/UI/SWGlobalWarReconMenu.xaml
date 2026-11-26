@@ -1,0 +1,21 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-recon-title'}" MinSize="480 280" SetSize="660 560">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0">
+        <ui:SWGlobalWarBand Name="Scene" SetHeight="120">
+            <ui:SWGlobalWarPlate VerticalAlignment="Center" Margin="150 0 30 0">
+                <BoxContainer Margin="14 6" SeparationOverride="14">
+                    <Label Name="CountValue" VAlign="Center" />
+                    <RichTextLabel Name="StatusText" HorizontalExpand="True" VerticalAlignment="Center" />
+                </BoxContainer>
+            </ui:SWGlobalWarPlate>
+            <ui:SWGlobalWarPlate HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 6 0">
+                <Label Name="HelpMark" Text="?" Margin="6 0" StyleClasses="SWTermValue" MouseFilter="Stop" />
+            </ui:SWGlobalWarPlate>
+        </ui:SWGlobalWarBand>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Margin="12 8">
+            <BoxContainer Name="Reports" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" />
+        </ScrollContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

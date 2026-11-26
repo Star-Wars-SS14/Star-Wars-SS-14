@@ -13,6 +13,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Maps;
 using Content.Shared.Roles;
 using Content.Shared.Station.Components;
+using Content.Shared.Echo.Shipyard.Prototypes; //SW
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.EntitySerialization;
@@ -119,6 +120,59 @@ namespace Content.IntegrationTests.Tests
             "dm01-entryway",
             "Exo",
             "Snowball",
+            "SWGlobalWarTestAsteroid", //SW
+            "SWGlobalWarE0Orbit", //SW
+            "SWGlobalWarE0Surface", //SW
+            "SWGlobalWarE1Orbit", //SW
+            "SWGlobalWarE1Surface", //SW
+            "SWGlobalWarE2Orbit", //SW
+            "SWGlobalWarE2Surface", //SW
+            "SWGlobalWarE3Orbit", //SW
+            "SWGlobalWarE3Surface", //SW
+            "SWGlobalWarE4Orbit", //SW
+            "SWGlobalWarE4Surface", //SW
+            "SWGlobalWarE5Orbit", //SW
+            "SWGlobalWarE5Surface", //SW
+            "SWGlobalWarE6Orbit", //SW
+            "SWGlobalWarE6Surface", //SW
+            "SWGlobalWarE7Orbit", //SW
+            "SWGlobalWarE7Surface", //SW
+            "SWGlobalWarE8Orbit", //SW
+            "SWGlobalWarE8Surface", //SW
+            "SWGlobalWarE9Orbit", //SW
+            "SWGlobalWarE9Surface", //SW
+            "SWGlobalWarN0Orbit", //SW
+            "SWGlobalWarN0Surface", //SW
+            "SWGlobalWarN1Orbit", //SW
+            "SWGlobalWarN1Surface", //SW
+            "SWGlobalWarR0Orbit", //SW
+            "SWGlobalWarR0Surface", //SW
+            "SWGlobalWarR1Orbit", //SW
+            "SWGlobalWarR1Surface", //SW
+            "SWGlobalWarR2Orbit", //SW
+            "SWGlobalWarR2Surface", //SW
+            "SWGlobalWarR3Orbit", //SW
+            "SWGlobalWarR3Surface", //SW
+            "SWGlobalWarR4Orbit", //SW
+            "SWGlobalWarR4Surface", //SW
+            "SWGlobalWarR5Orbit", //SW
+            "SWGlobalWarR5Surface", //SW
+            "SWGlobalWarR6Orbit", //SW
+            "SWGlobalWarR6Surface", //SW
+            "SWGlobalWarR7Orbit", //SW
+            "SWGlobalWarR7Surface", //SW
+            "SWGlobalWarR8Orbit", //SW
+            "SWGlobalWarR8Surface", //SW
+            "SWGlobalWarR9Orbit", //SW
+            "SWGlobalWarR9Surface", //SW
+            //SW start
+            "newBalmora",
+            "newBalmoraEvent",
+            "oldBalmora",
+            "oldBalmorraEventMagistr",
+            "SpaceWarRoundstart",
+            "Asteroid",
+            //SW end
         };
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
@@ -465,7 +519,7 @@ namespace Content.IntegrationTests.Tests
                     var jobs = new HashSet<ProtoId<JobPrototype>>(comp.SetupAvailableJobs.Keys);
 
                     var spawnPoints = entManager.EntityQuery<SpawnPointComponent>()
-                        .Where(x => x.SpawnType == SpawnPointType.Job && x.Job != null)
+                        .Where(x => x.SpawnType is SpawnPointType.Job or SpawnPointType.LateJoinByJob && x.Job != null) //SW
                         .Select(x => x.Job.Value);
 
                     jobs.ExceptWith(spawnPoints);
@@ -505,7 +559,7 @@ namespace Content.IntegrationTests.Tests
             {
                 var spawner = (ISpawnPoint)comp;
 
-                if (spawner.SpawnType is not SpawnPointType.LateJoin
+                if (spawner.SpawnType is not (SpawnPointType.LateJoin or SpawnPointType.LateJoinByJob) //SW
                 || xform.GridUid == null
                 || !gridUids.Contains(xform.GridUid.Value))
                 {
@@ -532,6 +586,11 @@ namespace Content.IntegrationTests.Tests
                 .ToHashSet();
 
             Assert.That(gameMaps.Remove(PoolManager.TestMap));
+
+            //SW start
+            // A vessel's gameMap only sets up a station on a bought ship grid (ShipyardSystem), it is never a round map.
+            gameMaps.ExceptWith(protoMan.EnumeratePrototypes<VesselPrototype>().Select(x => x.ID));
+            //SW end
 
             Assert.That(gameMaps, Is.EquivalentTo(GameMaps.ToHashSet()), "Game map prototype missing from test cases.");
 

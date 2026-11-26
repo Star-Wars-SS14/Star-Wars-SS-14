@@ -46,9 +46,7 @@
                 <ScrollContainer Name="ControlPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="ControlContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <ScrollContainer Name="NetworkPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="NetworkContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
+                <BoxContainer Name="NetworkPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
                 <ScrollContainer Name="SecOpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="SecOpsContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
@@ -88,18 +86,10 @@
                 <ScrollContainer Name="FinanceTaxesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="FinanceTaxesContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <ScrollContainer Name="CasesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="CasesContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
-                <ScrollContainer Name="JusticePanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="JusticeContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
-                <ScrollContainer Name="CorruptionPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="CorruptionContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
-                <ScrollContainer Name="ArchivePanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="ArchiveContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
+                <BoxContainer Name="CasesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="JusticePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="ArchivePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="JusticeJournalPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
                 <BoxContainer Name="PlanetaryDefensePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
             </BoxContainer>
         </BoxContainer>

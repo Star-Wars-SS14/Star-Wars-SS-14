@@ -55,7 +55,7 @@
         buckleCoords: "0.0, -1.2"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.35"
+        buckleCoords: "0.0, 0.35"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -76,7 +76,7 @@
     sidewaysFriction: 15
     turnSpeedReference: 2.5
   - type: SWVehicleMobCollision
-    paralyzeTime: 5
+    knockdownTime: 1
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/speeder.ogg
@@ -112,13 +112,13 @@
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
-        buckleCoords: "0.0, 1.2"
+        buckleCoords: "0.0, -1.2"
       driver_seat:
         entProto: SWVehicleSeat
         buckleCoords: "0.0, 0.35"
       passenger1_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.4"        
+        buckleCoords: "0.0, 0.7"        
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver
@@ -151,6 +151,11 @@
   suffix: НЕ МАППИТЬ, SW
   categories: [ HideSpawnMenu ]
   components:
+  # The vehicle sprite draws the cannon, so this one stays hidden; it gives the item an icon.
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    state: icon
+    visible: false
   - type: Item
     size: Large
   - type: Clothing
@@ -165,7 +170,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+      path: /Audio/_SW/Weapons/Guns/Gunshots/speeder-attack.ogg
   - type: PredictedBattery 
     maxCharge: 1000
     startingCharge: 1000

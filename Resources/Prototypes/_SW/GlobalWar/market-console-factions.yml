@@ -1,0 +1,29 @@
+- type: entity
+  parent: SWGlobalWarMarketConsole
+  id: SWGlobalWarRepublicMarketConsole
+  name: Republic planetary market console
+  description: A Republic cargo terminal showing the HoloNet atlas of planetary inventories, demand and automatic freight.
+  components:
+  - type: Sprite
+    # The cargo body has integrated controls, so the base keyboard and panel layers are not overlaid on it.
+    sprite: _SW/Structures/Machines/RepublickCargoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: cargo_monitor
+
+- type: entity
+  parent: SWGlobalWarMarketConsole
+  id: SWGlobalWarEmpireMarketConsole
+  name: Empire planetary market console
+  description: An Empire cargo terminal showing the HoloNet atlas of planetary inventories, demand and automatic freight.
+  components:
+  - type: Sprite
+    # The cargo body has integrated controls, so the base keyboard and panel layers are not overlaid on it.
+    sprite: _SW/Structures/Machines/ImperialCargoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: cargo_monitor

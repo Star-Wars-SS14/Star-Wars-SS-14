@@ -1,0 +1,20 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-gunnery-title'}" MinSize="640 360" SetSize="980 640">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+        <PanelContainer StyleClasses="SWTermCard" HorizontalExpand="True" VerticalExpand="True" RectClipContent="True">
+            <ui:SWGlobalWarGunneryRadar Name="Radar" HorizontalExpand="True" VerticalExpand="True" />
+        </PanelContainer>
+        <BoxContainer Orientation="Vertical" SeparationOverride="8" SetWidth="360">
+            <BoxContainer SeparationOverride="8">
+                <RichTextLabel Name="StatusText" HorizontalExpand="True" />
+                <Label Name="HelpMark" Text="?" StyleClasses="SWTermValue" MouseFilter="Stop" />
+            </BoxContainer>
+            <ui:SWGlobalWarConsoleButton Name="Fire" Text="{Loc 'sw-global-war-gunnery-fire'}" Disabled="True" MinHeight="70" />
+            <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="Weapons" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" />
+            </ScrollContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

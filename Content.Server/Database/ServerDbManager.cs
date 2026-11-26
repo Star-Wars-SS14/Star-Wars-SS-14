@@ -184,6 +184,16 @@ namespace Content.Server.Database
 
         #endregion
 
+        //SW start
+        #region SW battle pass
+
+        Task<SWBattlePassProgress?> GetSWBattlePassProgress(Guid player, string season, CancellationToken cancel = default);
+
+        Task SaveSWBattlePassProgress(Guid player, string season, int xp, bool paid, string state);
+
+        #endregion
+        //SW end
+
         #region Player Records
         Task UpdatePlayerRecordAsync(
             NetUserId userId,
@@ -625,6 +635,24 @@ namespace Content.Server.Database
         }
 
         #endregion
+
+        //SW start
+        #region SW battle pass
+
+        public Task<SWBattlePassProgress?> GetSWBattlePassProgress(Guid player, string season, CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetSWBattlePassProgress(player, season, cancel));
+        }
+
+        public Task SaveSWBattlePassProgress(Guid player, string season, int xp, bool paid, string state)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SaveSWBattlePassProgress(player, season, xp, paid, state));
+        }
+
+        #endregion
+        //SW end
 
         public Task UpdatePlayerRecordAsync(
             NetUserId userId,

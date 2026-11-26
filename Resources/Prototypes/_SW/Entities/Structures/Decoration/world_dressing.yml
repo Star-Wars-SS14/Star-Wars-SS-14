@@ -1,0 +1,93 @@
+# Set dressing for the GlobalWar worlds: our vehicle sprites as fixed props, with no vehicle, damage or construction parts, and a plain container in a dull colour.
+
+- type: entity
+  parent: BaseStructure
+  id: SWDecorTankHull
+  name: tank hull on the slipway
+  description: A tank with no crew and half its armour. Still being built.
+  components:
+  - type: Sprite
+    sprite: _SW/Vehicles/storm_caller.rsi
+    drawdepth: OverMobs
+    layers:
+    - state: destroyed
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        density: 2500
+        mask:
+        - MachineMask
+        layer:
+        - WallLayer
+
+- type: entity
+  parent: SWDecorTankHull
+  id: SWDecorTankFinished
+  name: finished tank
+  description: Assembled, painted and waiting to be collected.
+  components:
+  - type: Sprite
+    sprite: _SW/Vehicles/storm_caller.rsi
+    drawdepth: OverMobs
+    layers:
+    - state: vehicle
+
+- type: entity
+  parent: BaseStructure
+  id: SWDecorSpeederBike
+  name: speeder on the stand
+  description: A speeder frame with no engine, clamped to its stand.
+  components:
+  - type: Sprite
+    sprite: _SW/Vehicles/spider.rsi
+    drawdepth: OverMobs
+    layers:
+    - state: speedbike
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.8,0.45,0.8"
+        density: 300
+        mask:
+        - MachineMask
+        layer:
+        - WallLayer
+
+- type: entity
+  parent: ShippingContainerBlank
+  id: SWShippingContainerDull
+  name: shipping container
+  description: A plain container, weathered to a dull grey-green. No company mark.
+  components:
+  - type: Sprite
+    state: container_blank
+    color: "#7C8480"
+
+- type: entity
+  parent: SWAlwaysPoweredLightRed
+  id: SWAlwaysPoweredLightRedDim
+  name: door lamp
+  description: A small red lamp over a door. It marks the way, it does not light the room.
+  components:
+  - type: PointLight
+    color: "#FB4747"
+    energy: 0.8
+    radius: 3
+    softness: 0.7
+    offset: "0, -0.5"
+
+- type: entity
+  parent: SWAlwaysPoweredLightBright
+  id: SWAlwaysPoweredLightBrightWarm
+  name: work lamp
+  description: A strong lamp with a warm light, over a counter, a bench or a desk.
+  components:
+  - type: PointLight
+    color: "#FFE2C0"
+    energy: 2
+    radius: 9

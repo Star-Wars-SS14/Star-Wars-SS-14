@@ -36,7 +36,7 @@
   icon:
     sprite: _SW/Structures/Machines/lathe.rsi
     state: fire
-  product: SWBlasterLathe
+  product: SWSmeltLathe
   cost:
     SWEmpireCreditCurrency: 210
   category: sw-category-lathe

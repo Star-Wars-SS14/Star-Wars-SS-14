@@ -54,13 +54,20 @@ public sealed class SWSenateBillVotesResolvedEvent : EntityEventArgs
     public string BillName;
     public bool Passed;
     public Dictionary<string, SWVoteChoice> Votes;
+    // Only populated when the regular vote is resolved directly from these counts.
+    public int? PublicVotesFor;
+    public int? PublicVotesAgainst;
+    public long ResolutionId;
 
-    public SWSenateBillVotesResolvedEvent(int billId, string billName, bool passed, Dictionary<string, SWVoteChoice> votes)
+    public SWSenateBillVotesResolvedEvent(int billId, string billName, bool passed, Dictionary<string, SWVoteChoice> votes, long resolutionId, int? publicVotesFor = null, int? publicVotesAgainst = null)
     {
         BillId = billId;
         BillName = billName;
         Passed = passed;
         Votes = votes;
+        PublicVotesFor = publicVotesFor;
+        PublicVotesAgainst = publicVotesAgainst;
+        ResolutionId = resolutionId;
     }
 }
 
@@ -96,6 +103,7 @@ public enum SWSenateAnnouncementKind : byte
 {
     Notice,
     Defense,
+    Invasion,
     Security,
     Health,
     Economy,

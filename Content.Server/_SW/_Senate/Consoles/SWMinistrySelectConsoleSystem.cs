@@ -21,6 +21,18 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
 
+    private float _refreshElapsed;
+
+    public override void Update(float frameTime)
+    {
+        _refreshElapsed += frameTime;
+        if (_refreshElapsed < 3f) return;
+        _refreshElapsed = 0f;
+        var query = EntityQueryEnumerator<SWMinistrySelectConsoleComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+            if (_ui.IsUiOpen(uid, SWMinistrySelectConsoleUiKey.Key)) UpdateUi((uid, comp));
+    }
+
     public override void Initialize()
     {
         SubscribeLocalEvent<SWMinistrySelectConsoleComponent, BoundUIOpenedEvent>(OnOpened);
@@ -36,18 +48,12 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWMinistrySelectConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWMinistrySelectConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -110,9 +116,11 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
         var comp = EnsureComp<SWMinistryComponent>(card.Value);
         comp.Ministry = args.MinistryId;
+        EntityManager.System<SWSenateAmbitionSystem>().ConfirmOfficeCard(args.MinistryId, card.Value, args.Actor);
 
         var title = Loc.GetString(TitleKey(proto.Kind), ("name", proto.TitleName));
         _idCard.TryChangeJobTitle(card.Value, title);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
 
         _popup.PopupCursor(Loc.GetString("sw-ministry-select-success", ("title", title)), args.Actor, PopupType.Medium);
         UpdateUi(ent);
@@ -161,6 +169,7 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
                 Color = proto.Color,
                 KindGroup = (int) proto.Kind,
                 KindLabel = KindLabel(proto.Kind),
+                ParentId = proto.Parent?.Id,
                 ParentName = parentName,
                 Claimed = _ministry.IsClaimed(proto.ID),
                 Holder = _ministry.GetHolder(proto.ID),
@@ -176,7 +185,7 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
         });
 
         _ui.SetUiState(ent.Owner, SWMinistrySelectConsoleUiKey.Key,
-            new SWMinistrySelectConsoleState(ministries, card != null, isMinisterCard, current, currentName));
+            new SWMinistrySelectConsoleState(ministries, card != null, isMinisterCard, current, currentName, _time.ModeActive, _time.DayActive));
     }
 
     private static string TitleKey(SWMinistryKind kind) => kind switch

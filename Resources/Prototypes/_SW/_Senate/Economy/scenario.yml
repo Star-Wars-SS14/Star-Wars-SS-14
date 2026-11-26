@@ -26,8 +26,12 @@
     anthus: 0.44224230555141164
     arthon: 0.48336441550855913
     artus_prime: 1.1730541273329151
+    ashas_ree: 0.0
     ashla: 0.0
+    athiss: 0.0
     balmorra: 0.0
+    begeren: 0.0
+    belkadan: 0.0
     belloria: 0.4566186174228867
     belsavis: 2.7601815657395794
     bestin: 1.0584319135230478
@@ -48,7 +52,11 @@
     delaya: 1.16043504095213
     denon: 16.27210316907798
     drall: 2.0608322561604404
+    dromund_fels: 0.0
+    dromund_ixin: 0.0
     dromund_kaas: 0.0
+    dromund_kalakar: 0.0
+    dromund_tyne: 0.0
     duneeden: 3.6939151209295042
     duro: 2.1743289220297313
     eriadu: 10.108190011409599
@@ -69,6 +77,7 @@
     monadin: 1.5605950507445912
     mytaranor: 2.1820477518757224
     nal_hutta: 0.0
+    nez_peron: 0.0
     nopces: 0.8100798794847563
     onderon: 3.3099401978184604
     ord_mantell: 9.786908416944572
@@ -81,11 +90,16 @@
     ralltiir: 1.8891843779704804
     randon: 1.1039144916752737
     rendili: 4.493070768104885
+    ruuria: 0.0
     ruusan: 1.0484214601769029
     ryloth: 0.0
     selonia: 2.0786311542018776
+    sernpidal: 0.0
+    skaross: 0.0
     sullust: 3.869222316433226
     talus: 5.658389932883356
+    tandankin: 0.0
+    taral_v: 0.0
     taris: 13.77217466239464
     tatooine: 0.0
     tavris: 1.2026370393235135
@@ -96,6 +110,7 @@
     utrost: 1.8222093524960004
     voss: 13.01359480713774
     yag_dhul: 0.41991424924871257
+    ziost: 0.0
   production:
   - world: dantooine
     recipe: water_surface

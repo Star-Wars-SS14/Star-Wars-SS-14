@@ -1,0 +1,55 @@
+- type: loadout
+  id: SWLoadoutKitBandage
+  storage:
+    back:
+    - SWBandage1
+  effects:
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadout
+  id: SWLoadoutKitSmoke
+  storage:
+    back:
+    - SmokeGrenade
+  effects:
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadout
+  id: SWLoadoutKitKolto
+  storage:
+    back:
+    - SWKoltoMedipen
+  effects:
+  - !type:PointsCostLoadoutEffect
+    cost: 2
+
+- type: loadout
+  id: SWLoadoutKitKoltoMedic
+  storage:
+    back:
+    - SWKoltoMedipen
+  effects:
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadoutGroup
+  id: SWKit
+  name: sw-loadout-group-kit
+  minLimit: 0
+  maxLimit: 2
+  loadouts:
+  - SWLoadoutKitBandage
+  - SWLoadoutKitSmoke
+  - SWLoadoutKitKolto
+
+- type: loadoutGroup
+  id: SWKitMedic
+  name: sw-loadout-group-kit
+  minLimit: 0
+  maxLimit: 2
+  loadouts:
+  - SWLoadoutKitBandage
+  - SWLoadoutKitSmoke
+  - SWLoadoutKitKoltoMedic

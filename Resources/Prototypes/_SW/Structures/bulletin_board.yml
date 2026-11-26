@@ -1,0 +1,49 @@
+- type: entity
+  id: SWQuestBoard
+  name: quest board
+  description: A public bulletin board. Take jobs or post your own.
+  parent: BaseStructure
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _SW/Objects/Specific/Bulletin_board.rsi
+    drawdepth: WallMountedItems
+    layers:
+    - state: base
+    - state: base_warning
+      map: ["enum.SWQuestBoardVisuals.Warning"]
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.SWQuestBoardVisuals.HasActive:
+        enum.SWQuestBoardVisuals.Warning:
+          True: { visible: true }
+          False: { visible: false }
+  - type: PointLight
+    color: "#4488ff"
+    radius: 2
+    energy: 1
+    softness: 2
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-1,-0.5,1,0.5"
+        density: 200
+        mask: [ MachineMask ]
+        layer: [ MachineLayer ]
+  - type: ActivatableUI
+    key: enum.SWQuestBoardUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWQuestBoardUiKey.Key:
+        type: SWQuestBoardBoundUserInterface
+  - type: SWQuestBoard
+    starters:
+    - SWBoardQuestBormu
+    - SWBoardQuestParasite
+    - SWBoardQuestFarnell
+    - SWBoardQuestStormCaller
+    - SWBoardQuestZ1

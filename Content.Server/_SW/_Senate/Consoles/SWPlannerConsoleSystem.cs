@@ -33,6 +33,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRescheduleMessage>(OnReschedule);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerBlockMessage>(OnBlock);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRemoveBlockMessage>(OnRemoveBlock);
+        SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRescheduleBlockMessage>(OnRescheduleBlock);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerViewMessage>(OnView);
     }
 
@@ -64,13 +65,26 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         return null;
     }
 
+    // Only a card actually assigned to this live ministry holder proves the actor's identity.
+    // Other legacy cards retain the historical name-only scheduling behaviour.
+    private EntityUid? VerifiedMinistryActor(Entity<SWPlannerConsoleComponent> ent, EntityUid actor)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card is not { } uid)
+            return null;
+        foreach (var ministry in _ministry.Holders.Keys)
+            if (_ministry.GetHolderCard(ministry) == uid && _ministry.IsActiveHolder(ministry, actor))
+                return actor;
+        return null;
+    }
+
     private void OnCreateMeeting(Entity<SWPlannerConsoleComponent> ent, ref SWPlannerCreateMeetingMessage args)
     {
         if (GetMe(ent) is not { } me)
             return;
 
         if (_planner.CreateMeeting(me, args.Day, args.Slot, args.Duration, args.Title, args.Description,
-                args.Location, args.Private, args.Invitees))
+                args.Location, args.Private, args.Invitees, VerifiedMinistryActor(ent, args.Actor)))
             _popup.PopupCursor("Встреча создана, приглашения разосланы.", args.Actor, PopupType.Medium);
         else
             _popup.PopupCursor("Не удалось создать встречу: проверьте название и время.", args.Actor, PopupType.Medium);
@@ -83,7 +97,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         if (GetMe(ent) is not { } me)
             return;
 
-        if (_planner.Respond(me, args.MeetingId, args.Accept, args.Reason))
+        if (_planner.Respond(me, args.MeetingId, args.Accept, args.Reason, VerifiedMinistryActor(ent, args.Actor)))
             _popup.PopupCursor(args.Accept ? "Приглашение принято." : "Приглашение отклонено.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -105,7 +119,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         if (GetMe(ent) is not { } me)
             return;
 
-        if (_planner.Reschedule(me, args.MeetingId, args.Day, args.Slot, args.Duration))
+        if (_planner.Reschedule(me, args.MeetingId, args.Day, args.Slot, args.Duration, VerifiedMinistryActor(ent, args.Actor)))
             _popup.PopupCursor("Встреча перенесена, участники уведомлены.", args.Actor, PopupType.Medium);
         else
             _popup.PopupCursor("Не удалось перенести встречу.", args.Actor, PopupType.Medium);
@@ -132,6 +146,19 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
             return;
 
         _planner.RemoveBlock(me, args.BlockId);
+        UpdateUi(ent);
+    }
+
+    private void OnRescheduleBlock(Entity<SWPlannerConsoleComponent> ent, ref SWPlannerRescheduleBlockMessage args)
+    {
+        if (GetMe(ent) is not { } me)
+            return;
+
+        if (_planner.RescheduleBlock(me, args.BlockId, args.Day, args.Slot, args.Duration))
+            _popup.PopupCursor("Блок перенесён.", args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor("Не удалось перенести блок: проверьте время и доступ.", args.Actor, PopupType.Medium);
+
         UpdateUi(ent);
     }
 
@@ -191,6 +218,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
             GameTime = _time.TimeString(),
             Today = today,
             NowSlot = _planner.NowSlot(),
+            EarliestStartSlot = _planner.EarliestStartSlot(),
             Roster = _planner.BuildRoster(),
         };
 

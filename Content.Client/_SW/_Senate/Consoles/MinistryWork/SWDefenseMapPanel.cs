@@ -22,6 +22,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     private readonly BoxContainer _mapHost = Stack();
     private readonly WrapContainer _fleetList = new() { HorizontalExpand = true, SeparationOverride = 4, CrossSeparationOverride = 4 };
     private readonly BoxContainer _details = Stack();
+    private readonly SWStrategicBattlePanel _battles = new();
     private readonly Label _title = SWConsoleStyle.Text("Галактика", SWConsoleStyle.Brass, SWConsoleStyle.Strong);
     private readonly Label _zoom = SWConsoleStyle.Text("100%", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly Button _galaxy = SWConsoleStyle.TabButton("Галактика");
@@ -46,6 +47,12 @@ public sealed class SWDefenseMapPanel : BoxContainer
     private readonly Button _locate = SWConsoleStyle.TabButton("К флоту");
     private readonly Button _supplies = SWConsoleStyle.TabButton("Поставки");
     private readonly Button _issue = SWConsoleStyle.Primary("Выберите флот", true);
+    private readonly Button _support = SWConsoleStyle.TabButton("Помочь флоту");
+    private readonly OptionButton _supportPicker = new() { Name = "DefenseSupportLeader", HorizontalExpand = true };
+    private (int Leader, int Event)[] _supportTargets = Array.Empty<(int, int)>();
+    private string _supportKey = string.Empty;
+    private int? _supportLeader;
+    private bool _supportMode;
     private readonly Button _recruit = SWConsoleStyle.Action("Сформировать флот", SWConsoleStyle.Good, true);
     private readonly Dictionary<int, (Button Button, Label Status, BoxContainer Row)> _fleetRows = new();
     private readonly Label _empty = SWConsoleStyle.Text("Флоты отсутствуют", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
@@ -72,7 +79,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         SeparationOverride = 8;
         _source = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
         var toolbar = new WrapContainer { SeparationOverride = 6, CrossSeparationOverride = 4, HorizontalExpand = true };
-        _galaxy.OnPressed += _ => ShowGalaxy();
+        _galaxy.OnPressed += _ => { if (_systemId != null && CurrentSectorId != null) SwitchView(CurrentSectorId); else ShowGalaxy(); };
         toolbar.AddChild(_galaxy);
         toolbar.AddChild(_title);
         var minus = SWConsoleStyle.TabButton("−");
@@ -103,6 +110,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         _fleetList.AddChild(_empty);
 
         var scroll = new ScrollContainer { Name = "DefenseOrdersScroll", HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
+        _details.AddChild(_battles);
         _details.AddChild(_selectionHint);
         _details.AddChild(_selectedDetails);
         _selectedDetails.AddChild(_fleetName);
@@ -130,6 +138,17 @@ public sealed class SWDefenseMapPanel : BoxContainer
             _taskButtons.Add(value, button);
             _tasks.AddChild(button);
         }
+        _support.Name = "DefenseSupportTask";
+        _support.OnPressed += _ => ChooseSupport();
+        _tasks.AddChild(_support);
+        _supportPicker.OnItemSelected += args =>
+        {
+            if (args.Id <= 0 || args.Id > _supportTargets.Length) return;
+            var target = _supportTargets[args.Id - 1];
+            _supportPicker.SelectId(args.Id);
+            SelectSupport(target.Leader, target.Event);
+        };
+        _selectedDetails.AddChild(_supportPicker);
         _selectedDetails.AddChild(_taskDetails);
         _taskDetails.AddChild(_coverage);
         _risk.ToolTip = "Оценка риска приказа";
@@ -154,6 +173,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     public void SetState(SWDefenseMapState? state)
     {
         _state = state;
+        _battles.SetState(state?.Battles, state?.NowHours ?? 0);
         _submitted = false;
         var active = state?.Fleets.Where(f => f.Phase != SWDefenseOperationPhase.Lost).ToArray() ?? Array.Empty<SWDefenseFleetView>();
         var ids = active.Select(f => f.Id).ToHashSet();
@@ -198,6 +218,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     public void SelectFleet(int id, bool locate = true)
     {
         if (_state?.Fleets.All(f => f.Id != id || f.Phase == SWDefenseOperationPhase.Lost) != false) return;
+        if (SelectedFleetId != id) { _supportMode = false; _supportLeader = null; }
         SelectedFleetId = id;
         _submitted = false;
         if (_draftOrder == SWDefenseFleetOrder.Return)
@@ -212,20 +233,23 @@ public sealed class SWDefenseMapPanel : BoxContainer
     {
         var incident = _state?.Events.FirstOrDefault(e => e.Id == id);
         if (incident == null) return;
+        _supportMode = false; _supportLeader = null;
         SelectWorld(incident.WorldId);
         _submitted = false;
         _draftOrder = SWDefenseFleetOrder.Respond;
         _eventId = id;
+        _battles.Open(id);
         _targetEdge = string.IsNullOrEmpty(incident.EdgeId) ? null : incident.EdgeId;
         RefreshDetails();
     }
 
     public void SelectWorld(string id)
     {
-        var world = _source.Worlds.FirstOrDefault(w => w.Id == id);
+        var world = View.Worlds.FirstOrDefault(w => w.Id == id) ?? _source.Worlds.FirstOrDefault(w => w.Id == id);
         if (world == null) return;
         if (!View.Worlds.Any(w => w.Id == id)) SwitchView(world.Sector?.Id);
         _targetWorld = id;
+        _supportMode = false; _supportLeader = null;
         _targetEdge = null;
         _eventId = null;
         _submitted = false;
@@ -236,6 +260,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
 
     public void ChooseTask(SWDefenseFleetOrder order)
     {
+        _supportMode = false; _supportLeader = null;
         _draftOrder = order;
         _submitted = false;
         _eventId = null;
@@ -247,6 +272,26 @@ public sealed class SWDefenseMapPanel : BoxContainer
             else if (_targetWorld == null && order is SWDefenseFleetOrder.Train or SWDefenseFleetOrder.Guard)
                 _targetWorld = fleet.CurrentWorldId;
         }
+        RefreshDetails();
+    }
+
+    public void ChooseSupport()
+    {
+        _supportMode = true; _supportLeader = null; _supportPicker.SelectId(0); _eventId = null; _targetWorld = null;
+        _targetEdge = null; _draftOrder = SWDefenseFleetOrder.Respond; _submitted = false;
+        RefreshDetails();
+    }
+
+    public void SelectSupport(int leaderId, int eventId)
+    {
+        if (!_supportMode || _state == null || !_supportTargets.Any(t => t.Leader == leaderId && t.Event == eventId)) return;
+        var incident = _state.Events.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
+        if (incident == null) return;
+        _supportLeader = leaderId; _eventId = eventId; _targetWorld = incident.WorldId;
+        var selectedIndex = Array.FindIndex(_supportTargets, t => t.Leader == leaderId && t.Event == eventId);
+        if (selectedIndex >= 0) _supportPicker.SelectId(selectedIndex + 1); _targetEdge = null;
+        _draftOrder = SWDefenseFleetOrder.Respond; _submitted = false;
+        Map.SelectWorld(incident.WorldId);
         RefreshDetails();
     }
 
@@ -270,21 +315,42 @@ public sealed class SWDefenseMapPanel : BoxContainer
     public void OpenSector(string sectorId) => SwitchView(sectorId);
     public void ShowGalaxy() => SwitchView(null);
 
-    private void SwitchView(string? sectorId)
+    private string? _systemId;
+
+    private void SwitchView(string? sectorId, string? systemId = null)
     {
-        if (Map != null && sectorId == CurrentSectorId) return;
+        if (Map != null && sectorId == CurrentSectorId && systemId == _systemId) return;
         var previous = Map;
         var throughSector = sectorId ?? CurrentSectorId;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == throughSector)?.Id;
-        CurrentSectorId = sectorId;
-        View = sectorId == null ? SWGalacticMapViews.Overview(_source) : SWGalacticMapViews.Sector(_source, sectorId);
+        CurrentSectorId = sectorId; _systemId = systemId;
+        var visible = SWGalacticMapViews.ForFaction(_source, "republic");
+        View = systemId != null ? SWGalacticMapViews.System(visible, systemId) : sectorId == null ? SWGalacticAtlas.Overview(visible) : SWGalacticMapViews.Sector(visible, sectorId);
+        View = SWGalacticAtlas.MakeSchematicIfNeeded(View, systemId == null ? sectorId : null, systemId, null, out var schematic);
         _mapHost.RemoveAllChildren();
-        Map = new SWGalacticMapControl(View, sectorId);
+        Map = new SWGalacticMapControl(View, systemId == null ? sectorId : null, focusSystem: systemId);
+        Map.SetGeography(visible, schematic);
+        Map.SetExternalLabels(true);
+        Map.SystemSelected += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.SystemId == id);
+            if (world?.Sector is { } parent) SwitchView(parent.Id);
+            else SwitchView(null, id);
+        };
         Map.MinHeight = 260;
         Map.SetDefenseSupplyVisible(_supplies.Pressed);
         Map.SetDefense(_state, SelectedFleetId);
         Map.WorldSelected += SelectWorld;
-        Map.WorldActivated += id => { var world = _source.Worlds.First(w => w.Id == id); if (world.Sector is { } sector) { OpenSector(sector.Id); SelectWorld(id); } };
+        Map.WorldActivated += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.Id == id);
+            if (world == null) return;
+            if (_systemId == null && CurrentSectorId != null && world.Sector?.Id == CurrentSectorId && !string.IsNullOrEmpty(world.SystemId))
+                SwitchView(CurrentSectorId, world.SystemId);
+            else if (_systemId == null && world.Sector is { } parent && parent.Id != CurrentSectorId)
+                SwitchView(parent.Id);
+            SelectWorld(id);
+        };
         Map.RouteSelected += route =>
         {
             _targetEdge = SWTransitLinkPrototype.LinkId(route.From, route.To);
@@ -295,11 +361,20 @@ public sealed class SWDefenseMapPanel : BoxContainer
             RefreshDetails();
         };
         Map.DefenseFleetSelected += id => SelectFleet(id, false);
+        Map.DetectedImperialFleetSelected += id =>
+        {
+            var fleet = _state?.DetectedImperialFleets.FirstOrDefault(f => f.Id == id);
+            if (fleet == null) return;
+            var incident = _state?.Events.FirstOrDefault(e => !e.Resolved && e.Id == fleet.EventId && e.WorldId == fleet.WorldId);
+            if (incident != null) SelectEvent(incident.Id);
+            else SelectWorld(fleet.WorldId);
+        };
         Map.DefenseEventSelected += SelectEvent;
         Map.ViewChanged += () => _zoom.Text = $"{Map.Zoom * 100:0}%";
         _mapHost.AddChild(Map);
-        _title.Text = sectorId == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sectorId)?.Name ?? sectorId;
-        _galaxy.Visible = sectorId != null;
+        _title.Text = systemId != null ? "Система" : sectorId == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sectorId)?.Name ?? sectorId;
+        _galaxy.Visible = sectorId != null || systemId != null;
+        _galaxy.Text = systemId != null && sectorId != null ? "К сектору" : "Галактика";
         _zoom.Text = "100%";
         if (_targetWorld != null) Map.SelectWorld(_targetWorld);
         if (previous != null && anchor != null) Map.TransitionFrom(previous, anchor, sectorId != null);
@@ -309,6 +384,34 @@ public sealed class SWDefenseMapPanel : BoxContainer
     private void RefreshDetails()
     {
         var fleet = _state?.Fleets.FirstOrDefault(f => f.Id == SelectedFleetId);
+        var supportTargets = _state?.SupportTargets.Where(t => t.LeaderFleetId != SelectedFleetId
+                && _state!.Fleets.Any(f => f.Id == t.LeaderFleetId && f.Phase != SWDefenseOperationPhase.Lost)
+                && _state!.Events.Any(e => e.Id == t.EventId && !e.Resolved)
+                && _state!.OrderOptions.Any(o => o.FleetId == SelectedFleetId && o.Order == SWDefenseFleetOrder.Respond && o.EventId == t.EventId))
+            .Select(t => (Leader: t.LeaderFleetId, Event: t.EventId)).Distinct().ToArray() ?? Array.Empty<(int Leader, int Event)>();
+        var supportKey = string.Join("|", supportTargets.Select(t => $"{t.Leader}:{t.Event}:" +
+            _state?.Fleets.FirstOrDefault(f => f.Id == t.Leader)?.Name + ":" + _state?.Events.FirstOrDefault(e => e.Id == t.Event)?.WorldId));
+        if (_supportKey != supportKey)
+        {
+            _supportKey = supportKey; _supportTargets = supportTargets; _supportPicker.Clear();
+            _supportPicker.AddItem("Выберите флот", 0);
+            _supportPicker.SelectId(0);
+            for (var i = 0; i < supportTargets.Length; i++)
+            {
+                var target = supportTargets[i];
+                var leader = _state!.Fleets.First(f => f.Id == target.Leader);
+                var battle = _state.Events.First(e => e.Id == target.Event);
+                _supportPicker.AddItem($"{leader.Name}  {WorldName(battle.WorldId)}", i + 1);
+                if (_supportLeader == target.Leader && _eventId == target.Event) _supportPicker.SelectId(i + 1);
+            }
+        }
+        if (_supportMode && _supportLeader != null && !supportTargets.Any(t => t.Leader == _supportLeader && t.Event == _eventId))
+        { _supportLeader = null; _eventId = null; _targetWorld = null; _submitted = false; }
+        _support.Visible = fleet != null;
+        _support.Disabled = fleet == null || supportTargets.Length == 0;
+        _support.ToolTip = supportTargets.Length == 0 ? "Нет своих соединений в бою" : "Выбрать соединение для поддержки";
+        SWConsoleStyle.StyleTabButton(_support, _supportMode);
+        _supportPicker.Visible = _supportMode;
         _selectedDetails.Visible = fleet != null;
         _selectionHint.Visible = fleet == null;
         _locate.Disabled = fleet == null;
@@ -320,7 +423,10 @@ public sealed class SWDefenseMapPanel : BoxContainer
         SetWrappedText(_fleetEta, FleetLocation(fleet), SWConsoleStyle.Accent);
         var edge = _state?.Links.FirstOrDefault(l => l.Id == _targetEdge);
         var incident = _state?.Events.FirstOrDefault(e => e.Id == _eventId);
-        var targetText = incident != null ? incident.Title + "\n" + WorldName(_targetWorld)
+        var supportedFleet = _supportMode ? _state?.Fleets.FirstOrDefault(f => f.Id == _supportLeader) : null;
+        var targetText = supportedFleet != null && incident != null ? $"Помочь: {supportedFleet.Name}\n{WorldName(incident.WorldId)}"
+            : _supportMode ? "Выберите своё соединение в бою"
+            : incident != null ? incident.Title + "\n" + WorldName(_targetWorld)
             : edge != null ? $"{edge.RouteName}\n{WorldName(edge.From)} — {WorldName(edge.To)}"
             : _targetWorld == null ? "Куда отправить флот?" : $"Назначение: {WorldName(_targetWorld)}";
         SetWrappedText(_target, targetText, SWConsoleStyle.TextBright);
@@ -385,6 +491,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     private string IssueCaption(SWDefenseFleetView? fleet)
     {
         if (fleet == null) return "Выберите флот";
+        if (_supportMode) return _supportLeader == null ? "Выберите соединение" : "Отправить на помощь";
         if (_targetWorld == null && _draftOrder != SWDefenseFleetOrder.Return) return "Выберите назначение";
         return _draftOrder switch
         {
@@ -399,7 +506,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         };
     }
 
-    private string WorldName(string? id) => id == null ? "" : _source.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? id;
+    private string WorldName(string? id) => id == null ? "" : View.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? _source.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? "Неизвестный мир";
     private string BorderSummary(SWDefenseBorderView border)
     {
         var stationed = _state!.Fleets.Where(f => f.CurrentWorldId == border.RepublicWorldId

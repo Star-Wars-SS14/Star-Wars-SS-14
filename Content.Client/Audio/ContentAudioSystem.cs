@@ -29,7 +29,6 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
     public const float AmbientMusicMultiplier = 3f;
     public const float LobbyMultiplier = 3f;
     public const float InterfaceMultiplier = 2f;
-    public const float TtsMultiplier = 3f; // Corvax-TTS
 
     public override void Initialize()
     {
@@ -43,6 +42,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
 
     private void OnRoundCleanup(RoundRestartCleanupEvent ev)
     {
+        StopSenateFinaleMusic();
         _fadingOut.Clear();
 
         // Preserve lobby music but everything else should get dumped.

@@ -1,0 +1,12 @@
+- type: entity
+  parent: BaseGameRule
+  id: SWGlobalWar
+  components:
+  - type: SWGlobalWarGamerule
+    planets:
+    - SWGlobalWarTestAlpha
+    - SWGlobalWarTestBeta
+    - SWGlobalWarTestGamma
+    emptyMapPauseDelay: 30
+    autoTradeCapacity: 120
+    autoTradeTravelTime: 30

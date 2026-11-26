@@ -286,9 +286,9 @@ public sealed partial class SWRepublicCommodityBrowser : BoxContainer
         if (good.Regulation != SWCommodityRegulation.Ordinary)
             _detail.AddChild(SWConsoleStyle.Wrap(good.Regulation == SWCommodityRegulation.Licensed ? "Лицензируемый оборот" : "Оборот запрещён", SWConsoleStyle.Warn));
         if (_economy is not { Ready: true }) return;
-        var worlds = _economy.Worlds.Select(w => (w.World, Good: w.Goods.FirstOrDefault(g => g.Good == good.ID)))
+        var worlds = _economy.Worlds.Where(w => VisibleWorld(w.World)).Select(w => (w.World, Good: w.Goods.FirstOrDefault(g => g.Good == good.ID)))
             .Where(w => w.Good != null).ToArray();
-        _detail.AddChild(SWConsoleStyle.Section("Сейчас в Республике"));
+        _detail.AddChild(SWConsoleStyle.Section(_economy.ViewerFaction == "empire" ? "Сейчас в Империи" : "Сейчас в Республике"));
         MeasureRow("Выпуск", $"{Number(worlds.Sum(w => w.Good!.ProducedPerHour))} ед./ч", SWConsoleStyle.Accent);
         MeasureRow("Расход", $"{Number(worlds.Sum(w => w.Good!.ConsumedPerHour))} ед./ч", SWConsoleStyle.TextBright);
         MeasureRow("В пути", $"{Number(worlds.Sum(w => w.Good!.Incoming))} ед.", SWConsoleStyle.Brass);
@@ -304,7 +304,7 @@ public sealed partial class SWRepublicCommodityBrowser : BoxContainer
             _detail.AddChild(SWConsoleStyle.Section("Используют"));
             foreach (var world in consumers) WorldRow(world.World, $"{Number(world.Good!.ConsumedPerHour)} ед./ч");
         }
-        var routes = _economy.Flows.Where(f => f.Good == good.ID && (f.InTransit > 1e-8 || f.UnitsPerHour > 1e-8))
+        var routes = _economy.Flows.Where(f => VisibleWorld(f.From) && VisibleWorld(f.To) && f.Good == good.ID && (f.InTransit > 1e-8 || f.UnitsPerHour > 1e-8))
             .OrderByDescending(f => f.UnitsPerHour).ToArray();
         if (routes.Length > 0)
         {
@@ -369,7 +369,17 @@ public sealed partial class SWRepublicCommodityBrowser : BoxContainer
         if (WorldRequested != null) _detail.AddChild(Link($"{WorldName(id)}   {value}", () => WorldRequested?.Invoke(id)));
         else MeasureRow(WorldName(id), value, SWConsoleStyle.Accent);
     }
-    private string WorldName(string id) => _worldNames.GetValueOrDefault(id, id);
+    private bool VisibleWorld(string id)
+    {
+        var map = _prototypes.Index<SWGalacticMapPrototype>("SenateRepublic");
+        var world = map.Worlds.FirstOrDefault(w => w.Id == id);
+        var viewer = _economy?.ViewerFaction ?? "none";
+        if (world == null || viewer is not ("republic" or "empire")) return false;
+        var faction = map.GetWorldFaction(world);
+        return faction == viewer || viewer == "republic" && faction == "neutral";
+    }
+
+    private string WorldName(string id) => VisibleWorld(id) ? _worldNames.GetValueOrDefault(id, id) : "Сектор";
     private void MeasureRow(string label, string value, Color color) => _detail.AddChild(new SWConsoleColumns(
         SWConsoleStyle.Wrap(label, SWConsoleStyle.TextDim), SWConsoleStyle.Wrap(value, color), 104, 0));
     private static SWConsoleButton Link(string text, Action action)

@@ -8,6 +8,7 @@ using Robust.Client;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
@@ -29,6 +30,113 @@ public sealed partial class ContentAudioSystem
     /// EntityUid of lobby restart sound component.
     /// </summary>
     private EntityUid? _lobbyRoundRestartAudioStream;
+    private EntityUid? _senateFinaleStream;
+    private bool _senateFinaleActive;
+
+    public const string SenateIntroTrack = "/Audio/_SW/Lobby/SWTOR_Eternal_Empire.ogg";
+    private EntityUid? _senateIntroStream;
+    private bool _senateIntroActive;
+
+    /// <summary>
+    /// Replaces lobby music with the Senate intro track from the beginning; calling it again restarts the track.
+    /// Lobby music is stopped only after the intro track has loaded, so a broken resource never leaves the lobby silent.
+    /// </summary>
+    public void StartSenateIntroMusic()
+    {
+        // A new intro never inherits an outro track; the intro takes the music slot itself.
+        StopSenateFinaleMusic(resumeLobby: false);
+        _audio.Stop(_senateIntroStream);
+        _senateIntroStream = null;
+        _senateIntroActive = true;
+        if (!_configManager.GetCVar(CCVars.LobbyMusicEnabled))
+            return;
+
+        if (!_resourceCache.TryGetResource(new ResPath(SenateIntroTrack), out AudioResource? _))
+        {
+            _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' could not be loaded; keeping lobby music.");
+            _senateIntroActive = false;
+            ResumeLobbyMusicAfterIntro();
+            return;
+        }
+
+        var stream = _audio.PlayGlobal(SenateIntroTrack, Filter.Local(), false, LobbyMusicParams())?.Entity;
+        if (stream == null)
+        {
+            _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' did not start; keeping lobby music.");
+            _senateIntroActive = false;
+            ResumeLobbyMusicAfterIntro();
+            return;
+        }
+
+        EndLobbyMusic();
+        _senateIntroStream = stream;
+        FadeIn(_senateIntroStream, duration: 2f);
+    }
+
+    /// <summary>Stops the intro track. Lobby music resumes only when requested and the client is still in the lobby.</summary>
+    public void StopSenateIntroMusic(bool resumeLobby)
+    {
+        var wasActive = _senateIntroActive;
+        _senateIntroActive = false;
+        _audio.Stop(_senateIntroStream);
+        _senateIntroStream = null;
+        if (wasActive && resumeLobby)
+            ResumeLobbyMusicAfterIntro();
+    }
+
+    private AudioParams LobbyMusicParams() =>
+        _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume +
+            SharedAudioSystem.GainToVolume(_lobbyVolumePreview ?? _configManager.GetCVar(CCVars.LobbyMusicVolume)));
+
+    private void ResumeLobbyMusicAfterIntro()
+    {
+        if (_senateIntroStream == null && _state.CurrentState is LobbyState)
+            StartLobbyMusic();
+    }
+
+    /// <summary>Starts the Senate outro track from the beginning; calling it again restarts the same single stream.</summary>
+    public void StartSenateFinaleMusic()
+    {
+        // The outro takes the music slot from a running intro without resuming lobby music in between.
+        StopSenateIntroMusic(false);
+        StopSenateFinaleStream();
+        _senateFinaleActive = true;
+        _ambientMusicStream = _audio.Stop(_ambientMusicStream);
+        EndLobbyMusic();
+        _audio.Stop(_lobbyRoundRestartAudioStream);
+        _lobbyRoundRestartAudioStream = null;
+        if (!_configManager.GetCVar(CCVars.RestartSoundsEnabled)) return;
+        _senateFinaleStream = _audio.PlayGlobal("/Audio/Lobby/endless_space.ogg", Filter.Local(), false, LobbyMusicParams())?.Entity;
+        FadeIn(_senateFinaleStream, duration: 1f);
+    }
+
+    /// <summary>
+    /// Ends the outro music. A client that watched the outro in the lobby gets its lobby music back, unless the
+    /// caller hands the music slot to another track.
+    /// </summary>
+    public void StopSenateFinaleMusic(bool resumeLobby = true)
+    {
+        var wasActive = _senateFinaleActive;
+        _senateFinaleActive = false;
+        StopSenateFinaleStream();
+        if (wasActive && resumeLobby && _state.CurrentState is LobbyState)
+            StartLobbyMusic();
+    }
+
+    /// <summary>Pauses or resumes the outro track at its current position; does nothing without a playing stream.</summary>
+    public void SetSenateFinaleMusicPaused(bool paused)
+    {
+        if (!_senateFinaleActive || _senateFinaleStream == null)
+            return;
+
+        _audio.SetState(_senateFinaleStream, paused ? AudioState.Paused : AudioState.Playing);
+    }
+
+    private void StopSenateFinaleStream()
+    {
+        _audio.Stop(_senateFinaleStream);
+        _senateFinaleStream = null;
+    }
 
     /// <summary>
     /// Shuffled list of soundtrack file-names.
@@ -39,6 +147,10 @@ public sealed partial class ContentAudioSystem
     /// Short info about lobby soundtrack currently playing. Is null if soundtrack is not playing.
     /// </summary>
     private LobbySoundtrackInfo? _lobbySoundtrackInfo;
+
+    // SW start: temporary value while editing the options slider.
+    private float? _lobbyVolumePreview;
+    // SW end
 
     private Action<LobbySoundtrackChangedEvent>? _lobbySoundtrackChanged;
 
@@ -69,6 +181,7 @@ public sealed partial class ContentAudioSystem
     {
         Subs.CVar(_configManager, CCVars.LobbyMusicEnabled, LobbyMusicCVarChanged);
         Subs.CVar(_configManager, CCVars.LobbyMusicVolume, LobbyMusicVolumeCVarChanged);
+        Subs.CVar(_configManager, CCVars.RestartSoundsEnabled, RestartSoundsChanged);
 
         _state.OnStateChanged += StateManagerOnStateChanged;
 
@@ -88,9 +201,11 @@ public sealed partial class ContentAudioSystem
         switch (args.NewState)
         {
             case LobbyState:
+                StopSenateFinaleMusic();
                 StartLobbyMusic();
                 break;
             default:
+                StopSenateIntroMusic(false);
                 EndLobbyMusic();
                 break;
         }
@@ -98,22 +213,74 @@ public sealed partial class ContentAudioSystem
 
     private void OnLeave(object? sender, PlayerEventArgs args)
     {
+        StopSenateFinaleMusic(resumeLobby: false);
+        StopSenateIntroMusic(false);
         EndLobbyMusic();
+    }
+
+    // SW start: preview lobby music without saving the options CVar.
+    public void PreviewLobbyMusicVolume(float volume)
+    {
+        _lobbyVolumePreview = volume;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    public void ClearLobbyMusicVolumePreview()
+    {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume));
     }
 
     private void LobbyMusicVolumeCVarChanged(float volume)
     {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    private void ApplyLobbyMusicVolume(float volume)
+    {
+        var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
+        if (_senateIntroStream is { } intro)
+        {
+            if (_fadingIn.TryGetValue(intro, out var fade))
+                _fadingIn[intro] = (fade.VolumeChange, target);
+            else
+                _audio.SetVolume(intro, target);
+        }
+        if (_senateFinaleStream is { } finale)
+        {
+            if (_fadingIn.TryGetValue(finale, out var fade))
+                _fadingIn[finale] = (fade.VolumeChange, target);
+            else
+                _audio.SetVolume(finale, target);
+        }
         if (_lobbySoundtrackInfo != null)
         {
-            _audio.SetVolume(
-                _lobbySoundtrackInfo.MusicStreamEntityUid,
-                _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))
-            );
+            _audio.SetVolume(_lobbySoundtrackInfo.MusicStreamEntityUid, target);
         }
+    }
+    // SW end
+
+    private void RestartSoundsChanged(bool enabled)
+    {
+        if (!enabled) StopSenateFinaleStream();
     }
 
     private void LobbyMusicCVarChanged(bool musicEnabled)
     {
+        if (!musicEnabled)
+        {
+            _audio.Stop(_senateIntroStream);
+            _senateIntroStream = null;
+        }
+
+        if (musicEnabled && _senateIntroActive)
+        {
+            // Music re-enabled mid-intro: play the intro track rather than the lobby playlist.
+            StartSenateIntroMusic();
+            return;
+        }
+
         if (musicEnabled && _state.CurrentState is LobbyState)
         {
             StartLobbyMusic();
@@ -137,6 +304,12 @@ public sealed partial class ContentAudioSystem
         }
 
         EndLobbyMusic();
+        if (_senateIntroActive)
+        {
+            _lobbyPlaylist = playlist;
+            return;
+        }
+
         StartLobbyMusic(playlistChangedEvent.Playlist);
     }
 
@@ -159,6 +332,14 @@ public sealed partial class ContentAudioSystem
     /// <param name="playlist">Array of soundtrack filenames for lobby playlist.</param>
     private void StartLobbyMusic(string[] playlist)
     {
+        // Single owner of the music slot: while the Senate intro or outro owns it, a playlist update, a CVar toggle
+        // or a state change only remembers the playlist; it is started when that track is stopped.
+        if (_senateFinaleActive || _senateIntroActive)
+        {
+            _lobbyPlaylist = playlist;
+            return;
+        }
+
         if (_lobbySoundtrackInfo != null || !_configManager.GetCVar(CCVars.LobbyMusicEnabled))
             return;
 
@@ -182,7 +363,9 @@ public sealed partial class ContentAudioSystem
             soundtrackFilename,
             Filter.Local(),
             false,
-            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume)))
+            // SW start: keep the preview across tracks.
+            LobbyMusicParams()
+            // SW end
         );
         if (playResult == null)
         {
@@ -233,6 +416,7 @@ public sealed partial class ContentAudioSystem
 
     private void ShutdownLobbyMusic()
     {
+        StopSenateFinaleMusic(resumeLobby: false);
         _state.OnStateChanged -= StateManagerOnStateChanged;
 
         _client.PlayerLeaveServer -= OnLeave;

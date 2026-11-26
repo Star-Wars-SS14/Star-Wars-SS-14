@@ -25,11 +25,17 @@ public sealed class BlockSystem : EntitySystem
 
     private void OnMapInit(EntityUid uid, BlockComponent component, MapInitEvent args)
     {
+        if (component.BlockingAction == null)
+            return;
+
         _actionContainer.EnsureAction(uid, ref component.BlockingActionEntity, component.BlockingAction);
     }
 
     private void OnGetActions(EntityUid uid, BlockComponent component, GetItemActionsEvent args)
     {
+        if (component.BlockingAction == null)
+            return;
+
         args.AddAction(ref component.BlockingActionEntity, component.BlockingAction);
     }
 

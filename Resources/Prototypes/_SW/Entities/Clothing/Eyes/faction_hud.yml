@@ -1,0 +1,46 @@
+- type: entity
+  id: SWRepublicJobHud
+  abstract: true
+  components:
+  - type: SWFactionJobHud
+    faction: RepublicFaction
+    departments:
+    - SWPepublic
+    - SWRPCommander
+
+- type: entity
+  id: SWEmpireJobHud
+  abstract: true
+  components:
+  - type: SWFactionJobHud
+    faction: EmpireFaction
+    departments:
+    - SWEmpire
+    - SWSobrik
+    - SWRPIntelligence
+
+- type: entity
+  parent: [ClothingEyesBase, SWRepublicJobHud]
+  id: SWClothingEyesHudRepublic
+  name: republic tactical visor
+  description: A tactical display that identifies allied Republic ID cards.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/sec.rsi
+  - type: Clothing
+    sprite: Clothing/Eyes/Hud/sec.rsi
+  - type: SWFactionJobHud
+    slotFlags: EYES
+
+- type: entity
+  parent: [ClothingEyesBase, SWEmpireJobHud]
+  id: SWClothingEyesHudEmpire
+  name: imperial tactical visor
+  description: A tactical display that identifies allied Imperial ID cards.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/sec.rsi
+  - type: Clothing
+    sprite: Clothing/Eyes/Hud/sec.rsi
+  - type: SWFactionJobHud
+    slotFlags: EYES

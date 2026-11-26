@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicSoldier
   name: Солдат Сил Республики
+  description: job-description-sw-republic-soldier
   playTimeTracker: Job_Republic_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement

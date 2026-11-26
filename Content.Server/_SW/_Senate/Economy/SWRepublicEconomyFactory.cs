@@ -9,17 +9,35 @@ namespace Content.Server._SW._Senate.Economy;
 public static class SWRepublicEconomyFactory
 {
     public const string ScenarioId = "SenateRepublicEconomy";
+    public const string EmpireScenarioId = "SenateEmpireEconomy";
 
-    public static EconomyDefinition Create(IPrototypeManager prototypes)
+    public static EconomyDefinition Create(IPrototypeManager prototypes) => Create(prototypes, false);
+    public static EconomyDefinition CreateEmpire(IPrototypeManager prototypes) => Create(prototypes, true);
+
+    private static EconomyDefinition Create(IPrototypeManager prototypes, bool empire)
     {
         var errors = SWPlanetEconomyValidator.Validate(prototypes)
             .Concat(SWTransitLinkValidator.Validate(prototypes)).ToArray();
         if (errors.Length != 0)
             throw new InvalidOperationException("Invalid Republic economy geography: " + string.Join("; ", errors));
-        var scenario = prototypes.Index<SWRepublicEconomyScenarioPrototype>(ScenarioId);
+        var scenario = prototypes.Index<SWRepublicEconomyScenarioPrototype>(empire ? EmpireScenarioId : ScenarioId);
         var map = prototypes.Index(scenario.Map);
-        var worlds = map.Worlds.Select(w => prototypes.Index<SWPlanetEconomyPrototype>(w.Id)).ToDictionary(w => w.ID);
-        ValidateInitialFleetSlots(scenario.InitialFleetSlots, worlds.Keys);
+        var worlds = map.Worlds.Where(w => (map.GetWorldFaction(w) == "empire") == empire)
+            .Select(w => prototypes.Index<SWPlanetEconomyPrototype>(w.Id)).ToDictionary(w => w.ID);
+        var slots = scenario.InitialFleetSlots.Where(p => worlds.ContainsKey(p.Key.Id)).ToDictionary(p => p.Key, p => p.Value);
+        ValidateInitialFleetSlots(scenario.InitialFleetSlots, empire ? worlds.Keys : map.Worlds.Select(w => w.Id));
+        ValidateInitialFleetSlots(slots, worlds.Keys);
+        // The legacy Republic scenario still contains pre-occupation Sullust data. It is
+        // deliberately excluded below, while typos and foreign Imperial entries remain errors.
+        var graphIds = map.Worlds.Select(w => w.Id).ToHashSet();
+        var scenarioWorlds = scenario.Inventory.Select(s => s.World.Id)
+            .Concat(scenario.Production.Select(p => p.World.Id))
+            .Concat(scenario.Demands.Select(d => d.World.Id))
+            .Concat(scenario.Reactors.Select(r => r.World.Id))
+            .Concat(scenario.Shipping.SelectMany(s => new[] { s.Source.Id, s.Target.Id }))
+            .Concat(scenario.EmptyReturns.SelectMany(s => new[] { s.Source.Id, s.Target.Id }));
+        if (scenarioWorlds.Any(id => !graphIds.Contains(id) || empire && !worlds.ContainsKey(id)))
+            throw new InvalidOperationException("Economy scenario references unknown or foreign worlds.");
         var goods = prototypes.EnumeratePrototypes<SWCommodityPrototype>().OrderBy(g => g.ID).ToArray();
         var links = prototypes.EnumeratePrototypes<SWTransitLinkPrototype>()
             .Where(e => worlds.ContainsKey(e.From) && worlds.ContainsKey(e.To)).OrderBy(e => e.ID).ToArray();
@@ -27,10 +45,10 @@ public static class SWRepublicEconomyFactory
         // Every possible initial home port has the same finite four-kit naval reserve.
         // Grouping follows map order, as Defense's first Republic world in each sector does.
         // These are dedicated naval stock, not an export surplus or a per-step stock grant.
-        var depotWorlds = map.Worlds.Where(w => w.Sector != null && worlds[w.Id].ActiveEconomy
-                && map.PoliticalAreas.LastOrDefault(a => a.Contains(w.Position))?.Faction == "republic")
+        var depotWorlds = map.Worlds.Where(w => worlds.ContainsKey(w.Id) && w.Sector != null && worlds[w.Id].ActiveEconomy
+                && map.GetWorldFaction(w) == "republic")
             .GroupBy(w => w.Sector?.Id).Select(g => g.First().Id).ToHashSet();
-        var stocks = scenario.Inventory.Select(s =>
+        var stocks = scenario.Inventory.Where(s => worlds.ContainsKey(s.World.Id)).Select(s =>
         {
             return new EconomyInventory(
             s.World.Id, s.Good.Id,
@@ -41,7 +59,7 @@ public static class SWRepublicEconomyFactory
                 ? Math.Max(s.Initial, SWRepublicNavyLogistics.HullsPerFormation) : s.Initial,
             s.Target, s.Capacity);
         }).ToArray();
-        var production = scenario.Production.Select(p =>
+        var production = scenario.Production.Where(p => worlds.ContainsKey(p.World.Id)).Select(p =>
         {
             var world = worlds[p.World.Id];
             var recipe = prototypes.Index(p.Recipe);
@@ -54,7 +72,7 @@ public static class SWRepublicEconomyFactory
                 recipe.Inputs.Select(a => new EconomyAmount(a.Key.Id, a.Value)).ToArray(),
                 recipe.Outputs.Select(a => new EconomyAmount(a.Key.Id, a.Value)).ToArray());
         }).ToArray();
-        var shipping = scenario.Shipping.Select(s =>
+        var shipping = scenario.Shipping.Where(s => worlds.ContainsKey(s.Source.Id) && worlds.ContainsKey(s.Target.Id)).Select(s =>
         {
             var edge = prototypes.Index(s.Link);
             RequireRoute(edge, s.Source.Id, s.Target.Id);
@@ -63,25 +81,25 @@ public static class SWRepublicEconomyFactory
                 throw new InvalidOperationException($"Commissioned asset cannot be freight: {s.Good}");
             return new EconomyShipping(s.Link.Id, s.Source.Id, s.Target.Id, s.Good.Id, s.Rate,
                 edge.TravelHours, edge.FuelPerSlot * good.CargoSlots, good.CargoSlots);
-        }).Concat(scenario.EmptyReturns.Select(s =>
+        }).Concat(scenario.EmptyReturns.Where(s => worlds.ContainsKey(s.Source.Id) && worlds.ContainsKey(s.Target.Id)).Select(s =>
         {
             var edge = prototypes.Index(s.Link);
             RequireRoute(edge, s.Source.Id, s.Target.Id);
             return new EconomyShipping(s.Link.Id, s.Source.Id, s.Target.Id, null, s.SlotsPerHour,
                 edge.TravelHours, edge.FuelPerSlot, 1);
         })).ToArray();
-        foreach (var demand in scenario.Demands)
+        foreach (var demand in scenario.Demands.Where(d => worlds.ContainsKey(d.World.Id)))
         {
             if (!worlds[demand.World.Id].ActiveEconomy)
                 throw new InvalidOperationException($"External economy demand: {demand.World}");
             _ = prototypes.Index(demand.Good);
         }
-        foreach (var stock in scenario.Inventory)
+        foreach (var stock in scenario.Inventory.Where(s => worlds.ContainsKey(s.World.Id)))
         {
             _ = worlds[stock.World.Id];
             _ = prototypes.Index(stock.Good);
         }
-        foreach (var reactor in scenario.Reactors)
+        foreach (var reactor in scenario.Reactors.Where(r => worlds.ContainsKey(r.World.Id)))
         {
             if (!worlds[reactor.World.Id].ActiveEconomy || !double.IsFinite(reactor.CapacityPower) || reactor.CapacityPower < 0)
                 throw new InvalidOperationException($"Invalid reactor: {reactor.World}");
@@ -99,16 +117,17 @@ public static class SWRepublicEconomyFactory
             // The old Kuat hull order consumed a hull and advertised a defense bonus without
             // creating a fleet. Only Navy project receivers may now commission those hulls.
             // Garrison supplies, ground equipment and all civilian orders keep their receivers.
-            scenario.Demands.Where(d => d.Group != "orders" || d.Good.Id != "military_ships")
+            scenario.Demands.Where(d => worlds.ContainsKey(d.World.Id) && (empire || d.Group != "orders" || d.Good.Id != "military_ships"))
                 // The legacy military service included naval provisioning without a fleet
                 // receiver. Keep half for planetary garrisons; actual Navy kits now claim
                 // their share through physical deliveries rather than charging it twice.
                 .Select(d => new EconomyDemand(d.World.Id, d.Good.Id, d.Group,
-                    d.Group == "military" && d.Good.Id == "military_supplies" ? d.Rate * .5 : d.Rate,
+                    !empire && d.Group == "military" && d.Good.Id == "military_supplies" ? d.Rate * .5 : d.Rate,
                     d.OrderTotal)).ToArray(),
             scenario.Headroom, scenario.ColdDecayPerHour, scenario.ReactorPowerPerFuel,
             scenario.RecoveryHours, scenario.OrderDeadlineHours, EnableAssets: true)
         {
+            IncludeFullProjectSupply = empire,
             NavyDepots = depotWorlds.Select(w => new EconomyNavyDepot(w, new[]
             {
                 new EconomyAmount("military_supplies", SWRepublicNavyLogistics.OpeningDepotReserve("military_supplies")),

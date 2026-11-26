@@ -995,6 +995,39 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.ToTable("round", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.SWBattlePassProgress", b =>
+                {
+                    b.Property<Guid>("PlayerUserId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("player_user_id");
+
+                    b.Property<string>("SeasonId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("season_id");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("paid");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("state");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("Xp")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("xp");
+
+                    b.HasKey("PlayerUserId", "SeasonId")
+                        .HasName("PK_sw_battle_pass_progress");
+
+                    b.ToTable("sw_battle_pass_progress", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Server", b =>
                 {
                     b.Property<int>("Id")

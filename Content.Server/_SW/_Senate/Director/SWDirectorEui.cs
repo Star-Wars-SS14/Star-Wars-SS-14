@@ -54,6 +54,10 @@ public sealed class SWDirectorEui : BaseEui
 
         switch (msg)
         {
+            case SWDirectorSetImperialMinisterOverrideMessage setOverride:
+                Director.SetImperialMinisterOverride(setOverride.Enabled);
+                break;
+
             case SWDefenseDirectorEventMessage tactical:
                 if (Director.Mode == SWDirectorMode.Manual && Director.Controller == Player.UserId)
                     Director.EditDefenseEvent(tactical);

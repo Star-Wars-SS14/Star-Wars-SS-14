@@ -29,7 +29,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    sprite: _SW/_Senate/Structures/Specific/Chamber/senate_microphone_visual.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: senator
   - type: SWSenateMic
@@ -48,7 +49,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    sprite: _SW/_Senate/Structures/Specific/Chamber/senate_microphone_visual.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: chancellor
   - type: SWSenateMic
@@ -67,7 +69,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    sprite: _SW/_Senate/Structures/Specific/Chamber/senate_microphone_visual.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: speaker
   - type: SWSenateMic

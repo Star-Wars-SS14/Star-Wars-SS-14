@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicEngineer
   name: Инженер Сил Республики
+  description: job-description-sw-republic-engineer
   playTimeTracker: Job_Republic_Engineer
   requirements:
     - !type:OverallPlaytimeRequirement

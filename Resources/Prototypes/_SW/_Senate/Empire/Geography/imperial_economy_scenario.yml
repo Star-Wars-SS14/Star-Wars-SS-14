@@ -1,0 +1,6463 @@
+# Independent Imperial economy; quantities and specializations are game-model assumptions.
+- type: swRepublicEconomyScenario
+  id: SenateEmpireEconomy
+  map: SenateRepublic
+  headroom: 1.25
+  coldDecayPerHour: 0.01
+  reactorPowerPerFuel: 12
+  domesticPowerPerPopulation: 1.5
+  recoveryHours: 4
+  orderDeadlineHours: 42
+  initialFleetSlots:
+    ashas_ree: 116.277636
+    athiss: 0.829645809
+    balmorra: 335.219079
+    begeren: 292.338378
+    belkadan: 120.733643
+    dromund_fels: 0.829645809
+    dromund_ixin: 0.829645809
+    dromund_kaas: 421.124183
+    dromund_kalakar: 0.829645809
+    dromund_tyne: 0.829645809
+    korriban: 1262.05772
+    nez_peron: 384.499313
+    ruuria: 117.399913
+    sernpidal: 286.178568
+    skaross: 332.837302
+    sullust: 144.908466
+    tandankin: 266.364294
+    taral_v: 0.829645809
+    ziost: 205.20851
+  production:
+  - world: ashas_ree
+    recipe: circuits
+    rate: 0.0474513375
+  - world: ashas_ree
+    recipe: crystal_components
+    rate: 0.028515006
+  - world: ashas_ree
+    recipe: droids
+    rate: 0.0593950976
+  - world: ashas_ree
+    recipe: education
+    rate: 0.0395967319
+  - world: ashas_ree
+    recipe: energy_cells
+    rate: 0.054957294
+  - world: ashas_ree
+    recipe: farm_intensive
+    rate: 0.715262205
+  - world: ashas_ree
+    recipe: fiber_farming
+    rate: 0.116696998
+  - world: ashas_ree
+    recipe: fresh
+    rate: 0.549228478
+  - world: ashas_ree
+    recipe: household
+    rate: 0.231807187
+  - world: ashas_ree
+    recipe: life_support
+    rate: 0.0395967319
+  - world: ashas_ree
+    recipe: luxury_food
+    rate: 0.0230070478
+  - world: ashas_ree
+    recipe: luxury_goods
+    rate: 0.011982367
+  - world: ashas_ree
+    recipe: military_supplies
+    rate: 0.0599445024
+  - world: ashas_ree
+    recipe: parts
+    rate: 0.0384621996
+  - world: ashas_ree
+    recipe: processors
+    rate: 0.0131989106
+  - world: ashas_ree
+    recipe: protein_aquatic
+    rate: 0.831574022
+  - world: ashas_ree
+    recipe: rations
+    rate: 1.26716037
+  - world: ashas_ree
+    recipe: reactor_modules
+    rate: 0.0100549007
+  - world: ashas_ree
+    recipe: shields
+    rate: 0.0174332803
+  - world: ashas_ree
+    recipe: ship_weapons
+    rate: 0.0395967319
+  - world: ashas_ree
+    recipe: textiles_natural
+    rate: 0.131022473
+  - world: ashas_ree
+    recipe: textiles_synthetic
+    rate: 0.0668159826
+  - world: ashas_ree
+    recipe: water_surface
+    rate: 1.51456581
+  - world: balmorra
+    recipe: chemicals
+    rate: 0.512556761
+  - world: balmorra
+    recipe: circuits
+    rate: 0.0460659797
+  - world: balmorra
+    recipe: composites
+    rate: 0.06778356
+  - world: balmorra
+    recipe: energy_cells
+    rate: 0.0189688144
+  - world: balmorra
+    recipe: farm_intensive
+    rate: 0.152096072
+  - world: balmorra
+    recipe: fertilizers
+    rate: 0.330238988
+  - world: balmorra
+    recipe: fiber_farming
+    rate: 0.133072974
+  - world: balmorra
+    recipe: fresh
+    rate: 0.169140174
+  - world: balmorra
+    recipe: hulls
+    rate: 0.0527956424
+  - world: balmorra
+    recipe: luxury_food
+    rate: 0.00827162439
+  - world: balmorra
+    recipe: medical_culture
+    rate: 0.071000631
+  - world: balmorra
+    recipe: medical_supplies
+    rate: 0.177835575
+  - world: balmorra
+    recipe: mining_chemical
+    rate: 0.78780392
+  - world: balmorra
+    recipe: mining_fuel
+    rate: 0.157728099
+  - world: balmorra
+    recipe: parts
+    rate: 0.14781756
+  - world: balmorra
+    recipe: pharma_bio
+    rate: 0.087488856
+  - world: balmorra
+    recipe: polymers
+    rate: 0.832853767
+  - world: balmorra
+    recipe: rations
+    rate: 0.332332321
+  - world: balmorra
+    recipe: reactor_fuel
+    rate: 0.212540656
+  - world: balmorra
+    recipe: reactor_modules
+    rate: 0.00617197502
+  - world: balmorra
+    recipe: ship_fuel
+    rate: 0.0240514919
+  - world: balmorra
+    recipe: stims_bio
+    rate: 0.000200359463
+  - world: balmorra
+    recipe: sublight
+    rate: 0.0395967319
+  - world: balmorra
+    recipe: technical_gases
+    rate: 0.00160938001
+  - world: balmorra
+    recipe: water_surface
+    rate: 0.628974527
+  - world: begeren
+    recipe: durasteel
+    rate: 0.0593950976
+  - world: begeren
+    recipe: farm_intensive
+    rate: 1.44712442
+  - world: begeren
+    recipe: fiber_farming
+    rate: 0.128174508
+  - world: begeren
+    recipe: fresh
+    rate: 2.95376937
+  - world: begeren
+    recipe: household
+    rate: 0.00801437852
+  - world: begeren
+    recipe: hulls
+    rate: 0.0395967319
+  - world: begeren
+    recipe: life_support
+    rate: 0.0395967319
+  - world: begeren
+    recipe: luxury_food
+    rate: 0.0405882759
+  - world: begeren
+    recipe: luxury_goods
+    rate: 0.00779441867
+  - world: begeren
+    recipe: military_supplies
+    rate: 0.0509609938
+  - world: begeren
+    recipe: mining_crystals
+    rate: 0.0325117339
+  - world: begeren
+    recipe: parts
+    rate: 0.0493945471
+  - world: begeren
+    recipe: protein_aquatic
+    rate: 3.5139892
+  - world: begeren
+    recipe: rations
+    rate: 1.70122825
+  - world: begeren
+    recipe: textiles_natural
+    rate: 0.0530032606
+  - world: begeren
+    recipe: vehicles
+    rate: 0.0152991793
+  - world: begeren
+    recipe: water_surface
+    rate: 3.66529239
+  - world: belkadan
+    recipe: chemicals
+    rate: 0.534953867
+  - world: belkadan
+    recipe: composites
+    rate: 0.0296975489
+  - world: belkadan
+    recipe: farm_intensive
+    rate: 0.65409068
+  - world: belkadan
+    recipe: fertilizers
+    rate: 0.172829811
+  - world: belkadan
+    recipe: fiber_farming
+    rate: 0.0514987218
+  - world: belkadan
+    recipe: fresh
+    rate: 0.684147479
+  - world: belkadan
+    recipe: household
+    rate: 0.071955181
+  - world: belkadan
+    recipe: luxury_food
+    rate: 0.035652438
+  - world: belkadan
+    recipe: luxury_goods
+    rate: 0.0059911835
+  - world: belkadan
+    recipe: medical_culture
+    rate: 0.208804248
+  - world: belkadan
+    recipe: medical_supplies
+    rate: 0.041584171
+  - world: belkadan
+    recipe: mining_chemical
+    rate: 0.834957135
+  - world: belkadan
+    recipe: mining_fuel
+    rate: 0.143739979
+  - world: belkadan
+    recipe: mining_minerals
+    rate: 0.0088325714
+  - world: belkadan
+    recipe: pharma_bio
+    rate: 0.257686942
+  - world: belkadan
+    recipe: polymers
+    rate: 0.956642439
+  - world: belkadan
+    recipe: protein_aquatic
+    rate: 0.491718567
+  - world: belkadan
+    recipe: rations
+    rate: 1.17579978
+  - world: belkadan
+    recipe: reactor_fuel
+    rate: 0.144222499
+  - world: belkadan
+    recipe: ship_fuel
+    rate: 0.0713874713
+  - world: belkadan
+    recipe: technical_gases
+    rate: 0.0178468678
+  - world: belkadan
+    recipe: water_surface
+    rate: 1.05545362
+  - world: dromund_kaas
+    recipe: circuits
+    rate: 0.0168968018
+  - world: dromund_kaas
+    recipe: durasteel
+    rate: 0.0589039813
+  - world: dromund_kaas
+    recipe: energy_cells
+    rate: 0.0219742063
+  - world: dromund_kaas
+    recipe: farm_intensive
+    rate: 0.316998801
+  - world: dromund_kaas
+    recipe: fresh
+    rate: 0.259571836
+  - world: dromund_kaas
+    recipe: household
+    rate: 0.134303211
+  - world: dromund_kaas
+    recipe: kolto_refine
+    rate: 0.0705063966
+  - world: dromund_kaas
+    recipe: luxury_food
+    rate: 0.00194822011
+  - world: dromund_kaas
+    recipe: luxury_goods
+    rate: 0.0059911835
+  - world: dromund_kaas
+    recipe: medical_culture
+    rate: 0.0524506704
+  - world: dromund_kaas
+    recipe: medical_supplies
+    rate: 0.379079886
+  - world: dromund_kaas
+    recipe: mining_fuel
+    rate: 3.5
+  - world: dromund_kaas
+    recipe: mining_metal
+    rate: 0.130359136
+  - world: dromund_kaas
+    recipe: mining_rare
+    rate: 0.109513327
+  - world: dromund_kaas
+    recipe: parts
+    rate: 0.170000462
+  - world: dromund_kaas
+    recipe: pharma_bio
+    rate: 0.0624076171
+  - world: dromund_kaas
+    recipe: protein_aquatic
+    rate: 2.77662309
+  - world: dromund_kaas
+    recipe: rations
+    rate: 0.795792024
+  - world: dromund_kaas
+    recipe: reactor_fuel
+    rate: 0.706581926
+  - world: dromund_kaas
+    recipe: reactor_modules
+    rate: 0.0342330703
+  - world: dromund_kaas
+    recipe: ship_fuel
+    rate: 3.95
+  - world: dromund_kaas
+    recipe: smelt
+    rate: 0.17381218
+  - world: dromund_kaas
+    recipe: smelt_rare
+    rate: 0.0978063753
+  - world: dromund_kaas
+    recipe: synth
+    rate: 0.0890175855
+  - world: dromund_kaas
+    recipe: water_surface
+    rate: 1.29965655
+  - world: korriban
+    recipe: chemicals
+    rate: 2.894940591
+  - world: korriban
+    recipe: circuits
+    rate: 0.0297381355
+  - world: korriban
+    recipe: composites
+    rate: 0.0494959147
+  - world: korriban
+    recipe: durasteel
+    rate: 0.0494959147
+  - world: korriban
+    recipe: energy_cells
+    rate: 0.0109871032
+  - world: korriban
+    recipe: farm_intensive
+    rate: 0.0123409467
+  - world: korriban
+    recipe: fertilizers
+    rate: 0.62873923
+  - world: korriban
+    recipe: fiber_farming
+    rate: 0.299106609
+  - world: korriban
+    recipe: fresh
+    rate: 0.0398376757
+  - world: korriban
+    recipe: household
+    rate: 0.255850323
+  - world: korriban
+    recipe: luxury_food
+    rate: 0.00194822011
+  - world: korriban
+    recipe: mining_chemical
+    rate: 3.298075734
+  - world: korriban
+    recipe: mining_metal
+    rate: 0.609730059
+  - world: korriban
+    recipe: mining_minerals
+    rate: 0.1285293931
+  - world: korriban
+    recipe: parts
+    rate: 0.230816766
+  - world: korriban
+    recipe: polymers
+    rate: 1.80663901
+  - world: korriban
+    recipe: reactor_modules
+    rate: 0.00940806658
+  - world: korriban
+    recipe: recycle_metal
+    rate: 0.0131693786
+  - world: korriban
+    recipe: smelt
+    rate: 0.746306744
+  - world: korriban
+    recipe: smelt_rare
+    rate: 0.0286451667
+  - world: korriban
+    recipe: sublight
+    rate: 0.0395967319
+  - world: korriban
+    recipe: textiles_natural
+    rate: 0.198883259
+  - world: korriban
+    recipe: vehicles
+    rate: 0.0242975526
+  - world: korriban
+    recipe: water_surface
+    rate: 1.153163147
+  - world: nez_peron
+    recipe: circuits
+    rate: 0.274007206
+  - world: nez_peron
+    recipe: crystal_components
+    rate: 0.0274637828
+  - world: nez_peron
+    recipe: energy_cells
+    rate: 0.0319812904
+  - world: nez_peron
+    recipe: farm_intensive
+    rate: 0.371880767
+  - world: nez_peron
+    recipe: fiber_farming
+    rate: 0.0488940396
+  - world: nez_peron
+    recipe: fresh
+    rate: 0.670569229
+  - world: nez_peron
+    recipe: implants_synthetic
+    rate: 0.0131877905
+  - world: nez_peron
+    recipe: luxury_food
+    rate: 0.0266590795
+  - world: nez_peron
+    recipe: medical_equipment
+    rate: 0.0203771786
+  - world: nez_peron
+    recipe: processors
+    rate: 0.0514278005
+  - world: nez_peron
+    recipe: protein_aquatic
+    rate: 0.831785847
+  - world: nez_peron
+    recipe: rations
+    rate: 0.641268377
+  - world: nez_peron
+    recipe: science
+    rate: 0.0306616673
+  - world: nez_peron
+    recipe: shields
+    rate: 0.0395967319
+  - world: nez_peron
+    recipe: synth
+    rate: 0.0443875155
+  - world: nez_peron
+    recipe: water_surface
+    rate: 0.51762649
+  - world: ruuria
+    recipe: circuits
+    rate: 0.0201578745
+  - world: ruuria
+    recipe: energy_cells
+    rate: 0.00598900568
+  - world: ruuria
+    recipe: farm_intensive
+    rate: 0.137647811
+  - world: ruuria
+    recipe: freighters
+    rate: 0.0395967319
+  - world: ruuria
+    recipe: fresh
+    rate: 0.122499897
+  - world: ruuria
+    recipe: luxury_food
+    rate: 0.0059907301
+  - world: ruuria
+    recipe: medical_culture
+    rate: 0.0751388394
+  - world: ruuria
+    recipe: medical_supplies
+    rate: 0.325779478
+  - world: ruuria
+    recipe: mining_metal
+    rate: 0.148428597
+  - world: ruuria
+    recipe: mining_minerals
+    rate: 0.143639735
+  - world: ruuria
+    recipe: mining_rare
+    rate: 0.150020362
+  - world: ruuria
+    recipe: mining_tibanna
+    rate: 0.0311776747
+  - world: ruuria
+    recipe: pharma_bio
+    rate: 0.0911025767
+  - world: ruuria
+    recipe: rations
+    rate: 0.332332321
+  - world: ruuria
+    recipe: ship_fuel
+    rate: 0.0123797021
+  - world: ruuria
+    recipe: smelt
+    rate: 0.197904796
+  - world: ruuria
+    recipe: smelt_rare
+    rate: 0.133082148
+  - world: ruuria
+    recipe: stims_bio
+    rate: 0.000799260031
+  - world: ruuria
+    recipe: technical_gases
+    rate: 0.0982975513
+  - world: ruuria
+    recipe: tibanna_refine
+    rate: 0.0311776747
+  - world: ruuria
+    recipe: water_surface
+    rate: 1.03310551
+  - world: sernpidal
+    recipe: chemicals
+    rate: 0.105051398
+  - world: sernpidal
+    recipe: circuits
+    rate: 0.0175320757
+  - world: sernpidal
+    recipe: communication
+    rate: 0.0131989106
+  - world: sernpidal
+    recipe: energy_cells
+    rate: 0.00498720837
+  - world: sernpidal
+    recipe: fertilizers
+    rate: 0.0643842458
+  - world: sernpidal
+    recipe: fresh
+    rate: 0.414648605
+  - world: sernpidal
+    recipe: household
+    rate: 0.039897667
+  - world: sernpidal
+    recipe: luxury_food
+    rate: 0.0100314221
+  - world: sernpidal
+    recipe: medical_culture
+    rate: 0.0194398487
+  - world: sernpidal
+    recipe: medical_supplies
+    rate: 0.041584171
+  - world: sernpidal
+    recipe: mining_chemical
+    rate: 0.228333133
+  - world: sernpidal
+    recipe: mining_fuel
+    rate: 0.068137036
+  - world: sernpidal
+    recipe: parts
+    rate: 0.0323275738
+  - world: sernpidal
+    recipe: pharma_bio
+    rate: 0.0239908679
+  - world: sernpidal
+    recipe: polymers
+    rate: 0.316597736
+  - world: sernpidal
+    recipe: protein_aquatic
+    rate: 0.701006496
+  - world: sernpidal
+    recipe: reactor_fuel
+    rate: 0.0194689427
+  - world: sernpidal
+    recipe: reactor_modules
+    rate: 0.00958198581
+  - world: sernpidal
+    recipe: ship_fuel
+    rate: 0.0827366112
+  - world: sernpidal
+    recipe: technical_gases
+    rate: 0.0206841528
+  - world: sernpidal
+    recipe: textiles_natural
+    rate: 0.0643734022
+  - world: sernpidal
+    recipe: water_surface
+    rate: 0.748969912
+  - world: sullust
+    recipe: building_materials
+    rate: 0.0791934636
+  - world: sullust
+    recipe: building_modules
+    rate: 0.0791934636
+  - world: sullust
+    recipe: crystal_components
+    rate: 0.0334798625
+  - world: sullust
+    recipe: durasteel
+    rate: 0.158878043
+  - world: sullust
+    recipe: entertainment
+    rate: 0.0395967319
+  - world: sullust
+    recipe: fertilizers
+    rate: 0.0924652442
+  - world: sullust
+    recipe: household
+    rate: 0.0239560227
+  - world: sullust
+    recipe: hyperdrives
+    rate: 0.0447962734
+  - world: sullust
+    recipe: implants_synthetic
+    rate: 0.0194795132
+  - world: sullust
+    recipe: medical_equipment
+    rate: 0.0192195532
+  - world: sullust
+    recipe: military_supplies
+    rate: 0.0689933455
+  - world: sullust
+    recipe: mining_crystals
+    rate: 0.0981574806
+  - world: sullust
+    recipe: mining_fuel
+    rate: 3.56544531
+  - world: sullust
+    recipe: mining_metal
+    rate: 0.501472392
+  - world: sullust
+    recipe: mining_minerals
+    rate: 0.156755061
+  - world: sullust
+    recipe: mining_rare
+    rate: 0.083802972
+  - world: sullust
+    recipe: parts
+    rate: 0.0817518038
+  - world: sullust
+    recipe: processors
+    rate: 0.0427638711
+  - world: sullust
+    recipe: reactor_fuel
+    rate: 0.138453017
+  - world: sullust
+    recipe: shields
+    rate: 0.00236508561
+  - world: sullust
+    recipe: ship_fuel
+    rate: 4.36768944
+  - world: sullust
+    recipe: smelt
+    rate: 0.668629856
+  - world: sullust
+    recipe: smelt_rare
+    rate: 0.083802972
+  - world: sullust
+    recipe: water_surface
+    rate: 2.43737931
+  - world: tandankin
+    recipe: communication
+    rate: 0.0395967319
+  - world: tandankin
+    recipe: crystal_components
+    rate: 0.0194323613
+  - world: tandankin
+    recipe: energy_cells
+    rate: 0.0419883744
+  - world: tandankin
+    recipe: fresh
+    rate: 0.609341292
+  - world: tandankin
+    recipe: household
+    rate: 0.0479120455
+  - world: tandankin
+    recipe: hyperdrives
+    rate: 0.0343971902
+  - world: tandankin
+    recipe: luxury_food
+    rate: 0.0263042093
+  - world: tandankin
+    recipe: military_ships
+    rate: 0.0395967319
+  - world: tandankin
+    recipe: military_supplies
+    rate: 0.0359340341
+  - world: tandankin
+    recipe: parts
+    rate: 0.0191822408
+  - world: tandankin
+    recipe: processors
+    rate: 0.0288881698
+  - world: tandankin
+    recipe: rations
+    rate: 1.63006516
+  - world: tandankin
+    recipe: science
+    rate: 0.00893506443
+  - world: tandankin
+    recipe: textiles_natural
+    rate: 0.276033906
+  - world: ziost
+    recipe: armor
+    rate: 0.0395967319
+  - world: ziost
+    recipe: blasters
+    rate: 0.0395967319
+  - world: ziost
+    recipe: circuits
+    rate: 0.208030124
+  - world: ziost
+    recipe: composites
+    rate: 0.014544645
+  - world: ziost
+    recipe: energy_cells
+    rate: 0.0259487283
+  - world: ziost
+    recipe: farm_intensive
+    rate: 0.398291816
+  - world: ziost
+    recipe: fertilizers
+    rate: 0.114537053
+  - world: ziost
+    recipe: fiber_farming
+    rate: 0.00581785796
+  - world: ziost
+    recipe: fresh
+    rate: 0.863276672
+  - world: ziost
+    recipe: household
+    rate: 0.0574320839
+  - world: ziost
+    recipe: luxury_food
+    rate: 0.0507856201
+  - world: ziost
+    recipe: luxury_goods
+    rate: 0.0335754548
+  - world: ziost
+    recipe: machinery
+    rate: 0.0791934636
+  - world: ziost
+    recipe: military_supplies
+    rate: 0.110840162
+  - world: ziost
+    recipe: mining_tibanna
+    rate: 0.0341569328
+  - world: ziost
+    recipe: parts
+    rate: 0.235770046
+  - world: ziost
+    recipe: rations
+    rate: 0.727092342
+  - world: ziost
+    recipe: reactor_modules
+    rate: 0.00974346517
+  - world: ziost
+    recipe: recycle_metal
+    rate: 0.262961793
+  - world: ziost
+    recipe: ship_fuel
+    rate: 0.000315804243
+  - world: ziost
+    recipe: spice
+    rate: 0.00149616251
+  - world: ziost
+    recipe: technical_gases
+    rate: 0.00282323069
+  - world: ziost
+    recipe: tibanna_refine
+    rate: 0.0341569328
+  - world: ziost
+    recipe: water_surface
+    rate: 1.52239026
+  - world: begeren
+    recipe: mining_minerals
+    rate: 0.0160485676
+  - world: sullust
+    recipe: mining_chemical
+    rate: 2.48893743
+  - world: sullust
+    recipe: chemicals
+    rate: 2.48893743
+  - world: sullust
+    recipe: technical_gases
+    rate: 2.07411452
+  - world: begeren
+    recipe: farm_basic
+    rate: 1.24446871
+  - world: dromund_kaas
+    recipe: technical_gases
+    rate: 1.15
+  inventory:
+  - world: ashas_ree
+    good: chemicals
+    initial: 4.74230436
+    target: 4.74230436
+    capacity: 9.48460871
+  - world: ashas_ree
+    good: circuits
+    initial: 3.01390307
+    target: 3.01390307
+    capacity: 10.3834466
+  - world: ashas_ree
+    good: composites
+    initial: 0.633547708
+    target: 0.633547708
+    capacity: 1.26709542
+  - world: ashas_ree
+    good: crops
+    initial: 42.901142
+    target: 42.901142
+    capacity: 120.647408
+  - world: ashas_ree
+    good: crystal_components
+    initial: 0.608320129
+    target: 0.608320129
+    capacity: 4.70115266
+  - world: ashas_ree
+    good: drugs
+    initial: 2.62174713
+    target: 2.62174713
+    capacity: 5.24349426
+  - world: ashas_ree
+    good: durasteel
+    initial: 0.848052256
+    target: 0.848052256
+    capacity: 1.69610452
+  - world: ashas_ree
+    good: education_kits
+    initial: 0
+    target: 0
+    capacity: 5.17397296
+  - world: ashas_ree
+    good: energy_cells
+    initial: 2.73394843
+    target: 2.73394843
+    capacity: 10.6946655
+  - world: ashas_ree
+    good: fertilizer
+    initial: 6.00702741
+    target: 6.00702741
+    capacity: 12.0140548
+  - world: ashas_ree
+    good: fibers
+    initial: 5.0280397
+    target: 5.0280397
+    capacity: 18.7673604
+  - world: ashas_ree
+    good: fresh_food
+    initial: 21.8878031
+    target: 21.8878031
+    capacity: 61.1981684
+  - world: ashas_ree
+    good: household_goods
+    initial: 10.8716787
+    target: 10.8716787
+    capacity: 32.1968946
+  - world: ashas_ree
+    good: implants
+    initial: 0.0655436782
+    target: 0.0655436782
+    capacity: 0.131087356
+  - world: ashas_ree
+    good: kolto
+    initial: 0.41758326
+    target: 0.41758326
+    capacity: 0.835166521
+  - world: ashas_ree
+    good: life_support
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: ashas_ree
+    good: luxury_food
+    initial: 0.391972291
+    target: 0.391972291
+    capacity: 7.75296935
+  - world: ashas_ree
+    good: luxury_goods
+    initial: 0.254125489
+    target: 0.254125489
+    capacity: 8.34840387
+  - world: ashas_ree
+    good: medical_supplies
+    initial: 6.4073667
+    target: 6.4073667
+    capacity: 12.8147334
+  - world: ashas_ree
+    good: metals
+    initial: 5.54760751
+    target: 5.54760751
+    capacity: 11.095215
+  - world: ashas_ree
+    good: military_supplies
+    initial: 2.58212874
+    target: 2.58212874
+    capacity: 8.64876992
+  - world: ashas_ree
+    good: minerals
+    initial: 1.52291076
+    target: 1.52291076
+    capacity: 3.04582152
+  - world: ashas_ree
+    good: parts
+    initial: 9.92216706
+    target: 9.92216706
+    capacity: 24.1999746
+  - world: ashas_ree
+    good: polymers
+    initial: 24.591776
+    target: 24.591776
+    capacity: 49.183552
+  - world: ashas_ree
+    good: processors
+    initial: 0.527956424
+    target: 0.527956424
+    capacity: 3.66929714
+  - world: ashas_ree
+    good: protein
+    initial: 21.9546337
+    target: 21.9546337
+    capacity: 49.136036
+  - world: ashas_ree
+    good: rare_metals
+    initial: 0.187926285
+    target: 0.187926285
+    capacity: 0.375852569
+  - world: ashas_ree
+    good: rations
+    initial: 55.8535463
+    target: 55.8535463
+    capacity: 129.129654
+  - world: ashas_ree
+    good: raw_crystals
+    initial: 3.58452618
+    target: 3.58452618
+    capacity: 7.16905236
+  - world: ashas_ree
+    good: reactor_fuel
+    initial: 0.524681807
+    target: 0.524681807
+    capacity: 1.04936361
+  - world: ashas_ree
+    good: reactor_modules
+    initial: 0.837557776
+    target: 0.837557776
+    capacity: 3.41737174
+  - world: ashas_ree
+    good: shield_generators
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 2.16462134
+  - world: ashas_ree
+    good: ship_fuel
+    initial: 2.25616145
+    target: 2.25616145
+    capacity: 4.5123229
+  - world: ashas_ree
+    good: ship_weapons
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: ashas_ree
+    good: stims
+    initial: 0.00641150281
+    target: 0.00641150281
+    capacity: 0.0128230056
+  - world: ashas_ree
+    good: textiles
+    initial: 5.5670414
+    target: 5.5670414
+    capacity: 19.8453638
+  - world: ashas_ree
+    good: tibanna
+    initial: 0.319704013
+    target: 0.319704013
+    capacity: 0.639408025
+  - world: ashas_ree
+    good: water
+    initial: 107.732319
+    target: 107.732319
+    capacity: 288.639398
+  - world: ashas_ree
+    good: work_droids
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: balmorra
+    good: chemical_feedstock
+    initial: 25.2097254
+    target: 25.2097254
+    capacity: 60.8729878
+  - world: balmorra
+    good: chemicals
+    initial: 17.9201841
+    target: 17.9201841
+    capacity: 46.2939055
+  - world: balmorra
+    good: circuits
+    initial: 1.4207712
+    target: 1.4207712
+    capacity: 7.19718289
+  - world: balmorra
+    good: composites
+    initial: 2.0092028
+    target: 2.0092028
+    capacity: 7.50291801
+  - world: balmorra
+    good: crops
+    initial: 8.11179056
+    target: 8.11179056
+    capacity: 24.9348622
+  - world: balmorra
+    good: drugs
+    initial: 2.97279265
+    target: 2.97279265
+    capacity: 10.3012258
+  - world: balmorra
+    good: durasteel
+    initial: 2.45467706
+    target: 2.45467706
+    capacity: 4.90935413
+  - world: balmorra
+    good: energy_cells
+    initial: 0.703174602
+    target: 0.703174602
+    capacity: 6.6331178
+  - world: balmorra
+    good: fertilizer
+    initial: 9.99622207
+    target: 9.99622207
+    capacity: 28.7037251
+  - world: balmorra
+    good: fibers
+    initial: 4.27163732
+    target: 4.27163732
+    capacity: 12.8989151
+  - world: balmorra
+    good: fresh_food
+    initial: 10.0166767
+    target: 10.0166767
+    capacity: 24.388994
+  - world: balmorra
+    good: household_goods
+    initial: 1.53597307
+    target: 1.53597307
+    capacity: 3.07194613
+  - world: balmorra
+    good: hull_sections
+    initial: 0.844730272
+    target: 0.844730272
+    capacity: 4.30284486
+  - world: balmorra
+    good: implants
+    initial: 0.0191996633
+    target: 0.0191996633
+    capacity: 0.0383993266
+  - world: balmorra
+    good: kolto
+    initial: 0.0584245882
+    target: 0.0584245882
+    capacity: 0.116849177
+  - world: balmorra
+    good: luxury_food
+    initial: 0.179279275
+    target: 0.179279275
+    capacity: 2.10081475
+  - world: balmorra
+    good: luxury_goods
+    initial: 0.0479817357
+    target: 0.0479817357
+    capacity: 0.0959634714
+  - world: balmorra
+    good: medical_biomass
+    initial: 1.40195887
+    target: 1.40195887
+    capacity: 6.28843013
+  - world: balmorra
+    good: medical_supplies
+    initial: 7.02143186
+    target: 7.02143186
+    capacity: 19.2696323
+  - world: balmorra
+    good: metals
+    initial: 2.71193317
+    target: 2.71193317
+    capacity: 5.42386635
+  - world: balmorra
+    good: military_supplies
+    initial: 0.319878238
+    target: 0.319878238
+    capacity: 0.639756476
+  - world: balmorra
+    good: minerals
+    initial: 2.61415736
+    target: 2.61415736
+    capacity: 5.22831474
+  - world: balmorra
+    good: parts
+    initial: 4.32649173
+    target: 4.32649173
+    capacity: 13.0086239
+  - world: balmorra
+    good: polymers
+    initial: 20.7341277
+    target: 20.7341277
+    capacity: 48.4372802
+  - world: balmorra
+    good: protein
+    initial: 3.5766009
+    target: 3.5766009
+    capacity: 7.15320178
+  - world: balmorra
+    good: rare_metals
+    initial: 0.697690392
+    target: 0.697690392
+    capacity: 1.39538078
+  - world: balmorra
+    good: rations
+    initial: 22.1675619
+    target: 22.1675619
+    capacity: 48.6907643
+  - world: balmorra
+    good: raw_fuel
+    initial: 5.04729915
+    target: 5.04729915
+    capacity: 20.5481355
+  - world: balmorra
+    good: reactor_fuel
+    initial: 5.66775082
+    target: 5.66775082
+    capacity: 15.6911421
+  - world: balmorra
+    good: reactor_modules
+    initial: 0.0658344004
+    target: 0.0658344004
+    capacity: 1.873925
+  - world: balmorra
+    good: ship_fuel
+    initial: 6.43544748
+    target: 6.43544748
+    capacity: 12.8708949
+  - world: balmorra
+    good: stims
+    initial: 0.00320575141
+    target: 0.00320575141
+    capacity: 2.6197958
+  - world: balmorra
+    good: sublight_engines
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: balmorra
+    good: technical_gases
+    initial: 0.128274623
+    target: 0.128274623
+    capacity: 3.74106165
+  - world: balmorra
+    good: textiles
+    initial: 1.8969128
+    target: 1.8969128
+    capacity: 3.79382559
+  - world: balmorra
+    good: water
+    initial: 48.8156732
+    target: 48.8156732
+    capacity: 139.445495
+  - world: begeren
+    good: chemicals
+    initial: 0.493866626
+    target: 0.493866626
+    capacity: 0.98773325
+  - world: begeren
+    good: circuits
+    initial: 1.64136364
+    target: 1.64136364
+    capacity: 3.28272728
+  - world: begeren
+    good: composites
+    initial: 0.667152009
+    target: 0.667152009
+    capacity: 1.33430401
+  - world: begeren
+    good: crops
+    initial: 41.7270711
+    target: 41.7270711
+    capacity: 100.876704
+  - world: begeren
+    good: drugs
+    initial: 1.8551544
+    target: 1.8551544
+    capacity: 3.7103088
+  - world: begeren
+    good: durasteel
+    initial: 1.26709542
+    target: 1.26709542
+    capacity: 6.01870325
+  - world: begeren
+    good: energy_cells
+    initial: 1.07148756
+    target: 1.07148756
+    capacity: 2.14297512
+  - world: begeren
+    good: fertilizer
+    initial: 4.30600226
+    target: 4.30600226
+    capacity: 8.6120045
+  - world: begeren
+    good: fibers
+    initial: 1.13073623
+    target: 1.13073623
+    capacity: 6.61711297
+  - world: begeren
+    good: fresh_food
+    initial: 26.9380234
+    target: 26.9380234
+    capacity: 66.9429684
+  - world: begeren
+    good: ground_vehicles
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: begeren
+    good: household_goods
+    initial: 3.20017619
+    target: 3.20017619
+    capacity: 11.627121
+  - world: begeren
+    good: hull_sections
+    initial: 0.633547708
+    target: 0.633547708
+    capacity: 3.88047972
+  - world: begeren
+    good: implants
+    initial: 0.0527903628
+    target: 0.0527903628
+    capacity: 0.105580726
+  - world: begeren
+    good: kolto
+    initial: 0.165934249
+    target: 0.165934249
+    capacity: 0.331868498
+  - world: begeren
+    good: life_support
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: begeren
+    good: luxury_food
+    initial: 0.506303173
+    target: 0.506303173
+    capacity: 6.23937493
+  - world: begeren
+    good: luxury_goods
+    initial: 0.235100052
+    target: 0.235100052
+    capacity: 3.0835844
+  - world: begeren
+    good: medical_supplies
+    initial: 4.13051312
+    target: 4.13051312
+    capacity: 8.26102624
+  - world: begeren
+    good: metals
+    initial: 2.39842578
+    target: 2.39842578
+    capacity: 4.79685157
+  - world: begeren
+    good: military_supplies
+    initial: 1.69556373
+    target: 1.69556373
+    capacity: 6.87563986
+  - world: begeren
+    good: minerals
+    initial: 0.343382644
+    target: 0.343382644
+    capacity: 0.68676529
+  - world: begeren
+    good: parts
+    initial: 3.20113166
+    target: 3.20113166
+    capacity: 10.7579038
+  - world: begeren
+    good: polymers
+    initial: 15.6338469
+    target: 15.6338469
+    capacity: 31.2676937
+  - world: begeren
+    good: protein
+    initial: 19.4914561
+    target: 19.4914561
+    capacity: 41.5962965
+  - world: begeren
+    good: rare_metals
+    initial: 0.380714656
+    target: 0.380714656
+    capacity: 0.761429313
+  - world: begeren
+    good: rations
+    initial: 64.5744686
+    target: 64.5744686
+    capacity: 137.860219
+  - world: begeren
+    good: raw_crystals
+    initial: 0.844222412
+    target: 0.844222412
+    capacity: 4.30182913
+  - world: begeren
+    good: reactor_fuel
+    initial: 1.40957714
+    target: 1.40957714
+    capacity: 2.81915428
+  - world: begeren
+    good: ship_fuel
+    initial: 8.55071956
+    target: 8.55071956
+    capacity: 17.1014391
+  - world: begeren
+    good: textiles
+    initial: 2.13785041
+    target: 2.13785041
+    capacity: 12.9869819
+  - world: begeren
+    good: tibanna
+    initial: 0.271791967
+    target: 0.271791967
+    capacity: 0.543583934
+  - world: begeren
+    good: water
+    initial: 96.4506776
+    target: 96.4506776
+    capacity: 255.622578
+  - world: belkadan
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: belkadan
+    good: chemical_feedstock
+    initial: 26.7186283
+    target: 26.7186283
+    capacity: 63.8907939
+  - world: belkadan
+    good: chemicals
+    initial: 20.2917198
+    target: 20.2917198
+    capacity: 51.0369768
+  - world: belkadan
+    good: circuits
+    initial: 0.767986533
+    target: 0.767986533
+    capacity: 1.53597307
+  - world: belkadan
+    good: com_equipment
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 0.422365139
+  - world: belkadan
+    good: composites
+    initial: 0.633547708
+    target: 0.633547708
+    capacity: 4.75160782
+  - world: belkadan
+    good: crops
+    initial: 34.8848363
+    target: 34.8848363
+    capacity: 87.1922344
+  - world: belkadan
+    good: drugs
+    initial: 8.27800099
+    target: 8.27800099
+    capacity: 20.9116425
+  - world: belkadan
+    good: durasteel
+    initial: 1.46103397
+    target: 1.46103397
+    capacity: 2.92206793
+  - world: belkadan
+    good: energy_cells
+    initial: 0.383993266
+    target: 0.383993266
+    capacity: 0.767986533
+  - world: belkadan
+    good: fertilizer
+    initial: 9.48148343
+    target: 9.48148343
+    capacity: 27.6742478
+  - world: belkadan
+    good: fibers
+    initial: 1.6900731
+    target: 1.6900731
+    capacity: 7.7357867
+  - world: belkadan
+    good: fresh_food
+    initial: 22.7520027
+    target: 22.7520027
+    capacity: 54.2152864
+  - world: belkadan
+    good: household_goods
+    initial: 4.09499897
+    target: 4.09499897
+    capacity: 13.4167665
+  - world: belkadan
+    good: implants
+    initial: 0.0447759843
+    target: 0.0447759843
+    capacity: 0.0895519686
+  - world: belkadan
+    good: kolto
+    initial: 0.140169043
+    target: 0.140169043
+    capacity: 0.280338085
+  - world: belkadan
+    good: luxury_food
+    initial: 0.470491976
+    target: 0.470491976
+    capacity: 4.42549635
+  - world: belkadan
+    good: luxury_goods
+    initial: 0.182309689
+    target: 0.182309689
+    capacity: 2.97800368
+  - world: belkadan
+    good: medical_biomass
+    initial: 4.12299107
+    target: 4.12299107
+    capacity: 11.7304945
+  - world: belkadan
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.844730272
+  - world: belkadan
+    good: medical_supplies
+    initial: 4.25589981
+    target: 4.25589981
+    capacity: 13.7385682
+  - world: belkadan
+    good: metals
+    initial: 3.37190069
+    target: 3.37190069
+    capacity: 6.74380136
+  - world: belkadan
+    good: military_supplies
+    initial: 0.895519686
+    target: 0.895519686
+    capacity: 1.79103937
+  - world: belkadan
+    good: minerals
+    initial: 5.16516574
+    target: 5.16516574
+    capacity: 17.2993563
+  - world: belkadan
+    good: parts
+    initial: 1.53597307
+    target: 1.53597307
+    capacity: 3.07194613
+  - world: belkadan
+    good: polymers
+    initial: 29.0543703
+    target: 29.0543703
+    capacity: 65.0777652
+  - world: belkadan
+    good: protein
+    initial: 15.1374415
+    target: 15.1374415
+    capacity: 32.8882674
+  - world: belkadan
+    good: rare_metals
+    initial: 0.812170336
+    target: 0.812170336
+    capacity: 1.62434067
+  - world: belkadan
+    good: rare_ore
+    initial: 0.249748306
+    target: 0.249748306
+    capacity: 0.499496611
+  - world: belkadan
+    good: rations
+    initial: 46.8816133
+    target: 46.8816133
+    capacity: 102.474508
+  - world: belkadan
+    good: raw_crystals
+    initial: 0.0319529787
+    target: 0.0319529787
+    capacity: 0.0639059574
+  - world: belkadan
+    good: raw_fuel
+    initial: 4.60641652
+    target: 4.60641652
+    capacity: 14.4396017
+  - world: belkadan
+    good: reactor_fuel
+    initial: 7.54284361
+    target: 7.54284361
+    capacity: 19.4413277
+  - world: belkadan
+    good: reactor_modules
+    initial: 0.102207849
+    target: 0.102207849
+    capacity: 0.204415698
+  - world: belkadan
+    good: ship_fuel
+    initial: 2.24054214
+    target: 2.24054214
+    capacity: 4.48108427
+  - world: belkadan
+    good: technical_gases
+    initial: 0.439277812
+    target: 0.439277812
+    capacity: 4.36306802
+  - world: belkadan
+    good: textiles
+    initial: 2.94569986
+    target: 2.94569986
+    capacity: 5.89139973
+  - world: belkadan
+    good: water
+    initial: 81.3755498
+    target: 81.3755498
+    capacity: 215.018787
+  - world: dromund_kaas
+    good: chemical_feedstock
+    initial: 1.42428138
+    target: 1.42428138
+    capacity: 2.84856275
+  - world: dromund_kaas
+    good: chemicals
+    initial: 9.98560733
+    target: 80
+    capacity: 160
+  - world: dromund_kaas
+    good: circuits
+    initial: 5.52148545
+    target: 5.52148545
+    capacity: 15.3986114
+  - world: dromund_kaas
+    good: crops
+    initial: 16.9066028
+    target: 16.9066028
+    capacity: 42.5244865
+  - world: dromund_kaas
+    good: crystal_components
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 0.422365139
+  - world: dromund_kaas
+    good: drugs
+    initial: 5.3103969
+    target: 5.3103969
+    capacity: 14.9764343
+  - world: dromund_kaas
+    good: durasteel
+    initial: 2.83497602
+    target: 2.83497602
+    capacity: 9.15446443
+  - world: dromund_kaas
+    good: education_kits
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: dromund_kaas
+    good: energy_cells
+    initial: 2.60641527
+    target: 2.60641527
+    capacity: 15.6663677
+  - world: dromund_kaas
+    good: fertilizer
+    initial: 7.24364886
+    target: 7.24364886
+    capacity: 14.4872977
+  - world: dromund_kaas
+    good: fibers
+    initial: 2.23289361
+    target: 2.23289361
+    capacity: 4.46578724
+  - world: dromund_kaas
+    good: fresh_food
+    initial: 23.1419442
+    target: 23.1419442
+    capacity: 50.639529
+  - world: dromund_kaas
+    good: household_goods
+    initial: 10.313365
+    target: 10.313365
+    capacity: 36.3070357
+  - world: dromund_kaas
+    good: hyperdrives
+    initial: 0.238913459
+    target: 0.238913459
+    capacity: 0.477826916
+  - world: dromund_kaas
+    good: implants
+    initial: 0.276565749
+    target: 0.276565749
+    capacity: 0.553131498
+  - world: dromund_kaas
+    good: kolto
+    initial: 1.4975446
+    target: 1.4975446
+    capacity: 6.47960163
+  - world: dromund_kaas
+    good: life_support
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: dromund_kaas
+    good: luxury_food
+    initial: 0.302234241
+    target: 0.302234241
+    capacity: 2.34672468
+  - world: dromund_kaas
+    good: luxury_goods
+    initial: 0.19673557
+    target: 0.19673557
+    capacity: 3.00685544
+  - world: dromund_kaas
+    good: machinery
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: dromund_kaas
+    good: medical_biomass
+    initial: 1.49778281
+    target: 1.49778281
+    capacity: 6.48007802
+  - world: dromund_kaas
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.410017134
+  - world: dromund_kaas
+    good: medical_supplies
+    initial: 14.3947646
+    target: 14.3947646
+    capacity: 39.2430665
+  - world: dromund_kaas
+    good: metal_ore
+    initial: 5.56198977
+    target: 5.56198977
+    capacity: 18.0930043
+  - world: dromund_kaas
+    good: metals
+    initial: 9.64308217
+    target: 9.64308217
+    capacity: 22.7706767
+  - world: dromund_kaas
+    good: military_supplies
+    initial: 1.37568549
+    target: 1.37568549
+    capacity: 2.75137099
+  - world: dromund_kaas
+    good: minerals
+    initial: 1.83796932
+    target: 1.83796932
+    capacity: 3.67593863
+  - world: dromund_kaas
+    good: parts
+    initial: 9.83171525
+    target: 9.83171525
+    capacity: 24.0190711
+  - world: dromund_kaas
+    good: polymers
+    initial: 18.7026833
+    target: 18.7026833
+    capacity: 37.4053666
+  - world: dromund_kaas
+    good: processors
+    initial: 0.316773855
+    target: 0.316773855
+    capacity: 0.633547708
+  - world: dromund_kaas
+    good: protein
+    initial: 44.011139
+    target: 44.011139
+    capacity: 90.6356628
+  - world: dromund_kaas
+    good: rare_metals
+    initial: 1.90397601
+    target: 1.90397601
+    capacity: 5.55020823
+  - world: dromund_kaas
+    good: rare_ore
+    initial: 2.69763289
+    target: 2.69763289
+    capacity: 8.87977816
+  - world: dromund_kaas
+    good: rations
+    initial: 66.184138
+    target: 66.184138
+    capacity: 136.723917
+  - world: dromund_kaas
+    good: raw_crystals
+    initial: 1.84892847
+    target: 1.84892847
+    capacity: 3.69785695
+  - world: dromund_kaas
+    good: raw_fuel
+    initial: 2.51466342
+    target: 150
+    capacity: 300
+  - world: dromund_kaas
+    good: raw_kolto
+    initial: 20.9070744
+    target: 0
+    capacity: 20.9070744
+  - world: dromund_kaas
+    good: reactor_fuel
+    initial: 7.43259974
+    target: 30
+    capacity: 60
+  - world: dromund_kaas
+    good: reactor_modules
+    initial: 0.576335319
+    target: 0.576335319
+    capacity: 2.89492684
+  - world: dromund_kaas
+    good: ship_fuel
+    initial: 8.04593467
+    target: 105
+    capacity: 210
+  - world: dromund_kaas
+    good: ship_weapons
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: dromund_kaas
+    good: spice
+    initial: 0.0095824091
+    target: 0.0095824091
+    capacity: 0.0191648182
+  - world: dromund_kaas
+    good: stims
+    initial: 0.0112201299
+    target: 0.0112201299
+    capacity: 0.0224402598
+  - world: dromund_kaas
+    good: synth_food
+    initial: 2.84856275
+    target: 2.84856275
+    capacity: 9.1816379
+  - world: dromund_kaas
+    good: technical_gases
+    initial: 0.250889716
+    target: 32
+    capacity: 64
+  - world: dromund_kaas
+    good: textiles
+    initial: 6.06352407
+    target: 6.06352407
+    capacity: 12.1270481
+  - world: dromund_kaas
+    good: tibanna
+    initial: 0.319704013
+    target: 0.319704013
+    capacity: 0.639408025
+  - world: dromund_kaas
+    good: water
+    initial: 110.611604
+    target: 110.611604
+    capacity: 273.490894
+  - world: dromund_kaas
+    good: work_droids
+    initial: 0
+    target: 0
+    capacity: 1.26709542
+  - world: korriban
+    good: chemical_feedstock
+    initial: 29.2118904
+    target: 140
+    capacity: 280
+  - world: korriban
+    good: chemicals
+    initial: 25.1396541
+    target: 128
+    capacity: 256
+  - world: korriban
+    good: circuits
+    initial: 4.01258372
+    target: 4.01258372
+    capacity: 12.3808079
+  - world: korriban
+    good: composites
+    initial: 2.1118257
+    target: 2.1118257
+    capacity: 7.70816381
+  - world: korriban
+    good: crops
+    initial: 1.31636765
+    target: 1.31636765
+    capacity: 11.3440163
+  - world: korriban
+    good: drugs
+    initial: 5.75502068
+    target: 5.75502068
+    capacity: 11.5100414
+  - world: korriban
+    good: durasteel
+    initial: 1.89016598
+    target: 1.89016598
+    capacity: 7.26484434
+  - world: korriban
+    good: energy_cells
+    initial: 0.639756476
+    target: 0.639756476
+    capacity: 6.50628155
+  - world: korriban
+    good: fertilizer
+    initial: 9.59857732
+    target: 9.59857732
+    capacity: 23.5527951
+  - world: korriban
+    good: fibers
+    initial: 6.07464036
+    target: 6.07464036
+    capacity: 16.5049212
+  - world: korriban
+    good: fresh_food
+    initial: 8.66118126
+    target: 8.66118126
+    capacity: 21.6780031
+  - world: korriban
+    good: ground_vehicles
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: korriban
+    good: household_goods
+    initial: 8.95659067
+    target: 8.95659067
+    capacity: 28.3667185
+  - world: korriban
+    good: hyperdrives
+    initial: 0.238913459
+    target: 0.238913459
+    capacity: 0.477826916
+  - world: korriban
+    good: implants
+    initial: 0.121539792
+    target: 0.121539792
+    capacity: 0.243079585
+  - world: korriban
+    good: kolto
+    initial: 0.485800862
+    target: 0.485800862
+    capacity: 0.971601725
+  - world: korriban
+    good: life_support
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: korriban
+    good: luxury_food
+    initial: 0.174343631
+    target: 0.174343631
+    capacity: 2.09094346
+  - world: korriban
+    good: luxury_goods
+    initial: 0.383853886
+    target: 0.383853886
+    capacity: 0.767707772
+  - world: korriban
+    good: medical_supplies
+    initial: 8.61594474
+    target: 8.61594474
+    capacity: 17.2318895
+  - world: korriban
+    good: metal_ore
+    initial: 11.0818159
+    target: 11.0818159
+    capacity: 36.1016813
+  - world: korriban
+    good: metals
+    initial: 12.048746
+    target: 12.048746
+    capacity: 31.0665167
+  - world: korriban
+    good: military_supplies
+    initial: 1.47802511
+    target: 1.47802511
+    capacity: 2.95605021
+  - world: korriban
+    good: minerals
+    initial: 2.20784141
+    target: 2.20784141
+    capacity: 11.3847076
+  - world: korriban
+    good: parts
+    initial: 4.53980391
+    target: 4.53980391
+    capacity: 17.7908888
+  - world: korriban
+    good: polymers
+    initial: 47.0172889
+    target: 47.0172889
+    capacity: 97.5190905
+  - world: korriban
+    good: protein
+    initial: 6.09938244
+    target: 6.09938244
+    capacity: 12.1987649
+  - world: korriban
+    good: rare_metals
+    initial: 0.458442506
+    target: 0.458442506
+    capacity: 2.65914121
+  - world: korriban
+    good: rare_ore
+    initial: 0.61109689
+    target: 0.61109689
+    capacity: 1.22219378
+  - world: korriban
+    good: rations
+    initial: 22.1675619
+    target: 22.1675619
+    capacity: 44.3351238
+  - world: korriban
+    good: raw_crystals
+    initial: 0.849437831
+    target: 0.849437831
+    capacity: 1.69887567
+  - world: korriban
+    good: reactor_fuel
+    initial: 6.57317745
+    target: 6.57317745
+    capacity: 13.1463549
+  - world: korriban
+    good: reactor_modules
+    initial: 0.465505459
+    target: 0.465505459
+    capacity: 2.67326712
+  - world: korriban
+    good: scrap
+    initial: 0
+    target: 0
+    capacity: 0.842840231
+  - world: korriban
+    good: ship_fuel
+    initial: 24.7575167
+    target: 90
+    capacity: 180
+  - world: korriban
+    good: spice
+    initial: 0.0095824091
+    target: 0.0095824091
+    capacity: 0.0191648182
+  - world: korriban
+    good: stims
+    initial: 0.00320575141
+    target: 0.00320575141
+    capacity: 0.00641150281
+  - world: korriban
+    good: sublight_engines
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: korriban
+    good: synth_food
+    initial: 0.946933667
+    target: 0.946933667
+    capacity: 1.89386733
+  - world: korriban
+    good: textiles
+    initial: 8.5558023
+    target: 8.5558023
+    capacity: 21.4672452
+  - world: korriban
+    good: tibanna
+    initial: 0.463440149
+    target: 0.463440149
+    capacity: 0.926880298
+  - world: korriban
+    good: water
+    initial: 74.9580786
+    target: 74.9580786
+    capacity: 191.730306
+  - world: nez_peron
+    good: chemical_feedstock
+    initial: 0.473466833
+    target: 0.473466833
+    capacity: 0.946933667
+  - world: nez_peron
+    good: chemicals
+    initial: 2.37318738
+    target: 2.37318738
+    capacity: 4.74637476
+  - world: nez_peron
+    good: circuits
+    initial: 7.49920393
+    target: 7.49920393
+    capacity: 19.3540484
+  - world: nez_peron
+    good: composites
+    initial: 1.44604928
+    target: 1.44604928
+    capacity: 2.89209856
+  - world: nez_peron
+    good: crops
+    initial: 21.931949
+    target: 21.931949
+    capacity: 61.2864601
+  - world: nez_peron
+    good: crystal_components
+    initial: 0.585894034
+    target: 0.585894034
+    capacity: 4.65630046
+  - world: nez_peron
+    good: drugs
+    initial: 0.512920225
+    target: 0.512920225
+    capacity: 1.02584045
+  - world: nez_peron
+    good: energy_cells
+    initial: 1.11957383
+    target: 1.11957383
+    capacity: 7.46591626
+  - world: nez_peron
+    good: fertilizer
+    initial: 3.99166791
+    target: 3.99166791
+    capacity: 7.98333581
+  - world: nez_peron
+    good: fibers
+    initial: 1.30384105
+    target: 1.30384105
+    capacity: 6.96332262
+  - world: nez_peron
+    good: fresh_food
+    initial: 17.5032018
+    target: 17.5032018
+    capacity: 48.0733253
+  - world: nez_peron
+    good: household_goods
+    initial: 1.02584045
+    target: 1.02584045
+    capacity: 2.0516809
+  - world: nez_peron
+    good: implants
+    initial: 0.15028702
+    target: 0.15028702
+    capacity: 2.04283024
+  - world: nez_peron
+    good: kolto
+    initial: 0.0384690169
+    target: 0.0384690169
+    capacity: 0.0769380338
+  - world: nez_peron
+    good: lab_equipment
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: nez_peron
+    good: luxury_food
+    initial: 0.282435922
+    target: 0.282435922
+    capacity: 5.79164044
+  - world: nez_peron
+    good: luxury_goods
+    initial: 0.0384690169
+    target: 0.0384690169
+    capacity: 0.0769380338
+  - world: nez_peron
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: nez_peron
+    good: medical_supplies
+    initial: 1.13720895
+    target: 1.13720895
+    capacity: 2.2744179
+  - world: nez_peron
+    good: metals
+    initial: 1.63193865
+    target: 1.63193865
+    capacity: 3.2638773
+  - world: nez_peron
+    good: military_supplies
+    initial: 0.256460113
+    target: 0.256460113
+    capacity: 0.512920225
+  - world: nez_peron
+    good: minerals
+    initial: 2.92274354
+    target: 2.92274354
+    capacity: 5.8454871
+  - world: nez_peron
+    good: parts
+    initial: 1.47969972
+    target: 1.47969972
+    capacity: 2.95939945
+  - world: nez_peron
+    good: polymers
+    initial: 6.03718308
+    target: 6.03718308
+    capacity: 12.0743662
+  - world: nez_peron
+    good: processors
+    initial: 0.822844808
+    target: 0.822844808
+    capacity: 4.25907392
+  - world: nez_peron
+    good: protein
+    initial: 13.1874128
+    target: 13.1874128
+    capacity: 31.6015942
+  - world: nez_peron
+    good: rare_metals
+    initial: 0.274281603
+    target: 0.274281603
+    capacity: 0.548563206
+  - world: nez_peron
+    good: rations
+    initial: 19.3220758
+    target: 19.3220758
+    capacity: 47.3554326
+  - world: nez_peron
+    good: raw_crystals
+    initial: 0.439420524
+    target: 0.439420524
+    capacity: 0.878841051
+  - world: nez_peron
+    good: reactor_fuel
+    initial: 1.6839885
+    target: 1.6839885
+    capacity: 3.367977
+  - world: nez_peron
+    good: shield_generators
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 2.58698647
+  - world: nez_peron
+    good: ship_fuel
+    initial: 7.23676262
+    target: 7.23676262
+    capacity: 14.4735252
+  - world: nez_peron
+    good: synth_food
+    initial: 0.946933667
+    target: 0.946933667
+    capacity: 5.37837973
+  - world: nez_peron
+    good: water
+    initial: 42.7252188
+    target: 42.7252188
+    capacity: 127.264586
+  - world: ruuria
+    good: chemicals
+    initial: 6.63965777
+    target: 6.63965777
+    capacity: 13.2793155
+  - world: ruuria
+    good: circuits
+    initial: 6.41532393
+    target: 6.41532393
+    capacity: 17.1862883
+  - world: ruuria
+    good: com_equipment
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 0.422365139
+  - world: ruuria
+    good: composites
+    initial: 1.03317234
+    target: 1.03317234
+    capacity: 2.06634467
+  - world: ruuria
+    good: crops
+    initial: 7.3412166
+    target: 7.3412166
+    capacity: 23.3937142
+  - world: ruuria
+    good: drugs
+    initial: 6.01008698
+    target: 6.01008698
+    capacity: 16.3758145
+  - world: ruuria
+    good: energy_cells
+    initial: 1.34293108
+    target: 1.34293108
+    capacity: 7.91263075
+  - world: ruuria
+    good: fertilizer
+    initial: 2.97225092
+    target: 2.97225092
+    capacity: 5.94450184
+  - world: ruuria
+    good: freighters
+    initial: 0
+    target: 0
+    capacity: 0.8711281
+  - world: ruuria
+    good: fresh_food
+    initial: 17.4220892
+    target: 17.4220892
+    capacity: 39.1998189
+  - world: ruuria
+    good: household_goods
+    initial: 5.88464454
+    target: 5.88464454
+    capacity: 11.7692891
+  - world: ruuria
+    good: hull_sections
+    initial: 0.633547708
+    target: 0.633547708
+    capacity: 1.26709542
+  - world: ruuria
+    good: hyperdrives
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ruuria
+    good: implants
+    initial: 0.159834584
+    target: 0.159834584
+    capacity: 0.319669167
+  - world: ruuria
+    good: kolto
+    initial: 1.00579943
+    target: 1.00579943
+    capacity: 2.01159885
+  - world: ruuria
+    good: lab_equipment
+    initial: 0
+    target: 0
+    capacity: 0.190614707
+  - world: ruuria
+    good: life_support
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ruuria
+    good: luxury_food
+    initial: 0.317207002
+    target: 0.317207002
+    capacity: 2.3766702
+  - world: ruuria
+    good: luxury_goods
+    initial: 0.191822408
+    target: 0.191822408
+    capacity: 0.383644815
+  - world: ruuria
+    good: medical_biomass
+    initial: 1.48367079
+    target: 1.48367079
+    capacity: 6.45185399
+  - world: ruuria
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.434713144
+  - world: ruuria
+    good: medical_supplies
+    initial: 18.406543
+    target: 18.406543
+    capacity: 42.0398546
+  - world: ruuria
+    good: metal_ore
+    initial: 6.33295348
+    target: 6.33295348
+    capacity: 19.6349318
+  - world: ruuria
+    good: metals
+    initial: 8.70708075
+    target: 8.70708075
+    capacity: 20.898674
+  - world: ruuria
+    good: military_supplies
+    initial: 1.1512829
+    target: 1.1512829
+    capacity: 2.30256579
+  - world: ruuria
+    good: minerals
+    initial: 12.4973935
+    target: 12.4973935
+    capacity: 31.9638118
+  - world: ruuria
+    good: parts
+    initial: 3.28610522
+    target: 3.28610522
+    capacity: 6.57221044
+  - world: ruuria
+    good: polymers
+    initial: 6.76417386
+    target: 6.76417386
+    capacity: 13.5283477
+  - world: ruuria
+    good: processors
+    initial: 0.316773855
+    target: 0.316773855
+    capacity: 0.633547708
+  - world: ruuria
+    good: protein
+    initial: 3.54051861
+    target: 3.54051861
+    capacity: 7.08103724
+  - world: ruuria
+    good: rare_metals
+    initial: 2.94180354
+    target: 2.94180354
+    capacity: 7.62586328
+  - world: ruuria
+    good: rare_ore
+    initial: 3.81153131
+    target: 3.81153131
+    capacity: 11.107575
+  - world: ruuria
+    good: rations
+    initial: 58.7766767
+    target: 58.7766767
+    capacity: 121.908994
+  - world: ruuria
+    good: raw_crystals
+    initial: 0.849437831
+    target: 0.849437831
+    capacity: 1.69887567
+  - world: ruuria
+    good: raw_fuel
+    initial: 0.27083747
+    target: 0.27083747
+    capacity: 0.541674939
+  - world: ruuria
+    good: raw_tibanna
+    initial: 0.665123727
+    target: 0.665123727
+    capacity: 4.81475985
+  - world: ruuria
+    good: reactor_fuel
+    initial: 1.27574177
+    target: 1.27574177
+    capacity: 2.55148355
+  - world: ruuria
+    good: reactor_modules
+    initial: 0.465505459
+    target: 0.465505459
+    capacity: 0.931010922
+  - world: ruuria
+    good: shield_generators
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ruuria
+    good: ship_fuel
+    initial: 2.76793273
+    target: 2.76793273
+    capacity: 5.53586545
+  - world: ruuria
+    good: ship_weapons
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ruuria
+    good: spice
+    initial: 0.0095824091
+    target: 0.0095824091
+    capacity: 0.0191648182
+  - world: ruuria
+    good: stims
+    initial: 0.0127881605
+    target: 0.0127881605
+    capacity: 2.63896062
+  - world: ruuria
+    good: sublight_engines
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ruuria
+    good: synth_food
+    initial: 0.946933667
+    target: 0.946933667
+    capacity: 1.89386733
+  - world: ruuria
+    good: technical_gases
+    initial: 2.15555906
+    target: 2.15555906
+    capacity: 7.79563053
+  - world: ruuria
+    good: textiles
+    initial: 8.22869188
+    target: 8.22869188
+    capacity: 16.4573838
+  - world: ruuria
+    good: tibanna
+    initial: 2.20569635
+    target: 2.20569635
+    capacity: 8.76703319
+  - world: ruuria
+    good: water
+    initial: 75.239931
+    target: 75.239931
+    capacity: 202.747548
+  - world: sernpidal
+    good: chemical_feedstock
+    initial: 7.30666028
+    target: 7.30666028
+    capacity: 19.8400891
+  - world: sernpidal
+    good: chemicals
+    initial: 6.97511358
+    target: 6.97511358
+    capacity: 19.1769958
+  - world: sernpidal
+    good: circuits
+    initial: 1.58663125
+    target: 1.58663125
+    capacity: 7.52890301
+  - world: sernpidal
+    good: com_equipment
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 3.03574944
+  - world: sernpidal
+    good: crops
+    initial: 8.83968768
+    target: 8.83968768
+    capacity: 17.6793753
+  - world: sernpidal
+    good: drugs
+    initial: 8.02154087
+    target: 8.02154087
+    capacity: 20.3987223
+  - world: sernpidal
+    good: durasteel
+    initial: 1.46103397
+    target: 1.46103397
+    capacity: 2.92206793
+  - world: sernpidal
+    good: energy_cells
+    initial: 0.639408025
+    target: 0.639408025
+    capacity: 6.50558465
+  - world: sernpidal
+    good: fertilizer
+    initial: 3.2047972
+    target: 3.2047972
+    capacity: 10.7652349
+  - world: sernpidal
+    good: fibers
+    initial: 1.37329925
+    target: 1.37329925
+    capacity: 2.74659849
+  - world: sernpidal
+    good: fresh_food
+    initial: 17.2275609
+    target: 17.2275609
+    capacity: 38.8107623
+  - world: sernpidal
+    good: household_goods
+    initial: 4.34588386
+    target: 4.34588386
+    capacity: 13.9185363
+  - world: sernpidal
+    good: implants
+    initial: 0.0990646875
+    target: 0.0990646875
+    capacity: 0.198129375
+  - world: sernpidal
+    good: kolto
+    initial: 0.175353304
+    target: 0.175353304
+    capacity: 0.350706607
+  - world: sernpidal
+    good: luxury_food
+    initial: 0.240314397
+    target: 0.240314397
+    capacity: 2.22288499
+  - world: sernpidal
+    good: luxury_goods
+    initial: 0.143840672
+    target: 0.143840672
+    capacity: 0.287681344
+  - world: sernpidal
+    good: medical_biomass
+    initial: 0.383853886
+    target: 0.383853886
+    capacity: 4.25222017
+  - world: sernpidal
+    good: medical_supplies
+    initial: 11.811605
+    target: 11.811605
+    capacity: 28.8499786
+  - world: sernpidal
+    good: metals
+    initial: 2.17535081
+    target: 2.17535081
+    capacity: 4.35070162
+  - world: sernpidal
+    good: military_supplies
+    initial: 1.60486136
+    target: 1.60486136
+    capacity: 3.20972271
+  - world: sernpidal
+    good: minerals
+    initial: 4.42840246
+    target: 4.42840246
+    capacity: 8.85680494
+  - world: sernpidal
+    good: parts
+    initial: 2.52487795
+    target: 2.52487795
+    capacity: 9.40539636
+  - world: sernpidal
+    good: polymers
+    initial: 9.67958078
+    target: 9.67958078
+    capacity: 22.8436741
+  - world: sernpidal
+    good: protein
+    initial: 18.3847762
+    target: 18.3847762
+    capacity: 39.3829366
+  - world: sernpidal
+    good: rare_metals
+    initial: 0.780217357
+    target: 0.780217357
+    capacity: 1.56043472
+  - world: sernpidal
+    good: rare_ore
+    initial: 0.249748306
+    target: 0.249748306
+    capacity: 0.499496611
+  - world: sernpidal
+    good: rations
+    initial: 23.6125283
+    target: 23.6125283
+    capacity: 47.2250565
+  - world: sernpidal
+    good: raw_fuel
+    initial: 2.18712231
+    target: 2.18712231
+    capacity: 9.60101316
+  - world: sernpidal
+    good: reactor_fuel
+    initial: 3.36686648
+    target: 3.36686648
+    capacity: 11.0893735
+  - world: sernpidal
+    good: reactor_modules
+    initial: 0.102207849
+    target: 0.102207849
+    capacity: 1.9466719
+  - world: sernpidal
+    good: ship_fuel
+    initial: 5.32141127
+    target: 5.32141127
+    capacity: 10.6428225
+  - world: sernpidal
+    good: technical_gases
+    initial: 0.499806559
+    target: 0.499806559
+    capacity: 4.48412551
+  - world: sernpidal
+    good: textiles
+    initial: 3.90562058
+    target: 3.90562058
+    capacity: 12.1668816
+  - world: sernpidal
+    good: tibanna
+    initial: 0.383296364
+    target: 0.383296364
+    capacity: 0.766592728
+  - world: sernpidal
+    good: water
+    initial: 55.8113432
+    target: 55.8113432
+    capacity: 153.436836
+  - world: sullust
+    good: building_materials
+    initial: 2.53419083
+    target: 2.53419083
+    capacity: 10.2951503
+  - world: sullust
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 2.6133843
+  - world: sullust
+    good: chemical_feedstock
+    initial: 1.42428138
+    target: 1.42428138
+    capacity: 2.84856275
+  - world: sullust
+    good: chemicals
+    initial: 8.42445634
+    target: 8.42445634
+    capacity: 16.8489129
+  - world: sullust
+    good: circuits
+    initial: 3.49276059
+    target: 3.49276059
+    capacity: 6.98552118
+  - world: sullust
+    good: composites
+    initial: 0.310285758
+    target: 0.310285758
+    capacity: 0.620571518
+  - world: sullust
+    good: crystal_components
+    initial: 0.714237064
+    target: 0.714237064
+    capacity: 4.91298653
+  - world: sullust
+    good: drugs
+    initial: 3.45524249
+    target: 3.45524249
+    capacity: 6.91048499
+  - world: sullust
+    good: durasteel
+    initial: 3.38939827
+    target: 3.38939827
+    capacity: 13.7478214
+  - world: sullust
+    good: energy_cells
+    initial: 4.38316815
+    target: 4.38316815
+    capacity: 8.76633629
+  - world: sullust
+    good: entertainment
+    initial: 0
+    target: 0
+    capacity: 2.6133843
+  - world: sullust
+    good: fertilizer
+    initial: 7.6012815
+    target: 7.6012815
+    capacity: 19.5582035
+  - world: sullust
+    good: fresh_food
+    initial: 24.7658493
+    target: 24.7658493
+    capacity: 49.5316984
+  - world: sullust
+    good: household_goods
+    initial: 8.44088283
+    target: 8.44088283
+    capacity: 22.1085343
+  - world: sullust
+    good: hull_sections
+    initial: 0.844730272
+    target: 0.844730272
+    capacity: 1.68946056
+  - world: sullust
+    good: hyperdrives
+    initial: 0.238913459
+    target: 0.238913459
+    capacity: 1.34895502
+  - world: sullust
+    good: implants
+    initial: 0.295800257
+    target: 0.295800257
+    capacity: 2.33385671
+  - world: sullust
+    good: kolto
+    initial: 0.337086293
+    target: 0.337086293
+    capacity: 0.674172587
+  - world: sullust
+    good: life_support
+    initial: 1.05591285
+    target: 1.05591285
+    capacity: 2.1118257
+  - world: sullust
+    good: luxury_food
+    initial: 0.483087691
+    target: 0.483087691
+    capacity: 0.966175385
+  - world: sullust
+    good: luxury_goods
+    initial: 0.312038085
+    target: 0.312038085
+    capacity: 0.624076171
+  - world: sullust
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: sullust
+    good: medical_supplies
+    initial: 7.37324566
+    target: 7.37324566
+    capacity: 14.7464913
+  - world: sullust
+    good: metal_ore
+    initial: 21.3961554
+    target: 21.3961554
+    capacity: 63.699385
+  - world: sullust
+    good: metals
+    initial: 15.4289444
+    target: 15.4289444
+    capacity: 41.3114261
+  - world: sullust
+    good: military_supplies
+    initial: 2.91131011
+    target: 2.91131011
+    capacity: 12.791645
+  - world: sullust
+    good: minerals
+    initial: 8.38870483
+    target: 8.38870483
+    capacity: 30.7154593
+  - world: sullust
+    good: parts
+    initial: 9.7130667
+    target: 9.7130667
+    capacity: 23.7817738
+  - world: sullust
+    good: polymers
+    initial: 10.6430915
+    target: 10.6430915
+    capacity: 21.2861831
+  - world: sullust
+    good: processors
+    initial: 0.684221938
+    target: 0.684221938
+    capacity: 3.98182817
+  - world: sullust
+    good: rare_metals
+    initial: 2.43962794
+    target: 2.43962794
+    capacity: 10.1060245
+  - world: sullust
+    good: rare_ore
+    initial: 2.24647892
+    target: 2.24647892
+    capacity: 11.4619826
+  - world: sullust
+    good: rations
+    initial: 44.6497187
+    target: 44.6497187
+    capacity: 89.2994377
+  - world: sullust
+    good: raw_crystals
+    initial: 3.34271921
+    target: 3.34271921
+    capacity: 9.29882272
+  - world: sullust
+    good: raw_fuel
+    initial: 19.3528157
+    target: 19.3528157
+    capacity: 43.9323999
+  - world: sullust
+    good: reactor_fuel
+    initial: 5.53812067
+    target: 5.53812067
+    capacity: 15.4318818
+  - world: sullust
+    good: reactor_modules
+    initial: 0.430987149
+    target: 0.430987149
+    capacity: 0.861974294
+  - world: sullust
+    good: shield_generators
+    initial: 0.0252275799
+    target: 0.0252275799
+    capacity: 1.79271136
+  - world: sullust
+    good: ship_fuel
+    initial: 2.7852172
+    target: 2.7852172
+    capacity: 5.5704344
+  - world: sullust
+    good: stims
+    initial: 0.00480862711
+    target: 0.00480862711
+    capacity: 0.00961725422
+  - world: sullust
+    good: sublight_engines
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: sullust
+    good: synth_food
+    initial: 3.55746938
+    target: 3.55746938
+    capacity: 7.11493875
+  - world: sullust
+    good: technical_gases
+    initial: 4.37499569
+    target: 4.37499569
+    capacity: 8.74999136
+  - world: sullust
+    good: textiles
+    initial: 1.89237829
+    target: 1.89237829
+    capacity: 3.78475657
+  - world: sullust
+    good: tibanna
+    initial: 1.98260044
+    target: 1.98260044
+    capacity: 3.96520088
+  - world: sullust
+    good: water
+    initial: 97.3124274
+    target: 97.3124274
+    capacity: 257.346077
+  - world: tandankin
+    good: chemicals
+    initial: 4.63879139
+    target: 4.63879139
+    capacity: 9.27758279
+  - world: tandankin
+    good: circuits
+    initial: 2.6091983
+    target: 2.6091983
+    capacity: 5.21839663
+  - world: tandankin
+    good: com_equipment
+    initial: 0.844730272
+    target: 0.844730272
+    capacity: 6.91622915
+  - world: tandankin
+    good: composites
+    initial: 0.0476536768
+    target: 0.0476536768
+    capacity: 0.0953073535
+  - world: tandankin
+    good: crops
+    initial: 36.1110816
+    target: 36.1110816
+    capacity: 80.9334442
+  - world: tandankin
+    good: crystal_components
+    initial: 0.414557039
+    target: 0.414557039
+    capacity: 4.31362648
+  - world: tandankin
+    good: drugs
+    initial: 3.35608901
+    target: 3.35608901
+    capacity: 6.71217802
+  - world: tandankin
+    good: durasteel
+    initial: 0.204415698
+    target: 0.204415698
+    capacity: 0.408831397
+  - world: tandankin
+    good: energy_cells
+    initial: 1.91892098
+    target: 1.91892098
+    capacity: 19.5181477
+  - world: tandankin
+    good: fertilizer
+    initial: 6.57252765
+    target: 6.57252765
+    capacity: 13.1450553
+  - world: tandankin
+    good: fibers
+    initial: 6.61174798
+    target: 6.61174798
+    capacity: 17.5791365
+  - world: tandankin
+    good: fresh_food
+    initial: 25.0271935
+    target: 25.0271935
+    capacity: 54.4100276
+  - world: tandankin
+    good: household_goods
+    initial: 3.32561863
+    target: 3.32561863
+    capacity: 22.3315431
+  - world: tandankin
+    good: hull_sections
+    initial: 0.844730272
+    target: 0.844730272
+    capacity: 1.68946056
+  - world: tandankin
+    good: hyperdrives
+    initial: 0.39463425
+    target: 0.39463425
+    capacity: 1.6603966
+  - world: tandankin
+    good: implants
+    initial: 0.0415702329
+    target: 0.0415702329
+    capacity: 0.0831404658
+  - world: tandankin
+    good: kolto
+    initial: 0.237792551
+    target: 0.237792551
+    capacity: 0.475585102
+  - world: tandankin
+    good: lab_equipment
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: tandankin
+    good: life_support
+    initial: 0.21118257
+    target: 0.21118257
+    capacity: 0.422365139
+  - world: tandankin
+    good: luxury_food
+    initial: 0.472301408
+    target: 0.472301408
+    capacity: 2.68685902
+  - world: tandankin
+    good: luxury_goods
+    initial: 0.143945207
+    target: 0.143945207
+    capacity: 0.287890414
+  - world: tandankin
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.434713144
+  - world: tandankin
+    good: medical_supplies
+    initial: 8.01033648
+    target: 8.01033648
+    capacity: 16.020673
+  - world: tandankin
+    good: metals
+    initial: 2.2454671
+    target: 2.2454671
+    capacity: 4.4909342
+  - world: tandankin
+    good: military_ships
+    initial: 0
+    target: 0
+    capacity: 0.8711281
+  - world: tandankin
+    good: military_supplies
+    initial: 1.4063492
+    target: 1.4063492
+    capacity: 6.29721081
+  - world: tandankin
+    good: minerals
+    initial: 2.30979572
+    target: 2.30979572
+    capacity: 11.5886162
+  - world: tandankin
+    good: parts
+    initial: 2.46443266
+    target: 2.46443266
+    capacity: 9.28450585
+  - world: tandankin
+    good: polymers
+    initial: 14.8276177
+    target: 14.8276177
+    capacity: 29.6552355
+  - world: tandankin
+    good: processors
+    initial: 0.462210716
+    target: 0.462210716
+    capacity: 3.53780573
+  - world: tandankin
+    good: protein
+    initial: 19.0769575
+    target: 19.0769575
+    capacity: 40.7672994
+  - world: tandankin
+    good: rare_metals
+    initial: 0.33752192
+    target: 0.33752192
+    capacity: 0.675043837
+  - world: tandankin
+    good: rations
+    initial: 64.5747149
+    target: 64.5747149
+    capacity: 133.50507
+  - world: tandankin
+    good: raw_crystals
+    initial: 0.310917779
+    target: 0.310917779
+    capacity: 0.621835559
+  - world: tandankin
+    good: reactor_fuel
+    initial: 3.91809965
+    target: 3.91809965
+    capacity: 7.83619931
+  - world: tandankin
+    good: reactor_modules
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: tandankin
+    good: shield_generators
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: tandankin
+    good: ship_fuel
+    initial: 7.84577224
+    target: 7.84577224
+    capacity: 15.6915445
+  - world: tandankin
+    good: ship_weapons
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: tandankin
+    good: stims
+    initial: 0.00320575141
+    target: 0.00320575141
+    capacity: 0.00641150281
+  - world: tandankin
+    good: sublight_engines
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: tandankin
+    good: synth_food
+    initial: 0.946933667
+    target: 0.946933667
+    capacity: 1.89386733
+  - world: tandankin
+    good: technical_gases
+    initial: 0.255066308
+    target: 0.255066308
+    capacity: 0.510132615
+  - world: tandankin
+    good: textiles
+    initial: 9.89882804
+    target: 9.89882804
+    capacity: 28.5089371
+  - world: tandankin
+    good: tibanna
+    initial: 0.191648182
+    target: 0.191648182
+    capacity: 0.383296364
+  - world: tandankin
+    good: water
+    initial: 101.997612
+    target: 101.997612
+    capacity: 266.716445
+  - world: ziost
+    good: armor
+    initial: 0
+    target: 0
+    capacity: 3.4845124
+  - world: ziost
+    good: blasters
+    initial: 0
+    target: 0
+    capacity: 3.4845124
+  - world: ziost
+    good: chemicals
+    initial: 10.9954251
+    target: 10.9954251
+    capacity: 21.9908502
+  - world: ziost
+    good: circuits
+    initial: 8.55929453
+    target: 8.55929453
+    capacity: 21.4742295
+  - world: ziost
+    good: composites
+    initial: 1.46530179
+    target: 1.46530179
+    capacity: 6.41511596
+  - world: ziost
+    good: crops
+    initial: 42.079651
+    target: 42.079651
+    capacity: 110.293145
+  - world: ziost
+    good: crystal_components
+    initial: 0.422365139
+    target: 0.422365139
+    capacity: 0.844730272
+  - world: ziost
+    good: drugs
+    initial: 8.40623102
+    target: 8.40623102
+    capacity: 16.8124621
+  - world: ziost
+    good: durasteel
+    initial: 2.73489626
+    target: 2.73489626
+    capacity: 5.46979251
+  - world: ziost
+    good: energy_cells
+    initial: 2.26911447
+    target: 2.26911447
+    capacity: 9.76499755
+  - world: ziost
+    good: entertainment
+    initial: 0
+    target: 0
+    capacity: 1.26709542
+  - world: ziost
+    good: fertilizer
+    initial: 8.1787382
+    target: 8.1787382
+    capacity: 25.0687575
+  - world: ziost
+    good: fibers
+    initial: 0.155142879
+    target: 0.155142879
+    capacity: 4.66592626
+  - world: ziost
+    good: fresh_food
+    initial: 28.1150565
+    target: 28.1150565
+    capacity: 73.6526752
+  - world: ziost
+    good: household_goods
+    initial: 7.41504238
+    target: 7.41504238
+    capacity: 25.283622
+  - world: ziost
+    good: hyperdrives
+    initial: 0.238913459
+    target: 0.238913459
+    capacity: 0.477826916
+  - world: ziost
+    good: implants
+    initial: 0.255728365
+    target: 0.255728365
+    capacity: 0.51145673
+  - world: ziost
+    good: kolto
+    initial: 0.592435915
+    target: 0.592435915
+    capacity: 1.18487182
+  - world: ziost
+    good: luxury_food
+    initial: 0.638925234
+    target: 0.638925234
+    capacity: 8.24687529
+  - world: ziost
+    good: luxury_goods
+    initial: 1.19902072
+    target: 1.19902072
+    capacity: 5.01142573
+  - world: ziost
+    good: machinery
+    initial: 0
+    target: 0
+    capacity: 1.7422562
+  - world: ziost
+    good: medical_biomass
+    initial: 0.0159590668
+    target: 0.0159590668
+    capacity: 0.0319181336
+  - world: ziost
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.410017134
+  - world: ziost
+    good: medical_supplies
+    initial: 10.2777017
+    target: 10.2777017
+    capacity: 20.5554035
+  - world: ziost
+    good: metals
+    initial: 10.1789617
+    target: 10.1789617
+    capacity: 22.9713077
+  - world: ziost
+    good: military_supplies
+    initial: 4.60164707
+    target: 4.60164707
+    capacity: 16.1723189
+  - world: ziost
+    good: minerals
+    initial: 3.35572333
+    target: 3.35572333
+    capacity: 6.71144668
+  - world: ziost
+    good: parts
+    initial: 10.7843442
+    target: 10.7843442
+    capacity: 25.9243289
+  - world: ziost
+    good: polymers
+    initial: 23.5811177
+    target: 23.5811177
+    capacity: 47.1622354
+  - world: ziost
+    good: protein
+    initial: 44.9489363
+    target: 44.9489363
+    capacity: 89.8978729
+  - world: ziost
+    good: rare_metals
+    initial: 0.960147668
+    target: 0.960147668
+    capacity: 1.92029534
+  - world: ziost
+    good: rare_ore
+    initial: 0.61109689
+    target: 0.61109689
+    capacity: 1.22219378
+  - world: ziost
+    good: rations
+    initial: 66.0961006
+    target: 66.0961006
+    capacity: 145.259123
+  - world: ziost
+    good: raw_crystals
+    initial: 1.75282938
+    target: 1.75282938
+    capacity: 3.50565877
+  - world: ziost
+    good: raw_fuel
+    initial: 0.00673715721
+    target: 0.00673715721
+    capacity: 0.0134743143
+  - world: ziost
+    good: raw_tibanna
+    initial: 0.728681233
+    target: 0.728681233
+    capacity: 4.94187486
+  - world: ziost
+    good: reactor_fuel
+    initial: 2.84218467
+    target: 2.84218467
+    capacity: 5.68436934
+  - world: ziost
+    good: reactor_modules
+    initial: 0.469083045
+    target: 0.469083045
+    capacity: 2.68042229
+  - world: ziost
+    good: scrap
+    initial: 73.1747604
+    target: 0
+    capacity: 73.1747604
+  - world: ziost
+    good: ship_fuel
+    initial: 4.14239857
+    target: 4.14239857
+    capacity: 8.28479714
+  - world: ziost
+    good: spice
+    initial: 0.0159590668
+    target: 0.0159590668
+    capacity: 1.77417433
+  - world: ziost
+    good: stims
+    initial: 0.00641150281
+    target: 0.00641150281
+    capacity: 0.0128230056
+  - world: ziost
+    good: technical_gases
+    initial: 0.060228921
+    target: 0.060228921
+    capacity: 3.60497024
+  - world: ziost
+    good: textiles
+    initial: 2.58399402
+    target: 2.58399402
+    capacity: 5.16798803
+  - world: ziost
+    good: tibanna
+    initial: 2.20499945
+    target: 2.20499945
+    capacity: 8.76563939
+  - world: ziost
+    good: water
+    initial: 112.850331
+    target: 112.850331
+    capacity: 298.875422
+  - world: balmorra
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: balmorra
+    good: crystal_components
+    initial: 0
+    target: 0
+    capacity: 0.84473028
+  - world: balmorra
+    good: entertainment
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: balmorra
+    good: hyperdrives
+    initial: 0
+    target: 0
+    capacity: 0.955653833
+  - world: balmorra
+    good: life_support
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: balmorra
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: balmorra
+    good: raw_crystals
+    initial: 0
+    target: 0
+    capacity: 16.2362127
+  - world: balmorra
+    good: shield_generators
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: balmorra
+    good: synth_food
+    initial: 0
+    target: 0
+    capacity: 5.691951
+  - world: balmorra
+    good: tibanna
+    initial: 0
+    target: 0
+    capacity: 5.17937923
+  - world: dromund_kaas
+    good: com_equipment
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: dromund_kaas
+    good: composites
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: dromund_kaas
+    good: hull_sections
+    initial: 0
+    target: 0
+    capacity: 3.3789211
+  - world: dromund_kaas
+    good: lab_equipment
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: dromund_kaas
+    good: shield_generators
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: dromund_kaas
+    good: sublight_engines
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: korriban
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: korriban
+    good: com_equipment
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: korriban
+    good: crystal_components
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: korriban
+    good: education_kits
+    initial: 0
+    target: 0
+    capacity: 6.75784221
+  - world: korriban
+    good: entertainment
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: korriban
+    good: hull_sections
+    initial: 0
+    target: 0
+    capacity: 5.91311193
+  - world: korriban
+    good: lab_equipment
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: korriban
+    good: machinery
+    initial: 0
+    target: 0
+    capacity: 3.3789211
+  - world: korriban
+    good: medical_biomass
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: korriban
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: korriban
+    good: processors
+    initial: 0
+    target: 0
+    capacity: 3.80128625
+  - world: korriban
+    good: raw_fuel
+    initial: 0
+    target: 0
+    capacity: 1.13724714
+  - world: korriban
+    good: shield_generators
+    initial: 0
+    target: 0
+    capacity: 3.47983143
+  - world: korriban
+    good: ship_weapons
+    initial: 0
+    target: 0
+    capacity: 5.06838166
+  - world: korriban
+    good: technical_gases
+    initial: 0
+    target: 0
+    capacity: 10.3596785
+  - world: korriban
+    good: work_droids
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: nez_peron
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: nez_peron
+    good: com_equipment
+    initial: 0
+    target: 0
+    capacity: 0.84473028
+  - world: nez_peron
+    good: durasteel
+    initial: 0
+    target: 0
+    capacity: 10.8706089
+  - world: nez_peron
+    good: rare_ore
+    initial: 0
+    target: 0
+    capacity: 1.99798645
+  - world: nez_peron
+    good: raw_fuel
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: nez_peron
+    good: reactor_modules
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: nez_peron
+    good: technical_gases
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: nez_peron
+    good: textiles
+    initial: 0
+    target: 0
+    capacity: 15.8019404
+  - world: nez_peron
+    good: tibanna
+    initial: 0
+    target: 0
+    capacity: 3.06637091
+  - world: sernpidal
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: sernpidal
+    good: composites
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: sernpidal
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: sernpidal
+    good: raw_crystals
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: building_modules
+    initial: 0
+    target: 0
+    capacity: 5.06838167
+  - world: skaross
+    good: chemicals
+    initial: 0
+    target: 0
+    capacity: 51.4158434
+  - world: skaross
+    good: circuits
+    initial: 0
+    target: 0
+    capacity: 8.69920135
+  - world: skaross
+    good: com_equipment
+    initial: 0
+    target: 0
+    capacity: 0.84473028
+  - world: skaross
+    good: composites
+    initial: 0
+    target: 0
+    capacity: 2.53419083
+  - world: skaross
+    good: crops
+    initial: 0
+    target: 0
+    capacity: 62.7335327
+  - world: skaross
+    good: drugs
+    initial: 0
+    target: 0
+    capacity: 36.6912951
+  - world: skaross
+    good: durasteel
+    initial: 0
+    target: 0
+    capacity: 10.8706089
+  - world: skaross
+    good: energy_cells
+    initial: 0
+    target: 0
+    capacity: 3.32840624
+  - world: skaross
+    good: fertilizer
+    initial: 0
+    target: 0
+    capacity: 45.4611982
+  - world: skaross
+    good: fibers
+    initial: 0
+    target: 0
+    capacity: 1.26709542
+  - world: skaross
+    good: fresh_food
+    initial: 0
+    target: 0
+    capacity: 85.0499587
+  - world: skaross
+    good: household_goods
+    initial: 0
+    target: 0
+    capacity: 21.4980477
+  - world: skaross
+    good: implants
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: kolto
+    initial: 0
+    target: 0
+    capacity: 1.36839052
+  - world: skaross
+    good: luxury_food
+    initial: 0
+    target: 0
+    capacity: 1.80769929
+  - world: skaross
+    good: luxury_goods
+    initial: 0
+    target: 0
+    capacity: 1.03657275
+  - world: skaross
+    good: medical_equipment
+    initial: 0
+    target: 0
+    capacity: 1.68946056
+  - world: skaross
+    good: medical_supplies
+    initial: 0
+    target: 0
+    capacity: 89.1816629
+  - world: skaross
+    good: metals
+    initial: 0
+    target: 0
+    capacity: 22.0135894
+  - world: skaross
+    good: military_supplies
+    initial: 0
+    target: 0
+    capacity: 12.0750857
+  - world: skaross
+    good: minerals
+    initial: 0
+    target: 0
+    capacity: 36.1188121
+  - world: skaross
+    good: parts
+    initial: 0
+    target: 0
+    capacity: 11.2619441
+  - world: skaross
+    good: polymers
+    initial: 0
+    target: 0
+    capacity: 147.175507
+  - world: skaross
+    good: protein
+    initial: 0
+    target: 0
+    capacity: 117.738949
+  - world: skaross
+    good: rare_metals
+    initial: 0
+    target: 0
+    capacity: 6.16513507
+  - world: skaross
+    good: rare_ore
+    initial: 0
+    target: 0
+    capacity: 1.99798645
+  - world: skaross
+    good: rations
+    initial: 0
+    target: 0
+    capacity: 202.289252
+  - world: skaross
+    good: raw_crystals
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: raw_fuel
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: reactor_fuel
+    initial: 0
+    target: 0
+    capacity: 36.612284
+  - world: skaross
+    good: reactor_modules
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: ship_fuel
+    initial: 6.23184654
+    target: 6.23184654
+    capacity: 12.4636931
+  - world: skaross
+    good: technical_gases
+    initial: 0
+    target: 0
+    capacity: 0.829645809
+  - world: skaross
+    good: textiles
+    initial: 0
+    target: 0
+    capacity: 15.8019404
+  - world: skaross
+    good: tibanna
+    initial: 0
+    target: 0
+    capacity: 3.06637091
+  - world: skaross
+    good: water
+    initial: 0
+    target: 0
+    capacity: 96.5997716
+  shipping:
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: chemicals
+    rate: 0.267290415
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: circuits
+    rate: 0.219939146
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: composites
+    rate: 0.118790195
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: crops
+    rate: 1.65744143
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: drugs
+    rate: 0.263690476
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: durasteel
+    rate: 0.159009799
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: energy_cells
+    rate: 0.143932141
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: fertilizer
+    rate: 0.7152622
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: fibers
+    rate: 0.059395098
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: fresh_food
+    rate: 0.06873911
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: household_goods
+    rate: 0.863462176
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: implants
+    rate: 0.00659226192
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: life_support
+    rate: 0.0791934636
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: luxury_food
+    rate: 0.0003732224
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: luxury_goods
+    rate: 0.0161703154
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: medical_supplies
+    rate: 0.608420697
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: metals
+    rate: 0.449602416
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: military_supplies
+    rate: 0.107932771
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: minerals
+    rate: 0.094902675
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: parts
+    rate: 0.472982957
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: polymers
+    rate: 2.09746422
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: processors
+    rate: 0.0593950976
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: protein
+    rate: 0.22594682
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: rare_metals
+    rate: 0.0352361784
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: rations
+    rate: 1.95916899
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: raw_crystals
+    rate: 0.097527384
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: reactor_modules
+    rate: 0.0201098013
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: shield_generators
+    rate: 0.00473017123
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: ship_fuel
+    rate: 0.352525226
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: ship_weapons
+    rate: 0.0791934636
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: stims
+    rate: 0.00120215678
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: textiles
+    rate: 0.395200456
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    good: tibanna
+    rate: 0.0599445024
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: water
+    rate: 1.346594454
+  - link: ashas_ree--korriban
+    source: ashas_ree
+    target: korriban
+    good: work_droids
+    rate: 0.118790195
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: chemicals
+    rate: 0.0925999928
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: circuits
+    rate: 0.1457258548
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: composites
+    rate: 0.125091001
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: crops
+    rate: 6.647418343
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: drugs
+    rate: 0.191822408
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: energy_cells
+    rate: 0.1198890044
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: fertilizer
+    rate: 0.7700416369
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: fibers
+    rate: 0.428859497
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: fresh_food
+    rate: 7.038123649
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: ground_vehicles
+    rate: 0.0305983584
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: household_goods
+    rate: 0.095649866
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: hull_sections
+    rate: 0.118790195
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: implants
+    rate: 0.00179670171
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: life_support
+    rate: 0.0791934636
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: luxury_food
+    rate: 0.0285226957
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: medical_supplies
+    rate: 0.449951601
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: metals
+    rate: 0.393778411
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: military_supplies
+    rate: 0.1679099417
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: minerals
+    rate: 0.12838854
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: parts
+    rate: 0.029179798
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: polymers
+    rate: 2.454562266
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: protein
+    rate: 1.802345011
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: rare_metals
+    rate: 0.0671895164
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: rations
+    rate: 3.34129023
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: raw_crystals
+    rate: 0.08974078253
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: reactor_fuel
+    rate: 0.264295715
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: ship_fuel
+    rate: 1.33604993
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: textiles
+    rate: 0.2333987077
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    good: tibanna
+    rate: 0.0509609938
+  - link: begeren--korriban
+    source: begeren
+    target: korriban
+    good: water
+    rate: 18.91351026
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: circuits
+    rate: 0.0719987374
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: drugs
+    rate: 0.0240431355
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: energy_cells
+    rate: 0.0359993687
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: fresh_food
+    rate: 1.198045766
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: household_goods
+    rate: 0.28799495
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: implants
+    rate: 0.00359993687
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: luxury_food
+    rate: 0.01254258422
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: luxury_goods
+    rate: 0.00719334031
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: medical_supplies
+    rate: 0.0500097219
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: military_supplies
+    rate: 0.0719987374
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    good: parts
+    rate: 0.143997475
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: polymers
+    rate: 0.658111799
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: rations
+    rate: 1.323058467
+  - link: begeren--ziost
+    source: begeren
+    target: ziost
+    good: water
+    rate: 0.334536273
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: building_modules
+    rate: 0.237580391
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: chemicals
+    rate: 1.321152569
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: circuits
+    rate: 0.0959112039
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: composites
+    rate: 0.118790195
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: crops
+    rate: 0.889760136
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: drugs
+    rate: 1.096612304
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: energy_cells
+    rate: 0.0479556019
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: fertilizer
+    rate: 0.001254134
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: fibers
+    rate: 0.1980985114
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: fresh_food
+    rate: 1.53751167
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: household_goods
+    rate: 0.048086271
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: implants
+    rate: 0.00479556019
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: luxury_food
+    rate: 0.0352570127
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: luxury_goods
+    rate: 0.00358687
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: medical_equipment
+    rate: 0.0791934636
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: medical_supplies
+    rate: 0.149485582
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: metals
+    rate: 0.07195518
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: military_supplies
+    rate: 0.0959112036
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: minerals
+    rate: 0.131866791
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: parts
+    rate: 0.1918224078
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: polymers
+    rate: 2.40588036
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: protein
+    rate: 1.319697946
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: rare_metals
+    rate: 0.005991184
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: rations
+    rate: 2.55567571
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: raw_crystals
+    rate: 0.0059911835
+  - link: belkadan--sernpidal
+    source: belkadan
+    target: sernpidal
+    good: reactor_fuel
+    rate: 0.23148162
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: ship_fuel
+    rate: 0.350084709
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: textiles
+    rate: 0.239061071
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    good: water
+    rate: 1.870241389
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: chemical_feedstock
+    rate: 0.178035171
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: chemicals
+    rate: 11.32665344
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: circuits
+    rate: 0.529111463
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: composites
+    rate: 0.00893506443
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: crops
+    rate: 6.77082781
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: drugs
+    rate: 0.239386
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: durasteel
+    rate: 0.098683645
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: energy_cells
+    rate: 0.174051394
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: fertilizer
+    rate: 1.13554983
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: fibers
+    rate: 1.104135634
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: fresh_food
+    rate: 1.14958167
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: household_goods
+    rate: 0.00955664
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: hull_sections
+    rate: 0.158386926
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: hyperdrives
+    rate: 0.0051995417
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: implants
+    rate: 0.0137856021
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: lab_equipment
+    rate: 0.0178701289
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: life_support
+    rate: 0.0395967314
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: luxury_food
+    rate: 0.0386219556
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: luxury_goods
+    rate: 0.023383256
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: machinery
+    rate: 0.158386926
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: medical_supplies
+    rate: 1.09158318
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: metals
+    rate: 0.41058668
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: military_supplies
+    rate: 0.131975907
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: minerals
+    rate: 0.033793602
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: parts
+    rate: 0.16552897
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: polymers
+    rate: 3.1862644
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: protein
+    rate: 3.19969442
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: rare_metals
+    rate: 0.033199154
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: rare_ore
+    rate: 0.0468278075
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: rations
+    rate: 3.3207583
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: raw_crystals
+    rate: 0.064288267
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: raw_fuel
+    rate: 0.07126321698
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: reactor_modules
+    rate: 0.0503240545
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: shield_generators
+    rate: 0.0791934636
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: ship_weapons
+    rate: 0.0791934624
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: stims
+    rate: 0.00060107838
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: sublight_engines
+    rate: 0.0791934636
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: synth_food
+    rate: 0.089260141
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: technical_gases
+    rate: 0.0828451866
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: textiles
+    rate: 0.24559687
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: tibanna
+    rate: 0.0359340341
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: water
+    rate: 17.40374326
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    good: work_droids
+    rate: 0.118790195
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: chemicals
+    rate: 0.366342813
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: circuits
+    rate: 0.3792883162
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: composites
+    rate: 0.00893506443
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: crops
+    rate: 6.77082781
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: drugs
+    rate: 0.263690476
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: energy_cells
+    rate: 0.114139559
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: fertilizer
+    rate: 0.677082775
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: fibers
+    rate: 1.104135624
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: fresh_food
+    rate: 0.523339
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: household_goods
+    rate: 0.2399086788
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: hull_sections
+    rate: 0.158386926
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: hyperdrives
+    rate: 0.0051995417
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: implants
+    rate: 0.006592261891
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: lab_equipment
+    rate: 0.0178701289
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: life_support
+    rate: 0.0395967319
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: luxury_food
+    rate: 0.0054777065
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: luxury_goods
+    rate: 0.0197767857
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: medical_supplies
+    rate: 0.584410223
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: metals
+    rate: 0.187043873
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: military_supplies
+    rate: 0.011890898
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: parts
+    rate: 0.2940405119
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: polymers
+    rate: 1.72588926
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: protein
+    rate: 3.148292707
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: rare_metals
+    rate: 0.06328536
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: rations
+    rate: 3.77634538
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: raw_crystals
+    rate: 0.0582970836
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: reactor_fuel
+    rate: 0.734643684
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: reactor_modules
+    rate: 0.0791934636
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: shield_generators
+    rate: 0.0791934636
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: ship_fuel
+    rate: 1.22590191
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: ship_weapons
+    rate: 0.0791934636
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: sublight_engines
+    rate: 0.0791934636
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: synth_food
+    rate: 0.177550062
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: technical_gases
+    rate: 0.0478249327
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    good: textiles
+    rate: 1.284345442
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: tibanna
+    rate: 0.0359340341
+  - link: dromund_kaas--tandankin
+    source: dromund_kaas
+    target: tandankin
+    good: water
+    rate: 16.73193125
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: building_modules
+    rate: 0.237580391
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: chemical_feedstock
+    rate: 0.0887750311
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: chemicals
+    rate: 1.04896847
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: circuits
+    rate: 0.820252146
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: com_equipment
+    rate: 0.0395967319
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: composites
+    rate: 0.041375769
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: crops
+    rate: 0.64427183
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: drugs
+    rate: 0.952614829
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: durasteel
+    rate: 0.038327945
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: energy_cells
+    rate: 0.107867437
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: fertilizer
+    rate: 0.11253278
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: fibers
+    rate: 0.1850751014
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: fresh_food
+    rate: 2.97251512
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: household_goods
+    rate: 0.240431356
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: implants
+    rate: 0.0149812254
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: lab_equipment
+    rate: 0.0178701289
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: luxury_food
+    rate: 0.0609345088
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: luxury_goods
+    rate: 0.0162095161
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: medical_equipment
+    rate: 0.0384391063
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: medical_supplies
+    rate: 0.46218813
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: metals
+    rate: 0.550542266
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: military_supplies
+    rate: 0.227887111
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: minerals
+    rate: 0.779329596
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: parts
+    rate: 0.517352377
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: polymers
+    rate: 2.61808414
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: processors
+    rate: 0.0593950976
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: protein
+    rate: 0.02557327
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: rare_metals
+    rate: 0.067000971
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: rations
+    rate: 2.57525513
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: raw_crystals
+    rate: 0.0883825314
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: reactor_fuel
+    rate: 0.25124694
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: reactor_modules
+    rate: 0.0191639717
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: shield_generators
+    rate: 0.0791934636
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: ship_fuel
+    rate: 3.2860254
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    good: synth_food
+    rate: 0.177550062
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: textiles
+    rate: 0.080157738
+  - link: korriban--nez_peron
+    source: korriban
+    target: nez_peron
+    good: water
+    rate: 2.93901423
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: chemicals
+    rate: 0.613488811
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: circuits
+    rate: 0.02502331
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: com_equipment
+    rate: 0.0395967319
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: drugs
+    rate: 0.215865543
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: energy_cells
+    rate: 0.023977801
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: fertilizer
+    rate: 0.212786651
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: fresh_food
+    rate: 4.39692942
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: household_goods
+    rate: 0.479294681
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: hull_sections
+    rate: 0.118790195
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: hyperdrives
+    rate: 0.0395967317
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: implants
+    rate: 0.0059911835
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: life_support
+    rate: 0.0395967317
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: luxury_food
+    rate: 0.0290110576
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: luxury_goods
+    rate: 0.0179735505
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: medical_biomass
+    rate: 0.00328202306
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: medical_supplies
+    rate: 1.45621041
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: metals
+    rate: 0.7654723052
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: military_supplies
+    rate: 0.1198236698
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: minerals
+    rate: 1.10880213
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: parts
+    rate: 0.239647342
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: polymers
+    rate: 0.678269664
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: protein
+    rate: 0.6416016165
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: rare_metals
+    rate: 0.2661642971
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: rare_ore
+    rate: 0.0677528597
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: rations
+    rate: 8.94241791
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: raw_fuel
+    rate: 0.04951880852
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: reactor_fuel
+    rate: 0.057994333
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: reactor_modules
+    rate: 0.0395967324
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: ship_fuel
+    rate: 0.432489489
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: stims
+    rate: 0.00120215678
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: sublight_engines
+    rate: 0.0791934636
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: technical_gases
+    rate: 0.3808105045
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: textiles
+    rate: 0.651558947
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    good: tibanna
+    rate: 0.155888373
+  - link: korriban--ruuria
+    source: korriban
+    target: ruuria
+    good: water
+    rate: 0.7033624
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: chemicals
+    rate: 0.29130754
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: circuits
+    rate: 0.52937813
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: composites
+    rate: 0.021014884
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: crops
+    rate: 0.88976015
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: crystal_components
+    rate: 0.0395967319
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: drugs
+    rate: 0.33555856
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: durasteel
+    rate: 0.118167325
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: energy_cells
+    rate: 0.1798661743
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: entertainment
+    rate: 0.118790195
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: fertilizer
+    rate: 0.17439345
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: fresh_food
+    rate: 1.776586773
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: household_goods
+    rate: 0.566433267
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: implants
+    rate: 0.0113878221
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: luxury_food
+    rate: 0.05737077422
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: luxury_goods
+    rate: 0.08455604846
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: machinery
+    rate: 0.158386926
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: medical_biomass
+    rate: 0.00328202306
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: medical_supplies
+    rate: 0.808801929
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: metals
+    rate: 0.526609556
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: military_supplies
+    rate: 0.215604204
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: minerals
+    rate: 0.5451419447
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: parts
+    rate: 0.377333085
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: polymers
+    rate: 0.42096413
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: protein
+    rate: 3.19706452
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: rare_metals
+    rate: 0.04331892
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: rations
+    rate: 0.66016459
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: raw_crystals
+    rate: 0.03357545533
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: raw_fuel
+    rate: 0.00126321698
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: reactor_modules
+    rate: 0.0194869298
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: ship_fuel
+    rate: 0.647249776
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: spice
+    rate: 0.00179670171
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: technical_gases
+    rate: 0.0109771185
+  - link: korriban--ziost
+    source: korriban
+    target: ziost
+    good: textiles
+    rate: 0.2216118077
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: tibanna
+    rate: 0.059944502
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    good: water
+    rate: 0.55089966
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: building_modules
+    rate: 0.237580391
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: chemicals
+    rate: 1.186216921
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: circuits
+    rate: 0.155888373
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: com_equipment
+    rate: 0.0395967319
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: composites
+    rate: 0.118790195
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: crops
+    rate: 0.37424852
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: drugs
+    rate: 1.048787376
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: durasteel
+    rate: 0.038327945
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: energy_cells
+    rate: 0.0599771695
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: fertilizer
+    rate: 0.303735501
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: fibers
+    rate: 0.0593950976
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: fresh_food
+    rate: 1.0951159
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: household_goods
+    rate: 0.048086271
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: implants
+    rate: 0.008990042
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: luxury_food
+    rate: 0.0263197244
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: luxury_goods
+    rate: 0.0089965754
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: medical_equipment
+    rate: 0.0791934636
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: medical_supplies
+    rate: 0.24896145
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: metals
+    rate: 0.244553765
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: military_supplies
+    rate: 0.17980084
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: minerals
+    rate: 0.231315183
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: parts
+    rate: 0.239908678
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: polymers
+    rate: 3.53335972
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: protein
+    rate: 0.33704235
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: rare_metals
+    rate: 0.01557317
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: rations
+    rate: 0.61855522
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: raw_crystals
+    rate: 0.0059911835
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: reactor_fuel
+    rate: 0.327793203
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    good: reactor_modules
+    rate: 0.0191639717
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: ship_fuel
+    rate: 2.15528124
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: textiles
+    rate: 0.080157738
+  - link: nez_peron--skaross
+    source: nez_peron
+    target: skaross
+    good: water
+    rate: 1.9972496
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: building_modules
+    rate: 0.237580391
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: chemicals
+    rate: 1.186216921
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: circuits
+    rate: 0.155888373
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: com_equipment
+    rate: 0.0395967319
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: composites
+    rate: 0.118790195
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: crops
+    rate: 0.37424852
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: drugs
+    rate: 1.048787376
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: durasteel
+    rate: 0.038327945
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: energy_cells
+    rate: 0.0599771695
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: fertilizer
+    rate: 0.303735501
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: fibers
+    rate: 0.0593950976
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: fresh_food
+    rate: 1.0951159
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: household_goods
+    rate: 0.048086271
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: implants
+    rate: 0.008990042
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: luxury_food
+    rate: 0.0263197244
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: luxury_goods
+    rate: 0.0089965754
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: medical_equipment
+    rate: 0.0791934636
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: medical_supplies
+    rate: 0.24896145
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: metals
+    rate: 0.244553765
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: military_supplies
+    rate: 0.17980084
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: minerals
+    rate: 0.231315183
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: parts
+    rate: 0.239908678
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: polymers
+    rate: 3.53335972
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: protein
+    rate: 0.33704235
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: rare_metals
+    rate: 0.01557317
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: rations
+    rate: 0.61855522
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: raw_crystals
+    rate: 0.0059911835
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: reactor_fuel
+    rate: 0.327793203
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    good: reactor_modules
+    rate: 0.0191639717
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: ship_fuel
+    rate: 1.18155522
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: textiles
+    rate: 0.080157738
+  - link: sernpidal--skaross
+    source: skaross
+    target: sernpidal
+    good: water
+    rate: 1.9972496
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: ship_fuel
+    rate: 10
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    good: reactor_fuel
+    rate: 1.2
+  emptyReturns:
+  - link: ashas_ree--korriban
+    source: korriban
+    target: ashas_ree
+    slotsPerHour: 4.532333405
+  - link: begeren--korriban
+    source: korriban
+    target: begeren
+    slotsPerHour: 86.72435219
+  - link: begeren--ziost
+    source: ziost
+    target: begeren
+    slotsPerHour: 4.626446418
+  - link: belkadan--sernpidal
+    source: sernpidal
+    target: belkadan
+    slotsPerHour: 1.870460128
+  - link: dromund_kaas--korriban
+    source: dromund_kaas
+    target: korriban
+    slotsPerHour: 82.01987739
+  - link: dromund_kaas--tandankin
+    source: tandankin
+    target: dromund_kaas
+    slotsPerHour: 74.90531784
+  - link: korriban--nez_peron
+    source: nez_peron
+    target: korriban
+    slotsPerHour: 4.940565652
+  - link: korriban--ruuria
+    source: ruuria
+    target: korriban
+    slotsPerHour: 18.18706375
+  - link: korriban--ziost
+    source: ziost
+    target: korriban
+    slotsPerHour: 7.835925435
+  - link: nez_peron--skaross
+    source: skaross
+    target: nez_peron
+    slotsPerHour: 3.830961746
+  - link: sernpidal--skaross
+    source: sernpidal
+    target: skaross
+    slotsPerHour: 2.857235726
+  - link: dromund_kaas--korriban
+    source: korriban
+    target: dromund_kaas
+    slotsPerHour: 11.34
+  demands:
+  - world: ashas_ree
+    good: circuits
+    group: maintenance
+    rate: 0.0878968252
+  - world: ashas_ree
+    good: drugs
+    group: care_drugs
+    rate: 0.17579365
+  - world: ashas_ree
+    good: education_kits
+    group: orders
+    rate: 0.105591285
+    orderTotal: 3.4845124
+  - world: ashas_ree
+    good: energy_cells
+    group: other
+    rate: 0.0439484126
+  - world: ashas_ree
+    good: fresh_food
+    group: nutrition
+    rate: 1.51306363
+  - world: ashas_ree
+    good: household_goods
+    group: household
+    rate: 0.351587301
+  - world: ashas_ree
+    good: implants
+    group: implant_care
+    rate: 0.00439484126
+  - world: ashas_ree
+    good: kolto
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: ashas_ree
+    good: luxury_food
+    group: luxury
+    rate: 0.0263690476
+  - world: ashas_ree
+    good: luxury_goods
+    group: luxury
+    rate: 0.0131845238
+  - world: ashas_ree
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.348071428
+  - world: ashas_ree
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00439484126
+  - world: ashas_ree
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: ashas_ree
+    good: military_supplies
+    group: military
+    rate: 0.0878968252
+  - world: ashas_ree
+    good: parts
+    group: maintenance
+    rate: 0.17579365
+  - world: ashas_ree
+    good: rations
+    group: nutrition
+    rate: 2.83782922
+  - world: ashas_ree
+    good: shield_generators
+    group: orders
+    rate: 0.0263978213
+    orderTotal: 0.8711281
+  - world: ashas_ree
+    good: stims
+    group: special_medicine
+    rate: 0.000801437852
+  - world: ashas_ree
+    good: water
+    group: water
+    rate: 8.78968252
+  - world: balmorra
+    good: circuits
+    group: maintenance
+    rate: 0.0399847798
+  - world: balmorra
+    good: drugs
+    group: care_drugs
+    rate: 0.0799695595
+  - world: balmorra
+    good: energy_cells
+    group: other
+    rate: 0.0199923899
+  - world: balmorra
+    good: fresh_food
+    group: nutrition
+    rate: 0.59377398
+  - world: balmorra
+    good: household_goods
+    group: household
+    rate: 0.159939119
+  - world: balmorra
+    good: implants
+    group: implant_care
+    rate: 0.00199923899
+  - world: balmorra
+    good: kolto
+    group: regenerative_care
+    rate: 0.00599771697
+  - world: balmorra
+    good: luxury_food
+    group: luxury
+    rate: 0.0119954339
+  - world: balmorra
+    good: luxury_goods
+    group: luxury
+    rate: 0.00599771697
+  - world: balmorra
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.158339728
+  - world: balmorra
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00199923899
+  - world: balmorra
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.00599771697
+  - world: balmorra
+    good: military_supplies
+    group: military
+    rate: 0.0399847798
+  - world: balmorra
+    good: parts
+    group: maintenance
+    rate: 0.0799695595
+  - world: balmorra
+    good: rations
+    group: nutrition
+    rate: 1.38547262
+  - world: balmorra
+    good: water
+    group: water
+    rate: 3.99847798
+  - world: begeren
+    good: circuits
+    group: maintenance
+    rate: 0.071955181
+  - world: begeren
+    good: drugs
+    group: care_drugs
+    rate: 0.143910362
+  - world: begeren
+    good: energy_cells
+    group: other
+    rate: 0.0359775905
+  - world: begeren
+    good: fresh_food
+    group: nutrition
+    rate: 1.06853444
+  - world: begeren
+    good: household_goods
+    group: household
+    rate: 0.287820724
+  - world: begeren
+    good: implants
+    group: implant_care
+    rate: 0.00359775905
+  - world: begeren
+    good: kolto
+    group: regenerative_care
+    rate: 0.0107932772
+  - world: begeren
+    good: luxury_food
+    group: luxury
+    rate: 0.0215865543
+  - world: begeren
+    good: luxury_goods
+    group: luxury
+    rate: 0.0107932772
+  - world: begeren
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.284942517
+  - world: begeren
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00359775905
+  - world: begeren
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0107932772
+  - world: begeren
+    good: military_supplies
+    group: military
+    rate: 0.071955181
+  - world: begeren
+    good: parts
+    group: maintenance
+    rate: 0.143910362
+  - world: begeren
+    good: rations
+    group: nutrition
+    rate: 2.49324702
+  - world: begeren
+    good: water
+    group: water
+    rate: 7.1955181
+  - world: belkadan
+    good: building_modules
+    group: orders
+    rate: 0.158386927
+    orderTotal: 5.2267686
+  - world: belkadan
+    good: circuits
+    group: maintenance
+    rate: 0.0639408025
+  - world: belkadan
+    good: drugs
+    group: care_drugs
+    rate: 0.127881605
+  - world: belkadan
+    good: energy_cells
+    group: other
+    rate: 0.0319704013
+  - world: belkadan
+    good: fresh_food
+    group: nutrition
+    rate: 0.949520917
+  - world: belkadan
+    good: household_goods
+    group: household
+    rate: 0.25576321
+  - world: belkadan
+    good: implants
+    group: implant_care
+    rate: 0.00319704013
+  - world: belkadan
+    good: kolto
+    group: regenerative_care
+    rate: 0.00959112038
+  - world: belkadan
+    good: luxury_food
+    group: luxury
+    rate: 0.0191822408
+  - world: belkadan
+    good: luxury_goods
+    group: luxury
+    rate: 0.00959112038
+  - world: belkadan
+    good: medical_equipment
+    group: orders
+    rate: 0.0527956424
+    orderTotal: 1.7422562
+  - world: belkadan
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.253205578
+  - world: belkadan
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00319704013
+  - world: belkadan
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.00959112038
+  - world: belkadan
+    good: military_supplies
+    group: military
+    rate: 0.0639408025
+  - world: belkadan
+    good: parts
+    group: maintenance
+    rate: 0.127881605
+  - world: belkadan
+    good: rations
+    group: nutrition
+    rate: 2.21554881
+  - world: belkadan
+    good: water
+    group: water
+    rate: 6.39408025
+  - world: dromund_kaas
+    good: circuits
+    group: maintenance
+    rate: 0.0959112038
+  - world: dromund_kaas
+    good: drugs
+    group: care_drugs
+    rate: 0.191822408
+  - world: dromund_kaas
+    good: energy_cells
+    group: other
+    rate: 0.0479556019
+  - world: dromund_kaas
+    good: fresh_food
+    group: nutrition
+    rate: 1.73173297
+  - world: dromund_kaas
+    good: household_goods
+    group: household
+    rate: 0.383644815
+  - world: dromund_kaas
+    good: implants
+    group: implant_care
+    rate: 0.00479556019
+  - world: dromund_kaas
+    good: kolto
+    group: regenerative_care
+    rate: 0.0143866806
+  - world: dromund_kaas
+    good: luxury_food
+    group: luxury
+    rate: 0.0287733611
+  - world: dromund_kaas
+    good: luxury_goods
+    group: luxury
+    rate: 0.0143866806
+  - world: dromund_kaas
+    good: machinery
+    group: orders
+    rate: 0.105591285
+    orderTotal: 3.4845124
+  - world: dromund_kaas
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.379808367
+  - world: dromund_kaas
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00479556019
+  - world: dromund_kaas
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0143866806
+  - world: dromund_kaas
+    good: military_supplies
+    group: military
+    rate: 0.0959112038
+  - world: dromund_kaas
+    good: parts
+    group: maintenance
+    rate: 0.191822408
+  - world: dromund_kaas
+    good: rations
+    group: nutrition
+    rate: 2.95636485
+  - world: dromund_kaas
+    good: reactor_modules
+    group: orders
+    rate: 0.0263978213
+    orderTotal: 0.8711281
+  - world: dromund_kaas
+    good: stims
+    group: special_medicine
+    rate: 0.000400718926
+  - world: dromund_kaas
+    good: synth_food
+    group: nutrition
+    rate: 0.0595067605
+  - world: dromund_kaas
+    good: technical_gases
+    group: closed_habitats
+    rate: 0.016028757
+  - world: dromund_kaas
+    good: water
+    group: water
+    rate: 9.59112038
+  - world: dromund_kaas
+    good: work_droids
+    group: orders
+    rate: 0.0791934634
+    orderTotal: 2.6133843
+  - world: korriban
+    good: circuits
+    group: maintenance
+    rate: 0.0639408025
+  - world: korriban
+    good: drugs
+    group: care_drugs
+    rate: 0.127881605
+  - world: korriban
+    good: energy_cells
+    group: other
+    rate: 0.0319704013
+  - world: korriban
+    good: fresh_food
+    group: nutrition
+    rate: 0.949520917
+  - world: korriban
+    good: ground_vehicles
+    group: orders
+    rate: 0.0527956424
+    orderTotal: 1.7422562
+  - world: korriban
+    good: household_goods
+    group: household
+    rate: 0.25576321
+  - world: korriban
+    good: implants
+    group: implant_care
+    rate: 0.00319704013
+  - world: korriban
+    good: kolto
+    group: regenerative_care
+    rate: 0.00959112038
+  - world: korriban
+    good: luxury_food
+    group: luxury
+    rate: 0.0191822408
+  - world: korriban
+    good: luxury_goods
+    group: luxury
+    rate: 0.00959112038
+  - world: korriban
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.253205578
+  - world: korriban
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00319704013
+  - world: korriban
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.00959112038
+  - world: korriban
+    good: military_supplies
+    group: military
+    rate: 0.0639408025
+  - world: korriban
+    good: parts
+    group: maintenance
+    rate: 0.127881605
+  - world: korriban
+    good: rations
+    group: nutrition
+    rate: 2.21554881
+  - world: korriban
+    good: spice
+    group: shadow
+    rate: 0.00119780114
+  - world: korriban
+    good: water
+    group: water
+    rate: 6.39408025
+  - world: nez_peron
+    good: circuits
+    group: maintenance
+    rate: 0.0320575141
+  - world: nez_peron
+    good: drugs
+    group: care_drugs
+    rate: 0.0641150281
+  - world: nez_peron
+    good: energy_cells
+    group: other
+    rate: 0.016028757
+  - world: nez_peron
+    good: fresh_food
+    group: nutrition
+    rate: 0.753752299
+  - world: nez_peron
+    good: household_goods
+    group: household
+    rate: 0.128230056
+  - world: nez_peron
+    good: implants
+    group: implant_care
+    rate: 0.0016028757
+  - world: nez_peron
+    good: kolto
+    group: regenerative_care
+    rate: 0.00480862711
+  - world: nez_peron
+    good: lab_equipment
+    group: orders
+    rate: 0.0527956424
+    orderTotal: 1.7422562
+  - world: nez_peron
+    good: luxury_food
+    group: luxury
+    rate: 0.00961725422
+  - world: nez_peron
+    good: luxury_goods
+    group: luxury
+    rate: 0.00480862711
+  - world: nez_peron
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.126947756
+  - world: nez_peron
+    good: medical_supplies
+    group: implant_care
+    rate: 0.0016028757
+  - world: nez_peron
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.00480862711
+  - world: nez_peron
+    good: military_supplies
+    group: military
+    rate: 0.0320575141
+  - world: nez_peron
+    good: parts
+    group: maintenance
+    rate: 0.0641150281
+  - world: nez_peron
+    good: rations
+    group: nutrition
+    rate: 0.833094647
+  - world: nez_peron
+    good: water
+    group: water
+    rate: 3.20575141
+  - world: ruuria
+    good: circuits
+    group: maintenance
+    rate: 0.0798824467
+  - world: ruuria
+    good: drugs
+    group: care_drugs
+    rate: 0.159764893
+  - world: ruuria
+    good: energy_cells
+    group: other
+    rate: 0.0399412234
+  - world: ruuria
+    good: freighters
+    group: orders
+    rate: 0.0263978213
+    orderTotal: 0.8711281
+  - world: ruuria
+    good: fresh_food
+    group: nutrition
+    rate: 1.18625433
+  - world: ruuria
+    good: household_goods
+    group: household
+    rate: 0.319529787
+  - world: ruuria
+    good: implants
+    group: implant_care
+    rate: 0.00399412234
+  - world: ruuria
+    good: kolto
+    group: regenerative_care
+    rate: 0.011982367
+  - world: ruuria
+    good: luxury_food
+    group: luxury
+    rate: 0.023964734
+  - world: ruuria
+    good: luxury_goods
+    group: luxury
+    rate: 0.011982367
+  - world: ruuria
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.316334489
+  - world: ruuria
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00399412234
+  - world: ruuria
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.011982367
+  - world: ruuria
+    good: military_supplies
+    group: military
+    rate: 0.0798824467
+  - world: ruuria
+    good: parts
+    group: maintenance
+    rate: 0.159764893
+  - world: ruuria
+    good: rations
+    group: nutrition
+    rate: 2.76792678
+  - world: ruuria
+    good: stims
+    group: special_medicine
+    rate: 0.000797082211
+  - world: ruuria
+    good: water
+    group: water
+    rate: 7.98824467
+  - world: sernpidal
+    good: circuits
+    group: maintenance
+    rate: 0.055926424
+  - world: sernpidal
+    good: drugs
+    group: care_drugs
+    rate: 0.111852848
+  - world: sernpidal
+    good: energy_cells
+    group: other
+    rate: 0.027963212
+  - world: sernpidal
+    good: fresh_food
+    group: nutrition
+    rate: 1.47694433
+  - world: sernpidal
+    good: household_goods
+    group: household
+    rate: 0.223705696
+  - world: sernpidal
+    good: implants
+    group: implant_care
+    rate: 0.0027963212
+  - world: sernpidal
+    good: kolto
+    group: regenerative_care
+    rate: 0.0083889636
+  - world: sernpidal
+    good: luxury_food
+    group: luxury
+    rate: 0.0167779272
+  - world: sernpidal
+    good: luxury_goods
+    group: luxury
+    rate: 0.0083889636
+  - world: sernpidal
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.221468639
+  - world: sernpidal
+    good: medical_supplies
+    group: implant_care
+    rate: 0.0027963212
+  - world: sernpidal
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0083889636
+  - world: sernpidal
+    good: military_supplies
+    group: military
+    rate: 0.055926424
+  - world: sernpidal
+    good: parts
+    group: maintenance
+    rate: 0.111852848
+  - world: sernpidal
+    good: rations
+    group: nutrition
+    rate: 1.29141366
+  - world: sernpidal
+    good: water
+    group: water
+    rate: 5.5926424
+  - world: sullust
+    good: circuits
+    group: maintenance
+    rate: 0.0878968252
+  - world: sullust
+    good: drugs
+    group: care_drugs
+    rate: 0.17579365
+  - world: sullust
+    good: energy_cells
+    group: other
+    rate: 0.0439484126
+  - world: sullust
+    good: fresh_food
+    group: nutrition
+    rate: 1.39420459
+  - world: sullust
+    good: household_goods
+    group: household
+    rate: 0.351587301
+  - world: sullust
+    good: implants
+    group: implant_care
+    rate: 0.00439484126
+  - world: sullust
+    good: kolto
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: sullust
+    good: life_support
+    group: orders
+    rate: 0.0527956424
+    orderTotal: 1.7422562
+  - world: sullust
+    good: luxury_food
+    group: luxury
+    rate: 0.0263690476
+  - world: sullust
+    good: luxury_goods
+    group: luxury
+    rate: 0.0131845238
+  - world: sullust
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.348071428
+  - world: sullust
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00439484126
+  - world: sullust
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: sullust
+    good: military_supplies
+    group: military
+    rate: 0.0878968252
+  - world: sullust
+    good: parts
+    group: maintenance
+    rate: 0.17579365
+  - world: sullust
+    good: rations
+    group: nutrition
+    rate: 2.77881479
+  - world: sullust
+    good: synth_food
+    group: nutrition
+    rate: 0.177873469
+  - world: sullust
+    good: technical_gases
+    group: closed_habitats
+    rate: 0.0479120455
+  - world: sullust
+    good: water
+    group: water
+    rate: 8.78968252
+  - world: tandankin
+    good: circuits
+    group: maintenance
+    rate: 0.0878968252
+  - world: tandankin
+    good: com_equipment
+    group: orders
+    rate: 0.0527956424
+    orderTotal: 1.7422562
+  - world: tandankin
+    good: drugs
+    group: care_drugs
+    rate: 0.17579365
+  - world: tandankin
+    good: energy_cells
+    group: other
+    rate: 0.0439484126
+  - world: tandankin
+    good: fresh_food
+    group: nutrition
+    rate: 1.36445121
+  - world: tandankin
+    good: household_goods
+    group: household
+    rate: 0.351587301
+  - world: tandankin
+    good: implants
+    group: implant_care
+    rate: 0.00439484126
+  - world: tandankin
+    good: kolto
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: tandankin
+    good: luxury_food
+    group: luxury
+    rate: 0.0263690476
+  - world: tandankin
+    good: luxury_goods
+    group: luxury
+    rate: 0.0131845238
+  - world: tandankin
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.348071428
+  - world: tandankin
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00439484126
+  - world: tandankin
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0131845238
+  - world: tandankin
+    good: military_ships
+    group: orders
+    rate: 0.0263978213
+    orderTotal: 0.8711281
+  - world: tandankin
+    good: military_supplies
+    group: military
+    rate: 0.0878968252
+  - world: tandankin
+    good: parts
+    group: maintenance
+    rate: 0.17579365
+  - world: tandankin
+    good: rations
+    group: nutrition
+    rate: 2.86807493
+  - world: tandankin
+    good: synth_food
+    group: nutrition
+    rate: 0.118366708
+  - world: tandankin
+    good: technical_gases
+    group: closed_habitats
+    rate: 0.0318832884
+  - world: tandankin
+    good: water
+    group: water
+    rate: 8.78968252
+  - world: ziost
+    good: armor
+    group: orders
+    rate: 0.105591285
+    orderTotal: 3.4845124
+  - world: ziost
+    good: blasters
+    group: orders
+    rate: 0.105591285
+    orderTotal: 3.4845124
+  - world: ziost
+    good: circuits
+    group: maintenance
+    rate: 0.103838469
+  - world: ziost
+    good: drugs
+    group: care_drugs
+    rate: 0.207676939
+  - world: ziost
+    good: energy_cells
+    group: other
+    rate: 0.0519192347
+  - world: ziost
+    good: entertainment
+    group: orders
+    rate: 0.0791934634
+    orderTotal: 2.6133843
+  - world: ziost
+    good: fresh_food
+    group: nutrition
+    rate: 1.54200127
+  - world: ziost
+    good: household_goods
+    group: household
+    rate: 0.415353878
+  - world: ziost
+    good: implants
+    group: implant_care
+    rate: 0.00519192347
+  - world: ziost
+    good: kolto
+    group: regenerative_care
+    rate: 0.0155757704
+  - world: ziost
+    good: luxury_food
+    group: luxury
+    rate: 0.0311515408
+  - world: ziost
+    good: luxury_goods
+    group: luxury
+    rate: 0.0155757704
+  - world: ziost
+    good: medical_supplies
+    group: care_supplies
+    rate: 0.411200339
+  - world: ziost
+    good: medical_supplies
+    group: implant_care
+    rate: 0.00519192347
+  - world: ziost
+    good: medical_supplies
+    group: regenerative_care
+    rate: 0.0155757704
+  - world: ziost
+    good: military_supplies
+    group: military
+    rate: 0.103838469
+  - world: ziost
+    good: parts
+    group: maintenance
+    rate: 0.207676939
+  - world: ziost
+    good: rations
+    group: nutrition
+    rate: 3.59800297
+  - world: ziost
+    good: spice
+    group: shadow
+    rate: 0.000797082211
+  - world: ziost
+    good: water
+    group: water
+    rate: 10.3838469
+  reactors:
+  - world: balmorra
+    capacityPower: 4.88072846
+  - world: begeren
+    capacityPower: 4.76805137
+  - world: belkadan
+    capacityPower: 9.50867208
+  - world: dromund_kaas
+    capacityPower: 9.8313907
+  - world: korriban
+    capacityPower: 10.039398
+  - world: nez_peron
+    capacityPower: 1.95180957
+  - world: ruuria
+    capacityPower: 1.25048908
+  - world: sernpidal
+    capacityPower: 0.546340563
+  - world: tandankin
+    capacityPower: 12.203845

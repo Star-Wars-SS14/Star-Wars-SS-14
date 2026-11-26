@@ -134,6 +134,8 @@ entities:
       fixtures: {}
     - type: OccluderTree
     - type: SpreaderGrid
+    - type: BecomesStation
+      id: Asteroid
     - type: Shuttle
     - type: GridPathfinding
     - type: Gravity

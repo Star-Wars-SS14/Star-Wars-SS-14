@@ -23,7 +23,7 @@ namespace Content.Client.Actions.UI
 
         public ActionAlertTooltip(FormattedMessage name, FormattedMessage? desc, string? requires = null)
         {
-            Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSystem;
+            //SW: takes the active sheet, so that the terminal look reaches it.
             _gameTiming = IoCManager.Resolve<IGameTiming>();
 
             SetOnlyStyleClass(StyleClass.TooltipPanel);

@@ -7,6 +7,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
+using Content.Shared.Hands.EntitySystems; //SW
 using Robust.Shared.Player;
 using Robust.Shared.Audio.Systems;
 using static Content.Shared.Paper.PaperComponent;
@@ -27,6 +28,7 @@ public sealed class PaperSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!; //SW
 
     private static readonly ProtoId<TagPrototype> WriteIgnoreStampsTag = "WriteIgnoreStamps";
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
@@ -183,8 +185,33 @@ public sealed class PaperSystem : EntitySystem
         };
     }
 
+    //SW start
+    /// <summary>
+    /// The same rule as <see cref="OnInteractUsing"/>, for text that arrives from a client.
+    /// </summary>
+    private bool CanWriteWithHeldItem(Entity<PaperComponent> entity, EntityUid user)
+    {
+        if (entity.Comp.EditingDisabled)
+            return false;
+
+        foreach (var held in _hands.EnumerateHeld(user))
+        {
+            if (_tagSystem.HasTag(held, WriteTag)
+                && (entity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(held, WriteIgnoreStampsTag)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //SW end
+
     private void OnInputTextMessage(Entity<PaperComponent> entity, ref PaperInputTextMessage args)
     {
+        if (!CanWriteWithHeldItem(entity, args.Actor)) //SW
+            return; //SW
+
         var ev = new PaperWriteAttemptEvent(entity.Owner);
         RaiseLocalEvent(args.Actor, ref ev);
         if (ev.Cancelled)

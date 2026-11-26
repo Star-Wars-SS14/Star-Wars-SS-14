@@ -25,6 +25,7 @@ using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 using Content.Shared._SW.Artillery;
 using static Content.Shared.Administration.Notes.AdminMessageEuiState;
 
@@ -37,14 +38,19 @@ namespace Content.Server._SW.Artillery
         [Dependency] private readonly ChatSystem _chatSystem = default!;
         [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
         [Dependency] private readonly PopupSystem _popupSystem = default!;
+        [Dependency] private readonly IMapManager _mapManager = default!;
+        [Dependency] private readonly IGameTiming _timing = default!;
 
-        private const float UIUpdateInterval = 5.0f;
+        private static readonly TimeSpan UIUpdateInterval = TimeSpan.FromSeconds(1);
+
+        private TimeSpan _nextUIUpdate;
 
         public override void Initialize()
         {
             SubscribeLocalEvent<ArtilleryConsoleComponent, ArtilleryConsoleCallArtileryMessage>(OnCallArtillery);
             SubscribeLocalEvent<ArtilleryConsoleComponent, MapInitEvent>(OnCommunicationsConsoleMapInit);
             SubscribeLocalEvent<ArtilleryConsoleComponent, ComponentInit>((uid, comp, _) => UpdateArtilleryConsoleInterface(uid, comp));
+            SubscribeLocalEvent<ArtilleryConsoleComponent, BoundUIOpenedEvent>((uid, comp, _) => UpdateArtilleryConsoleInterface(uid, comp));
         }
 
         private void OnCallArtillery(Entity<ArtilleryConsoleComponent> ent, ref ArtilleryConsoleCallArtileryMessage args)
@@ -56,15 +62,25 @@ namespace Content.Server._SW.Artillery
             }
             if (!CanCall(ent.Comp))
             {
+                var reason = ent.Comp.AttacksLeft > 0 ? "sw-artillery-cooldown" : "sw-artillery-no-attacks";
+                _popupSystem.PopupCursor(Loc.GetString(reason), args.Actor, PopupType.Medium);
                 return;
             }
             MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
+            var target = new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id);
+            // A strike off the grid hits nothing and still costs an attack.
+            if (!_mapManager.TryFindGridAt(target, out _, out _))
+            {
+                _popupSystem.PopupCursor(Loc.GetString("sw-artillery-bad-coordinates"), args.Actor, PopupType.Medium);
+                return;
+            }
             var title = Loc.GetString(ent.Comp.Title);
             var msg = Loc.GetString(ent.Comp.AnnouncementText);
             _chatSystem.DispatchGlobalAnnouncement(msg, title, announcementSound: ent.Comp.Sound, colorOverride: ent.Comp.Color);
-            Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
+            Spawn(ent.Comp.ArtilleryProto, target);
             ent.Comp.CurrentDelay = ent.Comp.DelayBetweenCalls;
             ent.Comp.AttacksLeft--;
+            UpdateArtilleryConsoleInterface(ent.Owner, ent.Comp);
         }
         public void UpdateArtilleryConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
         {
@@ -83,16 +99,25 @@ namespace Content.Server._SW.Artillery
 
         public override void Update(float frameTime)
         {
+            var updateUI = _timing.CurTime >= _nextUIUpdate;
+            if (updateUI)
+            {
+                _nextUIUpdate = _timing.CurTime + UIUpdateInterval;
+            }
+
             var query = EntityQueryEnumerator<ArtilleryConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
-                // TODO refresh the UI in a less horrible way
                 if (comp.CurrentDelay >= 0f)
                 {
                     comp.CurrentDelay -= frameTime;
                 }
 
-                UpdateArtilleryConsoleInterface(uid, comp);
+                // The countdown shows whole seconds, and a closed console gets its state when it opens.
+                if (updateUI && _uiSystem.IsUiOpen(uid, ArtilleryConsoleUiKey.Key))
+                {
+                    UpdateArtilleryConsoleInterface(uid, comp);
+                }
             }
 
             base.Update(frameTime);

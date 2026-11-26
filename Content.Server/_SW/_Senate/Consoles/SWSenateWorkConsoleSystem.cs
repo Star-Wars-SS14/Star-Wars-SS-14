@@ -10,6 +10,8 @@ using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Empire;
+using Content.Shared._SW._Senate.Empire;
 using Content.Server._SW._Senate.Debate;
 using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.Economy;
@@ -41,6 +43,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWEmpireDiplomacySystem _diplomacy = default!;
     [Dependency] private readonly SWStatisticsConsoleSystem _mapStatistics = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
@@ -86,9 +89,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseRejectWarMessage>(OnRejectWar);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityApproveEmergencyMessage>(OnApproveEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecuritySabotageDecisionMessage>(OnSecuritySabotageDecision);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthQuarantineDecisionMessage>(OnHealthQuarantineDecision);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmpireDiplomacyDecisionMessage>(OnDiplomacyDecision);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyApproveStimulusMessage>(OnApproveStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceApproveEmissionMessage>(OnApproveEmission);
@@ -130,7 +135,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         var committeeId = _committee.RouteBill(bill.Effects);
         if (committeeId != null)
-            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+            _committee.ReferBill(bill, committeeId, _time.Day);
         else
             _senate.PlaceOnFloor(bill);
     }
@@ -204,6 +209,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         var sectorId = GetSectorOwner(ent);
         return sectorId != null && _senate.SectorHolders.TryGetValue(sectorId, out var name) ? name : null;
+    }
+
+    private void RecordFinaleAuthor(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor, SWSenateBill bill)
+    {
+        var office = GetSectorOwner(ent);
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (office == null || card == null || !_ambition.TryConfirmAuthor(office, card.Value, actor, out var player, out var name))
+            return;
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordBillAuthor(bill.Id, player, card.Value, name);
     }
 
     private void OnJoinCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateJoinCommitteeMessage args)
@@ -617,6 +631,27 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnSecuritySabotageDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecuritySabotageDecisionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanConfirmAs(ent, args.Actor))
+            return;
+
+        var applied = args.Approve ? _security.ApproveSabotage(args.CaseId) : _security.RejectSabotage(args.CaseId);
+        _popup.PopupCursor(applied
+            ? args.Approve ? "Диверсия одобрена. Министр может отдать приказ группе." : "Запрос на диверсию отклонён."
+            : "Запрос уже рассмотрен или отозван.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnDiplomacyDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmpireDiplomacyDecisionMessage args)
+    {
+        if (!CanConfirmAs(ent,args.Actor) || !_diplomacy.CanDecide(args.Actor) || !Enum.IsDefined(args.Decision)) return;
+        var applied = args.Decision switch { SWEmpireDiplomacyDecision.Approve => _diplomacy.Decide(args.Id,true,args.Actor),
+            SWEmpireDiplomacyDecision.Reject => _diplomacy.Decide(args.Id,false,args.Actor),
+            SWEmpireDiplomacyDecision.Break => _diplomacy.BreakRepublic(args.Id,args.Actor), _ => false };
+        if (!applied) _popup.PopupCursor("Соглашение недоступно или уже рассмотрено.",args.Actor,PopupType.Medium);
+        UpdateUi(ent);
+    }
     private void OnHealthQuarantineDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthQuarantineDecisionMessage args)
     {
         if (!CanConfirmAs(ent, args.Actor) || !_health.CanDecideQuarantine(args.Actor))
@@ -828,7 +863,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (_court.RespondNomination(Name(args.Actor), args.Accept))
+        if (_court.RespondNomination(Name(args.Actor), args.Accept, args.Actor))
             _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -964,11 +999,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             || Name(args.Actor) != name)
             return;
 
-        if (!_senate.ConfirmChancellorElect(name, sectorId))
+        if (!_senate.ConfirmChancellorElect(name, sectorId, args.Actor))
             return;
 
         _idCard.TryChangeFullName(card.Value, name);
         _cards.SynchronizeHolder(name, SWSenatePosition.Chancellor);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
         _floor.SetChancellor(args.Actor);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
             Loc.GetString("sw-senate-announce-sender"),
@@ -1002,8 +1038,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         switch (args.Action)
         {
-            // Quarantine requires a specific Health request, even with emergency powers.
-            case >= 0 and <= 5 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
+            // Quarantine requires a Health request; departmental inspections do not confer judicial powers.
+            case >= 0 and <= 4 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
                 InvokeMinistry(args.Action);
                 _powers.RegisterUse(8f, 5f, false);
                 break;
@@ -1011,7 +1047,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case 6 when _powers.HasPower(SWEmergencyPower.MartialLaw): // военное положение
                 InvokeMinistry(0);
                 InvokeMinistry(1);
-                InvokeMinistry(5);
                 _powers.RegisterUse(15f, 10f, true);
                 break;
 
@@ -1073,10 +1108,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 _finance.DeclareEmission();
                 _finance.ApproveEmission();
                 break;
-            case 5:
-                _justice.DeclareTribunal();
-                _justice.ApproveTribunal();
-                break;
         }
     }
 
@@ -1130,7 +1161,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects))
             return;
 
-        ReferBill(_senate.SubmitBill(name, args.Description.Trim(), author, effects));
+        var bill = _senate.SubmitBill(name, args.Description.Trim(), author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -1167,6 +1200,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (amendment == null)
             return;
 
+        RecordFinaleAuthor(ent, args.Actor, amendment);
         ReferBill(amendment);
         _popup.PopupCursor("Поправки внесены на рассмотрение.", args.Actor, PopupType.Medium);
         UpdateUi(ent);
@@ -1216,7 +1250,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         var committeeId = _committee.RouteBill(bill.Effects);
         if (committeeId != null)
-            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+            _committee.ReferBill(bill, committeeId, _time.Day);
     }
 
     private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
@@ -1268,7 +1302,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (effects.Count == 0)
             return;
 
-        ReferBill(_senate.SubmitBill(preset.Name, preset.Description, author, effects));
+        var bill = _senate.SubmitBill(preset.Name, preset.Description, author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -1453,18 +1489,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSenateWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSenateWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -1507,10 +1537,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 break;
 
             case SWSenatePosition.Chancellor:
-                if (_senate.TryTakeChancellor(Name(args.Actor)))
+                if (_senate.TryTakeChancellor(Name(args.Actor), args.Actor))
                 {
                     _idCard.TryChangeFullName(card.Value, Name(args.Actor));
                     _cards.Synchronize(card.Value, SWSenatePosition.Chancellor);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
                     _floor.SetChancellor(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }
@@ -1523,6 +1554,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 {
                     _idCard.TryChangeFullName(card.Value, Name(args.Actor));
                     _cards.Synchronize(card.Value, SWSenatePosition.Speaker);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
                     _floor.SetSpeaker(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }
@@ -1594,6 +1626,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         state.HasCard = card != null;
+        state.CardIdentity = card != null ? GetNetEntity(card.Value) : null;
         state.Globals = _senate.BuildGlobalEntries();
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();
@@ -1674,6 +1707,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.IsChancellorView = ChancellorInOffice(ent);
         state.BudgetProjectPending = _budget.Pending;
         state.BudgetSectorPool = _budget.SectorPool();
+        state.BudgetRepublicPool = _budget.RepublicPool();
+                    state.BudgetRepublicRemaining = _budget.Available(SWSenateDilemmaSystem.RepublicOwner);
+        state.BudgetRepublicPct = _budget.RepublicPct;
         state.BudgetMinistryPool = _budget.MinistryPool();
         state.BudgetSectorPct = _budget.SectorPct;
         state.BudgetRejects = _budget.Rejects;
@@ -1720,11 +1756,18 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.PendingStanceName = _defense.PendingStance is { } pendingStance ? SWMinistryDefenseSystem.StanceName(pendingStance) : string.Empty;
         state.EmergencyProposed = _security.EmergencyPending;
         state.CanApproveEmergency = _security.EmergencyPending && CanConfirmAs(ent);
+        state.CanApproveSecuritySabotage = _time.ModeActive && _time.DayActive && CanConfirmAs(ent);
+        // Covert mission details are only sent to the approving office.
+        if (CanConfirmAs(ent))
+            state.SecuritySabotageRequests = _security.BuildSabotageRequests();
+            new SWStrategicMapDisclosure(_proto).Sabotage(state.SecuritySabotageRequests);
         state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
         state.HealthEmergencyProposed = _health.EmergencyPending;
         state.MapCrises = _mapStatistics.BuildMapCrises();
         state.CanApproveHealthEmergency = CanConfirmAs(ent);
         state.HealthQuarantines = _health.BuildQuarantines();
+        state.CanDecideDiplomacy = CanConfirmAs(ent) && GetCardPosition(ent) == SWSenatePosition.Chancellor;
+        if (state.CanDecideDiplomacy) state.ImperialDiplomacy = _diplomacy.BuildRepublicState();
         state.StimulusProposed = _economy.StimulusPending;
         state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
         state.EmissionProposed = _finance.EmissionPending;
@@ -1834,3 +1877,5 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     }
 
 }
+
+

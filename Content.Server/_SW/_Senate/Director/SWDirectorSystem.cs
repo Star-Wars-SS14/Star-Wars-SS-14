@@ -12,6 +12,7 @@ using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -28,6 +29,8 @@ public sealed partial class SWDirectorSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economyEvents = default!;
@@ -63,7 +66,16 @@ public sealed partial class SWDirectorSystem : EntitySystem
     public NetUserId? Controller { get; private set; }
     public string ControllerName { get; private set; } = string.Empty;
 
-    public bool AutoAntagsAllowed => Mode == SWDirectorMode.Autopilot;
+    public bool CouncilPlayerControl { get; private set; }
+    public bool AutoAntagsAllowed => Mode == SWDirectorMode.Autopilot && !CouncilPlayerControl;
+
+    public void SetImperialMinisterOverride(bool enabled)
+    {
+        if (_defense.AllowImperialWithoutMinister == enabled) return;
+        _defense.SetImperialMinisterOverride(enabled);
+        AddChronicle(enabled ? "имперские атаки разрешены без действующего министра обороны" : "имперские атаки вновь требуют действующего министра обороны");
+        Updated?.Invoke();
+    }
 
     public event Action? Updated;
 
@@ -77,14 +89,48 @@ public sealed partial class SWDirectorSystem : EntitySystem
     public override void Initialize()
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
+        SubscribeLocalEvent<SWDarkCouncilMemberComponent, PlayerAttachedEvent>(OnCouncilPlayerAttached);
+        SubscribeLocalEvent<SWDarkCouncilMemberComponent, ComponentStartup>(OnCouncilStartup);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
+    }
+
+    private void OnCouncilPlayerAttached(EntityUid uid, SWDarkCouncilMemberComponent component, PlayerAttachedEvent args)
+    {
+        TakeCouncilControl();
+    }
+
+    private void OnCouncilStartup(EntityUid uid, SWDarkCouncilMemberComponent component, ComponentStartup args)
+    {
+        if (HasComp<ActorComponent>(uid))
+            TakeCouncilControl();
+    }
+
+    private void TakeCouncilControl()
+    {
+        if (CouncilPlayerControl)
+            return;
+        SetCouncilControl(true);
+        AddChronicle("управление Империей принял Тёмный совет");
+        Updated?.Invoke();
+    }
+
+    private void SetCouncilControl(bool enabled)
+    {
+        CouncilPlayerControl = enabled;
+        _defense.AutoImperialThreatsAllowed = !enabled;
+    }
+
+    private bool HasActiveCouncilPlayer()
+    {
+        var query = EntityQueryEnumerator<SWDarkCouncilMemberComponent, ActorComponent>();
+        return query.MoveNext(out _, out _, out _);
     }
 
     // The full imperial ledger - covert ops included - goes public once the round is over.
     private void OnRoundEnd(RoundEndTextAppendEvent args)
     {
-        if (_chronicle.Count == 0)
+        if (EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().SessionActive || _chronicle.Count == 0)
             return;
 
         args.AddLine(string.Empty);
@@ -96,6 +142,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         Mode = SWDirectorMode.Autopilot;
+        SetCouncilControl(false);
         Controller = null;
         ControllerName = string.Empty;
         _influence = StartInfluence;
@@ -188,6 +235,9 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
     public void SetMode(SWDirectorMode mode, NetUserId? controller, string controllerName)
     {
+        if (mode == SWDirectorMode.Autopilot && CouncilPlayerControl && !HasActiveCouncilPlayer())
+            SetCouncilControl(false);
+
         Mode = mode;
         _defense.ImperialThreatsEnabled = mode != SWDirectorMode.Off;
         Controller = mode == SWDirectorMode.Manual ? controller : null;
@@ -196,6 +246,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
         AddChronicle(mode switch
         {
             SWDirectorMode.Off => "Империя отключена (спокойный раунд)",
+            SWDirectorMode.Autopilot when CouncilPlayerControl => "автопилот приостановлен: управляет Тёмный совет",
             SWDirectorMode.Autopilot => "Империя переведена на автопилот",
             _ => $"управление Империей взял {controllerName}",
         });
@@ -234,6 +285,45 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
         switch (kind)
         {
+            case SWDirectorActionKind.SecurityCreate:
+                if (Mode != SWDirectorMode.Manual) return false;
+                if (param != "domestic" && param != "imperial") { result = "Неизвестный тип дела."; return false; }
+                var caseKind = param == "imperial" ? SWSecurityCaseKind.Imperial : SWSecurityCaseKind.Domestic;
+                var faction = caseKind == SWSecurityCaseKind.Imperial ? "empire" : "republic";
+                var worlds = _security.BuildMapState().Worlds.Where(w => w.Faction == faction && (target.Length == 0 || w.Id == target)).ToList();
+                if (worlds.Count == 0) { result = "Нет подходящего мира."; return false; }
+                var world = _random.Pick(worlds);
+                if (_security.AddCase(caseKind == SWSecurityCaseKind.Imperial ? "Имперская сеть" : "Подозрительная деятельность", world.Id, caseKind) == 0)
+                { result = "Не удалось создать дело."; return false; }
+                result = $"Создано дело: {world.Name}.";
+                AddChronicle(result);
+                break;
+
+            case SWDirectorActionKind.SecurityCancel:
+                if (Mode != SWDirectorMode.Manual || !int.TryParse(target, out var caseId) || !_security.CancelCase(caseId))
+                { result = "Не удалось закрыть дело."; return false; }
+                result = "Дело закрыто директором.";
+                AddChronicle(result);
+                break;
+
+            case SWDirectorActionKind.JusticeCreate:
+            {
+                if (Mode != SWDirectorMode.Manual) { result = "Проверки доступны только в ручном режиме."; return false; }
+                var inspectionId = _justice.AdminOpenInspection(target);
+                if (inspectionId == 0) { result = "Не удалось открыть проверку: учреждение недоступно или реестр заполнен."; return false; }
+                result = $"Создана ведомственная проверка №{inspectionId}.";
+                AddChronicle(result);
+                break;
+            }
+            case SWDirectorActionKind.JusticeCancel:
+            {
+                if (Mode != SWDirectorMode.Manual || !int.TryParse(target, out var inspectionId) || !_justice.AdminCancelInspection(inspectionId))
+                { result = "Не удалось отменить проверку."; return false; }
+                result = $"Проверка №{inspectionId} отменена директором.";
+                AddChronicle(result);
+                break;
+            }
+
             case SWDirectorActionKind.EconomyIncident:
                 if (Mode != SWDirectorMode.Manual)
                 { result = "Экономическое событие доступно только в ручном режиме."; return false; }
@@ -454,7 +544,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
     private void AutopilotTick()
     {
-        if (Mode != SWDirectorMode.Autopilot || !_random.Prob(AutopilotActChance))
+        if (!AutoAntagsAllowed || !_random.Prob(AutopilotActChance))
             return;
 
         var candidates = new List<(SWDirectorActionKind Kind, string Sector, int Weight)>();
@@ -551,7 +641,12 @@ public sealed partial class SWDirectorSystem : EntitySystem
         var state = new SWDirectorEuiState
         {
             DefenseMap = _defense.BuildMapState(includeOrderOptions: false),
+            SecurityMap = _security.BuildMapState(),
+            JusticeInstitutions = _justice.BuildDirectorInstitutions(),
+            JusticeCases = _justice.BuildInspectionState().ActiveCases,
             Mode = Mode,
+            CouncilPlayerControl = CouncilPlayerControl,
+            AllowImperialWithoutMinister = _defense.AllowImperialWithoutMinister,
             ControllerName = ControllerName,
             IAmController = Controller == viewer,
             Influence = (int) MathF.Round(_influence),

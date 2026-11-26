@@ -1,0 +1,25 @@
+# Design-test soldier bots. Shooting is done by SWAutoTargetingGun outside the HTN;
+# SWCombatBotSystem sets SWBotObjective while no enemy is in sight and removes it to make the bot hold and fight.
+- type: htnCompound
+  id: SWBotSoldierCompound
+  branches:
+  - preconditions:
+    - !type:KeyExistsPrecondition
+      key: SWBotObjective
+    - !type:CoordinatesNotInRangePrecondition
+      targetKey: SWBotObjective
+      rangeKey: SWBotObjectiveRange
+    tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        targetKey: SWBotObjective
+        rangeKey: SWBotObjectiveRange
+        removeKeyOnFinish: false
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:WaitOperator
+        key: SWBotHoldTime
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: SWBotHoldTime

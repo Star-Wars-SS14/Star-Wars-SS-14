@@ -488,6 +488,9 @@ public sealed class SWMercSystem : EntitySystem
                 contract.Closed = true;
             }
 
+            if (EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().SessionActive)
+                continue;
+
             var result = contract.Succeeded
                 ? "[color=red]контракт выполнен[/color]"
                 : "[color=green]контракт провален[/color]";

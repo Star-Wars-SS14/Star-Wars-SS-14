@@ -1,6 +1,7 @@
 - type: entity
   name: молния
   id: RedSWLightning
+  categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     sprite: /Textures/Effects/lightning.rsi
@@ -28,6 +29,7 @@
 - type: entity
   name: молния
   id: BlueSWLightning
+  categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     sprite: /Textures/Effects/lightning.rsi

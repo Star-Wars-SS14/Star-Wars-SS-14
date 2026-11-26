@@ -1,0 +1,14 @@
+ent-SWDecorDroidFabricator = мёртвый фабрикатор дроидов
+    .desc = Сборочная платформа с выгоревшими контроллерами. То, что она собрала, теперь ходит само.
+ent-SWAlwaysPoweredLightBright = яркая лампа
+    .desc = Постоянно работающий светильник.
+ent-SWAlwaysPoweredLightRed = аварийная лампа
+    .desc = Постоянно работающий аварийный светильник.
+ent-SWAlwaysPoweredLightAmber = янтарная лампа
+    .desc = Постоянно работающий светильник с тёплым светом.
+ent-SWDecorSignalTower = мёртвая вышка связи
+    .desc = Мачта с выгоревшим передатчиком. Её видно со всего двора, и им тоже.
+ent-SWAlwaysPoweredLightBlue = синяя лампа
+    .desc = Постоянно работающий светильник с синим светом.
+ent-SWAlwaysPoweredLightGreen = зелёная лампа
+    .desc = Постоянно работающий светильник с зелёным светом.

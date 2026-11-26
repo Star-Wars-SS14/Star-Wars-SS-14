@@ -1,6 +1,7 @@
 - type: job
   id: SWMandalorianVeteran
   name: Ветеран Мандалорцев
+  description: job-description-sw-mandalorian-veteran
   playTimeTracker: Job_Mandalorian_Veteran
   requirements:
   - !type:OverallPlaytimeRequirement

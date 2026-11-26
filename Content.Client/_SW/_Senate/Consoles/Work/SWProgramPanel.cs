@@ -56,6 +56,18 @@ public sealed class SWProgramPanel : BoxContainer
         AddChild(scroll);
     }
 
+    public void ResetLocalState()
+    {
+        SelectedWorldId = null;
+        _sectorId = null;
+        _state = null;
+        _worldSignature = string.Empty;
+        _programSignature = null;
+        _worldEntries.Clear();
+        _worlds.Clear();
+        _worlds.ToolTip = null;
+    }
+
     public void SetState(SWSenateWorkConsoleState state)
     {
         _state = state;

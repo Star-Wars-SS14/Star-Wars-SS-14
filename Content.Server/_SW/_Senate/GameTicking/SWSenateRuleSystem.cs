@@ -9,12 +9,14 @@ namespace Content.Server._SW._Senate.GameTicking;
 public sealed class SWSenateRuleSystem : GameRuleSystem<SWSenateRuleComponent>
 {
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateRoundHistorySystem _history = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly RoundEndSystem _roundEnd = default!;
 
     protected override void Started(EntityUid uid, SWSenateRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
+        _history.StartSession();
         _time.ModeActive = true;
         component.StartDay = _time.Day;
         component.EndTriggered = false;
@@ -32,6 +34,7 @@ public sealed class SWSenateRuleSystem : GameRuleSystem<SWSenateRuleComponent>
             return;
 
         component.EndTriggered = true;
+        _history.MarkEnding();
         _time.ModeActive = false;
         _chatManager.DispatchServerAnnouncement(
             "Рабочая сессия Сената завершена. Созыв распускается - подводятся итоги.",

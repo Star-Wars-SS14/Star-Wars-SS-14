@@ -1,0 +1,12 @@
+- files: ["sunburst_republic.png", "sunburst_empire.png"]
+  license: "MIT"
+  copyright: "Copyright (c) 2026 Patch, MIT, see LICENSE.pixelfx.txt. holy/sunburst from pixelfx, every second frame, recoloured for Star-Wars-SS14"
+  source: "https://github.com/patch-gg/pixelfx"
+- files: ["burst_republic.png", "burst_empire.png"]
+  license: "MIT"
+  copyright: "Copyright (c) 2026 Patch, MIT, see LICENSE.pixelfx.txt. explosions/plasma-explosion from pixelfx, shortened and recoloured for Star-Wars-SS14"
+  source: "https://github.com/patch-gg/pixelfx"
+- files: ["zap_contested.png"]
+  license: "MIT"
+  copyright: "Copyright (c) 2026 Patch, MIT, see LICENSE.pixelfx.txt. lightning/zap-hit from pixelfx, recoloured for Star-Wars-SS14"
+  source: "https://github.com/patch-gg/pixelfx"

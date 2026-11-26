@@ -2,14 +2,20 @@
   id: Asteroid
   mapName: 'Asteroid'
   mapPath: /Maps/SW/asteroid.yml
+  isGrid: true
   minPlayers: 35
   maxPlayers: 70
   stations:
     Asteroid:
-      stationProto: BaseStation
+      stationProto: SWAsteroidStation
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Asteroid {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'
+
+- type: entity
+  parent: BaseStation
+  id: SWAsteroidStation
+  categories: [ HideSpawnMenu ]

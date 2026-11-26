@@ -1,0 +1,94 @@
+- type: entity
+  parent: LockerSteel
+  id: SWDarkCouncilMilitaryOffenseLocker
+  name: шкаф владыки сферы военного наступления
+  description: Защищённый шкаф с запасным снаряжением члена Тёмного совета.
+  components:
+  - type: Lock
+    locked: true
+  - type: AccessReader
+    access: [[SWDarkCouncilMilitaryOffense]]
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWClothingUniformJumpsuitSith
+        - id: SWClothingShoesBootsSith
+        - id: ClothingHandsGlovesColorBlack
+        - id: SWClothingNeckCloakSithCloak
+        - id: SWDarkCouncilHeadset
+
+        - id: SWSithBelt
+        - id: SWDarkCouncilBackpack
+        - id: SWSithSuit1
+
+- type: entity
+  parent: LockerSteel
+  id: SWDarkCouncilIntelligenceLocker
+  name: шкаф владыки Пирамиды Имперской разведки
+  description: Защищённый шкаф с запасным снаряжением члена Тёмного совета.
+  components:
+  - type: Lock
+    locked: true
+  - type: AccessReader
+    access: [[SWDarkCouncilIntelligence]]
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWClothingUniformJumpsuitSith
+        - id: SWClothingShoesBootsSith
+        - id: ClothingHandsGlovesColorBlack
+        - id: SWClothingNeckCloakSithCloak
+        - id: SWDarkCouncilHeadset
+
+        - id: SWSithBelt
+        - id: SWDarkCouncilBackpack
+        - id: SWSithSuit2
+
+- type: entity
+  parent: LockerSteel
+  id: SWDarkCouncilProductionLogisticsLocker
+  name: шкаф владыки сферы производства и логистики
+  description: Защищённый шкаф с запасным снаряжением члена Тёмного совета.
+  components:
+  - type: Lock
+    locked: true
+  - type: AccessReader
+    access: [[SWDarkCouncilProductionLogistics]]
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWClothingUniformJumpsuitSith
+        - id: SWClothingShoesBootsSith
+        - id: ClothingHandsGlovesColorBlack
+        - id: SWClothingNeckCloakSithCloak
+        - id: SWDarkCouncilHeadset
+
+        - id: SWSithBelt
+        - id: SWDarkCouncilBackpack
+        - id: SWSithCoat
+
+- type: entity
+  parent: LockerSteel
+  id: SWDarkCouncilExpansionDiplomacyLocker
+  name: шкаф владыки сферы расширения и дипломатии
+  description: Защищённый шкаф с запасным снаряжением члена Тёмного совета.
+  components:
+  - type: Lock
+    locked: true
+  - type: AccessReader
+    access: [[SWDarkCouncilExpansionDiplomacy]]
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWClothingUniformJumpsuitSith
+        - id: SWClothingShoesBootsSith
+        - id: ClothingHandsGlovesColorBlack
+        - id: SWClothingNeckCloakSithCloak
+        - id: SWDarkCouncilHeadset
+
+        - id: SWSithBelt
+        - id: SWDarkCouncilBackpack

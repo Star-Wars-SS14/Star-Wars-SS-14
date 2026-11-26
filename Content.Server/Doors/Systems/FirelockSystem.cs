@@ -118,11 +118,33 @@ namespace Content.Server.Doors.Systems
         TransformComponent xform,
         AirtightComponent airtight,
         EntityQuery<AirtightComponent> airtightQuery)
+        //SW start
+        {
+            return CheckPressureAndFire(uid, xform, airtight, airtightQuery,
+                firelock.PressureThreshold, firelock.TemperatureThreshold, false);
+        }
+
+        /// <summary>Reads the stock held-pressure/temperature check for any airtight door, including dock doors.</summary>
+        public (bool Pressure, bool Fire) CheckDoorPressureAndFire(EntityUid uid)
+        {
+            var query = GetEntityQuery<AirtightComponent>();
+            if (!query.TryGetComponent(uid, out var airtight))
+                return (false, false);
+            var firelock = CompOrNull<FirelockComponent>(uid);
+            return CheckPressureAndFire(uid, Transform(uid), airtight, query,
+                firelock?.PressureThreshold ?? FirelockComponent.DefaultPressureThreshold,
+                firelock?.TemperatureThreshold ?? FirelockComponent.DefaultTemperatureThreshold, true);
+        }
+
+        private (bool Pressure, bool Fire) CheckPressureAndFire(EntityUid uid, TransformComponent xform,
+            AirtightComponent airtight, EntityQuery<AirtightComponent> airtightQuery,
+            float pressureThreshold, float temperatureThreshold, bool includeDocked)
+        //SW end
         {
             if (!airtight.AirBlocked)
                 return (false, false);
 
-            if (TryComp(uid, out DockingComponent? dock) && dock.Docked)
+            if (!includeDocked && TryComp(uid, out DockingComponent? dock) && dock.Docked) //SW
             {
                 // Currently docking automatically opens the doors. But maybe in future, check the pressure difference before opening doors?
                 return (false, false);
@@ -188,8 +210,8 @@ namespace Content.Server.Doors.Systems
                     maxTemperature = Math.Max(maxTemperature, gas.Temperature);
                 }
 
-                holdingPressure |= maxPressure - minPressure > firelock.PressureThreshold;
-                holdingFire |= maxTemperature - minTemperature > firelock.TemperatureThreshold;
+                holdingPressure |= maxPressure - minPressure > pressureThreshold; //SW
+                holdingFire |= maxTemperature - minTemperature > temperatureThreshold; //SW
 
                 if (holdingPressure && holdingFire)
                     return (holdingPressure, holdingFire);
@@ -215,8 +237,8 @@ namespace Content.Server.Doors.Systems
                 maxTemperature = Math.Max(maxTemperature, 0);
             }
 
-            holdingPressure |= maxPressure - minPressure > firelock.PressureThreshold;
-            holdingFire |= maxTemperature - minTemperature > firelock.TemperatureThreshold;
+            holdingPressure |= maxPressure - minPressure > pressureThreshold; //SW
+            holdingFire |= maxTemperature - minTemperature > temperatureThreshold; //SW
 
             return (holdingPressure, holdingFire);
         }

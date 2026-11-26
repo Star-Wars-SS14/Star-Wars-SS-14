@@ -46,10 +46,13 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         if (ent.Comp.CurrentTarget != null)
         {
             StopStrangulating(ent, ent.Comp.CurrentTarget.Value);
+            args.Handled = true;
         }
-        if (args.Target != oldTarget && CheckIfAbleToStrangulate(ent, args.Target))
+        if (args.Target != oldTarget
+            && CheckIfAbleToStrangulate(ent, args.Target)
+            && StartStrangulating(ent, args.Target))
         {
-            StartStrangulating(ent, args.Target);
+            args.Handled = true;
         }
     }
 
@@ -68,9 +71,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         }
 
         ent.Comp.CurrentTarget = target;
-        var targetComp = AddComp<SWBeingStrangulatedComponent>(target);
-        var ev = new SWUpdateStrangulateEvent(target, true);
-        RaiseLocalEvent(target, ev, true);
+        AddComp<SWBeingStrangulatedComponent>(target);
         if (TryComp<PhysicsComponent>(target, out var physComp))
         {
             _physicsSystem.SetBodyStatus(target, physComp, BodyStatus.InAir);
@@ -94,8 +95,6 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         }
         ent.Comp.CurrentTarget = null;
         RemComp<SWBeingStrangulatedComponent>(target);
-        var ev = new SWUpdateStrangulateEvent(target, false);
-        RaiseLocalEvent(target, ev, true);
         if (TryComp<PhysicsComponent>(target, out var physComp))
         {
             _physicsSystem.SetBodyStatus(target, physComp, BodyStatus.OnGround);

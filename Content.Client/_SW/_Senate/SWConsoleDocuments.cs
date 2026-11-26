@@ -52,6 +52,23 @@ public sealed class SWConsoleDocuments : BoxContainer
         AddChild(new SWConsoleColumns(navigation, _documentScroll, listWidth, listBreakpoint, fixedFirst: true) { VerticalExpand = true });
     }
 
+    public void ResetLocalState()
+    {
+        _search.SetText(string.Empty, invokeEvent: false);
+        SelectedId = null;
+        _shownId = null;
+        _shownRevision = null;
+        _revealRow = null;
+        _initialized = false;
+        _entries.Clear();
+        _rows.RemoveAllChildren();
+        _rowButtons.Clear();
+        _document.RemoveAllChildren();
+        _listScroll.VScroll = 0;
+        _documentScroll.VScroll = 0;
+        SetDocuments(Array.Empty<SWConsoleDocumentEntry>());
+    }
+
     public void SetDocuments(IEnumerable<SWConsoleDocumentEntry> entries)
     {
         var next = entries.ToList();

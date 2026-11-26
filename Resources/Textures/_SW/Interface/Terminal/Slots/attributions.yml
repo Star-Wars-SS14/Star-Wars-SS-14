@@ -1,0 +1,4 @@
+- files: ["back.png", "belt.png", "ears.png", "glasses.png", "gloves.png", "hand_l.png", "hand_l_no_letter.png", "hand_m.png", "hand_r.png", "hand_r_no_letter.png", "head.png", "id.png", "mask.png", "neck.png", "pocket.png", "shoes.png", "suit.png", "suit_storage.png", "toggle.png", "uniform.png", "web.png"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Recoloured by Tools/_SW/make_terminal_hud.py from Textures/Interface/Default/Slots (goonstation, modified by PixelTK, ID slots by YoungThugSS14)"
+  source: "https://github.com/Star-Wars-SS14/Star-Wars-SS-14"

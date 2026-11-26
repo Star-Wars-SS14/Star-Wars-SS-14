@@ -1,0 +1,58 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                HorizontalExpand="True" StyleClasses="SWTermCard">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="7">
+        <Label Text="{Loc 'sw-global-war-service-title'}" StyleClasses="LabelHeading" />
+        <RichTextLabel Name="Status" />
+        <Button Name="NextNotice" Text="{Loc 'sw-global-war-service-next-notice'}" Visible="False" />
+        <RichTextLabel Name="Result" />
+        <Button Name="Retry" Text="{Loc 'sw-global-war-government-retry'}" Visible="False" />
+        <BoxContainer Name="Service" Orientation="Vertical" SeparationOverride="7" Visible="False">
+            <RichTextLabel Name="CurrentRole" />
+            <RichTextLabel Name="Head" />
+            <BoxContainer Name="Withdrawal" Orientation="Vertical" SeparationOverride="5" Visible="False">
+                <Label Text="{Loc 'sw-global-war-service-withdrawal-title'}" StyleClasses="LabelHeading" />
+                <RichTextLabel Name="WithdrawalReason" />
+                <RichTextLabel Name="WithdrawalState" />
+                <RichTextLabel Name="WithdrawalLimits" Text="{Loc 'sw-global-war-service-withdrawal-limits'}" />
+                <RichTextLabel Name="WithdrawalShip" />
+                <RichTextLabel Name="WithdrawalCargo" />
+            </BoxContainer>
+            <Button Name="Resign" Text="{Loc 'sw-global-war-service-resign'}" />
+            <BoxContainer Name="Succession" Orientation="Vertical" SeparationOverride="5">
+                <RichTextLabel Name="SuccessionText" />
+                <ui:SWGlobalWarConsoleButton Name="Claim" Text="{Loc 'sw-global-war-service-claim'}" />
+                <Button Name="DeclineSuccession" Text="{Loc 'sw-global-war-service-decline-priority'}" />
+            </BoxContainer>
+            <BoxContainer Name="Incoming" Orientation="Vertical" SeparationOverride="5">
+                <Label Text="{Loc 'sw-global-war-service-offers'}" StyleClasses="LabelHeading" />
+                <OptionButton Name="OfferSelector" />
+                <Button Name="OpenOffer" Text="{Loc 'sw-global-war-service-open-offer'}" />
+                <BoxContainer Name="OfferCard" Orientation="Vertical" SeparationOverride="5">
+                    <RichTextLabel Name="OfferDescription" />
+                    <RichTextLabel Text="{Loc 'sw-global-war-service-offer-effect'}" />
+                    <RichTextLabel Name="OfferFailure" />
+                    <ui:SWGlobalWarConsoleButton Name="Accept" Text="{Loc 'sw-global-war-service-accept'}" />
+                    <Button Name="Decline" Text="{Loc 'sw-global-war-service-decline'}" />
+                    <Button Name="CloseOffer" Text="{Loc 'sw-global-war-service-close'}" />
+                </BoxContainer>
+            </BoxContainer>
+            <BoxContainer Name="Personnel" Orientation="Vertical" SeparationOverride="5">
+                <Label Text="{Loc 'sw-global-war-service-appointments'}" StyleClasses="LabelHeading" />
+                <LineEdit Name="Search" PlaceHolder="{Loc 'sw-global-war-service-search'}" />
+                <OptionButton Name="TargetSelector" />
+                <RichTextLabel Name="TargetHint" />
+                <OptionButton Name="RoleSelector" />
+                <RichTextLabel Name="Proposal" />
+                <ui:SWGlobalWarConsoleButton Name="SendOffer" Text="{Loc 'sw-global-war-service-send-offer'}" />
+                <Button Name="Dismiss" Text="{Loc 'sw-global-war-service-dismiss'}" />
+            </BoxContainer>
+            <BoxContainer Name="ConfirmPanel" Orientation="Vertical" SeparationOverride="5" Visible="False">
+                <RichTextLabel Name="ConfirmText" />
+                <ui:SWGlobalWarConsoleButton Name="Confirm" Text="{Loc 'sw-global-war-service-confirm'}" />
+                <Button Name="Cancel" Text="{Loc 'sw-global-war-service-cancel'}" />
+            </BoxContainer>
+            <RichTextLabel Name="Outgoing" />
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

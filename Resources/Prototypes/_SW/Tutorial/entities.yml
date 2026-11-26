@@ -1,0 +1,236 @@
+- type: entity
+  id: SWTutorialArrow
+  categories: [ HideSpawnMenu ]
+  name: arrow
+  description: Walk here.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: Overdoors
+    sprite: Markers/arrow.rsi
+    state: mono
+    color: "#FFD800"
+    noRot: true
+
+# Breaks in a few hits: the lesson is holding the rifle, not how much a target can take.
+- type: entity
+  parent: TargetHuman
+  id: SWTutorialTarget
+  categories: [ HideSpawnMenu ]
+  name: target
+  description: A training target.
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: MobHuman
+  id: SWTutorialFriendDummy
+  categories: [ HideSpawnMenu ]
+  name: friend
+  description: A friend, with a badge over the head.
+  components:
+  - type: Loadout
+    prototypes: [ SWTutorialAllyGear ]
+  - type: SSDIndicator
+    isSSD: false
+  - type: SWTutorialAlly
+    icon: JobIconRepublicSoldier
+
+- type: entity
+  parent: SWBotSoldierBase
+  id: SWTutorialAllyBot
+  categories: [ HideSpawnMenu ]
+  name: friendly soldier
+  description: A friend, with a badge over the head.
+  components:
+  - type: SSDIndicator
+    isSSD: false
+  - type: SWTutorialAlly
+    icon: JobIconRepublicSoldier
+  - type: SWCombatBot
+    faction: SWTutorialFaction
+    enemyFaction: SWTutorialEnemyFaction
+    job: SWTutorialSoldier
+    objective: Hold
+
+# Stands still and does not shoot, with no module to think or fire with.
+# Real bots finish four droids in seconds, and the student would have nothing to do in the fight.
+- type: entity
+  parent: SWE1BlasterRifle
+  id: SWTutorialAllyRifle
+  categories: [ HideSpawnMenu ]
+  name: friend's rifle
+  description: It fires slowly.
+  components:
+  - type: Gun
+    fireRate: 0.25
+
+- type: entity
+  parent: SWMobDroidChassis
+  id: SWTutorialDroidDummy
+  categories: [ HideSpawnMenu ]
+  name: broken droid
+  description: It stands there and does not shoot.
+  components:
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      40: Dead
+    stateAlertDict:
+      Alive: BorgHealth
+      Dead: BorgDead
+    showOverlays: false
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 40
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: SWMobDroid
+  id: SWTutorialDroid
+  categories: [ HideSpawnMenu ]
+  name: combat droid
+  description: It went out of control.
+  components:
+  - type: SWTutorialEnemy
+  - type: HTN
+    blackboard:
+      FollowCloseRange: !type:Single
+        4
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidAICoreModule
+      - SWDroidBlasterModule
+  - type: SWAutoTargetingGun
+    range: 12
+
+- type: entity
+  parent: ChemicalMedipen
+  id: SWTutorialInjector
+  categories: [ HideSpawnMenu ]
+  name: training injector
+  description: Heals burns.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      pen:
+        maxVol: 15
+        reagents:
+        - ReagentId: Dermaline
+          Quantity: 15
+
+- type: entity
+  parent: EncryptionKey
+  id: SWTutorialEncryptionKey
+  categories: [ HideSpawnMenu ]
+  name: training channel key
+  description: For the training radio.
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWTutorialRadio
+    defaultChannel: SWTutorialRadio
+  - type: Sprite
+    layers:
+    - state: crypt_gray
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWTutorialHeadset
+  categories: [ HideSpawnMenu ]
+  name: training radio
+  description: Works only on the training ground.
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWTutorialEncryptionKey
+  - type: TelecomExempt
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWTutorialIdCard
+  categories: [ HideSpawnMenu ]
+  name: student tag
+  description: Droids shoot whoever wears one.
+  components:
+  - type: Sprite
+    layers:
+    - state: image4
+  - type: PresetIdCard
+    job: SWTutorialSoldier
+
+- type: radioChannel
+  id: SWTutorialRadio
+  name: sw-tutorial-radio-channel
+  keycode: 'у'
+  frequency: 2099
+  color: "#7fd67f"
+  longRange: false
+
+- type: startingGear
+  id: SWTutorialStudentGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    id: SWTutorialIdCard
+    ears: SWTutorialHeadset
+    pocket1: SWTutorialInjector
+    pocket2: SWTutorialInjector
+
+- type: startingGear
+  id: SWTutorialAllyGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWRepublicSuit
+    shoes: SWClothingShoesBootsJackFilled
+    head: SW_ClothingHeadRepublicHelmet
+    id: SWTutorialIdCard
+    suitstorage: SWTutorialAllyRifle
+
+- type: job
+  id: SWTutorialSoldier
+  name: job-name-sw-tutorial-soldier
+  description: job-description-sw-tutorial-soldier
+  playTimeTracker: JobSWTutorial
+  startingGear: SWTutorialAllyGear
+  icon: JobIconRepublicSoldier
+  supervisors: job-supervisors-leit-rep
+  setPreference: false
+
+- type: playTimeTracker
+  id: JobSWTutorial
+
+# Never spawned as a real faction: the bots only read the jobs from these prototypes, the round does not see them.
+- type: entity
+  id: SWTutorialFaction
+  categories: [ HideSpawnMenu ]
+  name: training side
+  description: Exists only on the training ground.
+  components:
+  - type: SWFaction
+    name: sw-tutorial-faction
+    relatedJobs:
+    - SWTutorialSoldier
+
+- type: entity
+  id: SWTutorialEnemyFaction
+  categories: [ HideSpawnMenu ]
+  name: training enemy
+  description: Exists only on the training ground.
+  components:
+  - type: SWFaction
+    name: sw-tutorial-enemy-faction

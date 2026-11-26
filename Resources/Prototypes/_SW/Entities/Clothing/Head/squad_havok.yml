@@ -1,5 +1,5 @@
 - type: entity
-  parent: SWBaseHelmet
+  parent: [SWBaseHelmet, SWRepublicJobHud]
   id: SW_ClothingHeadHavokHelmet
   name: Havok helmet
   components:

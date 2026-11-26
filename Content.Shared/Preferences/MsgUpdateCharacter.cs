@@ -11,6 +11,7 @@ namespace Content.Shared.Preferences
     public sealed class MsgUpdateCharacter : NetMessage
     {
         public override MsgGroups MsgGroup => MsgGroups.Command;
+        public override NetDeliveryMethod DeliveryMethod => NetDeliveryMethod.ReliableOrdered; //SW The last save must win.
 
         public int Slot;
         public ICharacterProfile Profile = default!;

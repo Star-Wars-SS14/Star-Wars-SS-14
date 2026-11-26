@@ -1,6 +1,6 @@
 - type: loadoutGroup
   id: SWSithloadout
-  name: sw-jedi-loadout
+  name: sw-sith-loadout
   minLimit: 1
   maxLimit: 1
   loadouts:

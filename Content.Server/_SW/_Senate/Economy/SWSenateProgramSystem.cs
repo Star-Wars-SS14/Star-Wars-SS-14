@@ -45,7 +45,7 @@ public sealed partial class SWSenateProgramSystem : EntitySystem
         var map = _proto.Index(scenario.Map);
         InitializeDefensePrograms(map);
         InitializeHealthPrograms(map);
-        foreach (var group in map.Worlds.Where(w => w.Sector != null
+        foreach (var group in map.Worlds.Where(w => w.Sector != null && map.GetWorldFaction(w) == "republic"
                      && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy).GroupBy(w => w.Sector!.Value.Id))
         {
             _worlds[group.Key] = group.OrderByDescending(w => w.Anchor).ThenBy(w => w.Name).ToArray();

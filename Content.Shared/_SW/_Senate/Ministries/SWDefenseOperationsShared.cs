@@ -12,6 +12,8 @@ public enum SWDefenseFleetOrder : byte { Guard, Patrol, Border, Return, Repair, 
 public enum SWDefenseOperationPhase : byte { Standing, Preparation, Travel, Execution, Recovery, Lost }
 [Serializable, NetSerializable]
 public enum SWDefenseEventKind : byte { Piracy, Unrest, Incursion, Blockade, Raid }
+[Serializable, NetSerializable]
+public enum SWImperialCrossingPhase : byte { None, WaitingResponse, Battle, Held }
 
 /// <summary>Authoritative strategic state. Time and ETAs use active Senate hours.</summary>
 [Serializable, NetSerializable]
@@ -28,12 +30,56 @@ public sealed class SWDefenseMapState
     public double SupplyHour;
     public List<SWDefenseSupplyFlowView> SupplyFlows = new();
     public List<SWDefenseFleetView> Fleets = new();
+    public List<SWDetectedImperialFleetView> DetectedImperialFleets = new();
+    public List<SWStrategicBattleView> Battles = new();
+    public List<SWDefenseSupportTargetView> SupportTargets = new();
     public List<SWDefenseWorldView> Worlds = new();
     public List<SWDefenseLinkView> Links = new();
     public List<SWDefenseBorderView> Borders = new();
     public List<SWDefenseEventView> Events = new();
     public List<SWDefenseShipyardView> Shipyards = new();
     public List<SWDefenseOrderOptionView> OrderOptions = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStrategicBattleView
+{
+    public int EventId;
+    public string WorldId = string.Empty;
+    public string WorldName = string.Empty;
+    public string Title = string.Empty;
+    public string Phase = string.Empty;
+    public List<SWStrategicBattleFleetView> Republic = new();
+    public List<SWStrategicBattleFleetView> Opponent = new();
+    public List<SWStrategicBattleFleetView> Reinforcements = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStrategicBattleFleetView
+{
+    public int Id;
+    public string Name = string.Empty;
+    public float Strength;
+    public float Damage;
+    public float Supply;
+    public bool HasCondition;
+    public double? EtaHours;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDetectedImperialFleetView
+{
+    public int Id;
+    public int EventId;
+    public string Name = string.Empty;
+    public string WorldId = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseSupportTargetView
+{
+    public int LeaderFleetId;
+    public int EventId;
 }
 
 [Serializable, NetSerializable]
@@ -120,6 +166,11 @@ public sealed class SWDefenseEventView
     public double ExpiresAt;
     public bool Resolved;
     public bool DirectorCreated;
+    public bool ImperialCrossing;
+    public bool ImperialRaid;
+    public bool ImperialContact;
+    public bool ImperialBlockade;
+    public SWImperialCrossingPhase ImperialPhase;
     public string Status = string.Empty;
     public string Risk = string.Empty;
 }

@@ -1,5 +1,6 @@
 ﻿using Content.Shared.Roles;
 using Robust.Shared.Player;
+using Content.Shared.Preferences; //SW
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.GameTicking.Events;
@@ -21,4 +22,7 @@ public struct IsRoleAllowedEvent(
     public readonly List<ProtoId<JobPrototype>>? Jobs = jobs;
     public readonly List<ProtoId<AntagPrototype>>? Antags = antags;
     public bool Cancelled = cancelled;
+
+    /// <summary>Trusted server snapshot of an existing character; absent for ordinary lobby checks.</summary>
+    public HumanoidCharacterProfile? ActiveCharacterProfile; //SW
 }

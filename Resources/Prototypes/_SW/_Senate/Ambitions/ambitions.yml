@@ -424,12 +424,12 @@
 - type: swAmbition
   id: SWAmbitionMinSecPlots
   name: Гроза заговорщиков
-  description: Раскрыть силами агентуры не менее трёх заговоров за раунд.
+  description: Завершить силами агентуры не менее трёх внутренних расследований за раунд.
   role: Minister
   ministryId: SWMinistryInternalSecurity
   kind: MinisterMetric
   stat: PlotsBusted
-  comparison: Above
+  comparison: AtLeast
   threshold: 3
   order: 37
 
@@ -443,6 +443,30 @@
   stat: Threat
   comparison: Above
   threshold: 60
+  order: 38
+
+- type: swAmbition
+  id: SWAmbitionMinSecNetwork
+  name: Агентурная сеть
+  description: К концу раунда содержать не менее трёх действующих ячеек.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: ActiveCells
+  comparison: AtLeast
+  threshold: 3
+  order: 38
+
+- type: swAmbition
+  id: SWAmbitionMinSecImperial
+  name: Тень над Империей
+  description: Завершить не менее двух операций против Империи за раунд.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: ImperialCasesCompleted
+  comparison: AtLeast
+  threshold: 2
   order: 38
 
 # === Министерство экономического развития ===
@@ -561,20 +585,20 @@
 
 - type: swAmbition
   id: SWAmbitionMinJusBacklog
-  name: Быстрое правосудие
-  description: К концу раунда загруженность судов должна быть ниже 20.
+  name: Обоснованные выводы
+  description: Завершить не менее пяти ведомственных проверок с правильным заключением.
   role: Minister
   ministryId: SWMinistryJustice
   kind: MinisterMetric
-  stat: Backlog
-  comparison: Below
-  threshold: 20
+  stat: CorrectInspections
+  comparison: Above
+  threshold: 5
   order: 48
 
 - type: swAmbition
   id: SWAmbitionMinJusAccuracy
-  name: Справедливый суд
-  description: К концу раунда точность приговоров должна быть не ниже 80%.
+  name: Беспристрастный надзор
+  description: Завершить не менее трёх проверок и сохранить точность заключений не ниже 80%.
   role: Minister
   ministryId: SWMinistryJustice
   kind: MinisterMetric
@@ -585,38 +609,38 @@
 
 - type: swAmbition
   id: SWAmbitionMinJusResolved
-  name: Трудяга правосудия
-  description: Рассмотреть не менее пятнадцати дел за раунд.
+  name: Полный реестр
+  description: Довести до контрольной проверки не менее восьми дел за раунд.
   role: Minister
   ministryId: SWMinistryJustice
   kind: MinisterMetric
   stat: Resolved
   comparison: Above
-  threshold: 15
+  threshold: 8
   order: 50
 
 - type: swAmbition
   id: SWAmbitionMinJusOverdue
-  name: Никаких проволочек
-  description: К концу раунда просроченных дел должно быть не больше пяти.
+  name: Исполненные предписания
+  description: Подтвердить исполнение мер по четырём делам с правильно установленным нарушением.
   role: Minister
   ministryId: SWMinistryJustice
   kind: MinisterMetric
-  stat: Overdue
-  comparison: Below
-  threshold: 5
+  stat: FulfilledInspections
+  comparison: Above
+  threshold: 4
   order: 51
 
 - type: swAmbition
   id: SWAmbitionMinJusCrisis
-  name: Кризис в судах
-  description: Вы тайно затягиваете дела, чтобы обосновать созыв чрезвычайных трибуналов. Загруженность судов должна быть выше 60.
+  name: Республиканская инспекция
+  description: Завершить проверки с правильными заключениями как минимум в трёх разных секторах.
   role: Minister
   ministryId: SWMinistryJustice
   kind: MinisterMetric
-  stat: Backlog
+  stat: CompletedSectors
   comparison: Above
-  threshold: 60
+  threshold: 3
   order: 52
 
 # === Министерство здравоохранения ===

@@ -229,6 +229,23 @@ public static class SWConsoleStyle
     public static Color SeverityColor(float severity) =>
         severity >= 70f ? Bad : severity >= 40f ? Warn : Good;
 
+    /// <summary>Display old round-scoped timestamps without their duplicated day prefix.</summary>
+    public static string PressTime(string value)
+    {
+        var separator = value.IndexOf(", ", StringComparison.Ordinal);
+        if (separator < 0)
+            return value;
+        var prefix = value[..separator];
+        var number = prefix.StartsWith("День ", StringComparison.Ordinal) ? prefix[5..]
+            : prefix.StartsWith("Day ", StringComparison.Ordinal) ? prefix[4..] : string.Empty;
+        if (number.Length == 0 || !number.All(char.IsDigit))
+            return value;
+        var rest = value[(separator + 2)..];
+        var day = "День " + number;
+        return rest.StartsWith(day, StringComparison.Ordinal) && rest.Length > day.Length
+            && rest[day.Length] is ',' or ':' ? rest : value;
+    }
+
     // RichTextLabel wraps text at whatever width it was MEASURED with and never re-wraps on arrange
     // (RobustToolbox RichTextLabel: Draw uses the wrapping computed in the last MeasureOverride). Parents
     // routinely MEASURE us at a width wider than the width we are ultimately ARRANGED to (a scroll

@@ -8,7 +8,7 @@ public sealed partial class CCVars
     ///     Whether tips being shown is enabled at all.
     /// </summary>
     public static readonly CVarDef<bool> TipsEnabled =
-        CVarDef.Create("tips.enabled", true);
+        CVarDef.Create("tips.enabled", false); //SW: these tips and their clown are about another game
 
     /// <summary>
     ///     The dataset prototype to use when selecting a random tip.
@@ -30,7 +30,7 @@ public sealed partial class CCVars
         CVarDef.Create("tips.in_game_frequency", 60f * 60);
 
     public static readonly CVarDef<string> LoginTipsDataset =
-        CVarDef.Create("tips.login_dataset", "Tips");
+        CVarDef.Create("tips.login_dataset", ""); //SW: an empty dataset hides the tips on the connecting screen
 
     /// <summary>
     ///     The chance for Tippy to replace a normal tip message.

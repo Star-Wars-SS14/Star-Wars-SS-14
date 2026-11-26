@@ -1,0 +1,18 @@
+<ContainerButton xmlns="https://spacestation14.io"
+                 HorizontalExpand="True"
+                 MinHeight="44"
+                 StyleClasses="SWTermOptionItem">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+        <PanelContainer Name="Stripe" SetWidth="3" Visible="False" />
+        <EntityPrototypeView Name="Icon" SetSize="32 32" Scale="1 1" />
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center">
+            <Label Name="NameLabel" StyleClasses="SWTermValue" ClipText="True" />
+            <RichTextLabel Name="ReasonLabel" StyleClasses="SWTermText" MaxWidth="340" HorizontalAlignment="Left" Visible="False" />
+        </BoxContainer>
+        <Label Name="CostLabel" StyleClasses="SWTermPrice" VAlign="Center" Visible="False" />
+        <TextureRect Name="TickIcon" SetSize="18 18" Stretch="KeepCentered" VerticalAlignment="Center"
+                     TexturePath="/Textures/_SW/Interface/Misc/tick.png" Visible="False" />
+        <TextureRect Name="LockIcon" SetSize="18 18" Stretch="KeepAspectCentered" VerticalAlignment="Center"
+                     TexturePath="/Textures/Interface/Nano/lock.svg.192dpi.png" Visible="False" />
+    </BoxContainer>
+</ContainerButton>

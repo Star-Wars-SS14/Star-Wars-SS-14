@@ -857,12 +857,12 @@
   id: dromund_kaas--korriban
   from: dromund_kaas
   to: korriban
-  accessible: false
+  accessible: true
   travelHours: 0.75
-  fuelPerSlot: 0.009000000000000001
-  capacitySlotsPerHour: 0
-  plannedLoadedSlotsPerHour: 0.0
-  plannedEmptySlotsPerHour: 0.0
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 259.1869911
+  plannedLoadedSlotsPerHour: 113.9897155
+  plannedEmptySlotsPerHour: 93.35987739
 
 - type: swTransitLink
   id: dromund_kaas--voss

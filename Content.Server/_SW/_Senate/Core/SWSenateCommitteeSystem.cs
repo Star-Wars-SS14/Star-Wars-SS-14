@@ -24,7 +24,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     public const float CommitteeWeightThreshold = 8f;
     public static int CommitteeHour => SWSenateTimeSystem.StartHour + 1;
 
-    public bool InCommitteeHour => _time.DayActive && _time.CurrentHour == CommitteeHour;
+    public const int AfternoonCommitteeHour = 14;
+    public bool InCommitteeHour => _time.DayActive && (_time.CurrentHour == CommitteeHour || _time.CurrentHour == AfternoonCommitteeHour);
 
     private bool PastCommitteeHour => _time.DayActive && _time.CurrentHour > CommitteeHour;
 
@@ -61,6 +62,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     private readonly Dictionary<string, int> _advanced = new();
     private readonly Dictionary<string, int> _returned = new();
     private int _lastResolveDay = -1;
+    private int _lastResolveHour = -1;
+    private float _membershipElapsed;
     private int _lastDischargeDay = -1;
 
     public override void Initialize()
@@ -114,6 +117,30 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         }
 
         return best;
+    }
+
+    // All referrals use the same stage transition, including the empty-committee case.
+    public void ReferBill(SWSenateBill bill, string committeeId, int day)
+    {
+        var committee = _committees.FirstOrDefault(c => c.Id == committeeId);
+        if (committee == null) { _senate.PlaceOnFloor(bill); return; }
+        Prune(committee);
+        _senate.ReferToCommittee(bill, committee.Id, committee.Name, day);
+        if (committee.Members.Count == 0 && _senate.IsInCommittee(bill.Id))
+        {
+            _senate.PlaceOnFloor(bill);
+            ClearBillVotes(bill.Id);
+        }
+    }
+
+    private void ReleaseEmptyCommittee(Committee committee)
+    {
+        if (committee.Members.Count != 0) return;
+        foreach (var bill in _senate.GetInCommitteeBills(committee.Id))
+        {
+            _senate.PlaceOnFloor(bill);
+            ClearBillVotes(bill.Id);
+        }
     }
 
     public string CommitteeName(string committeeId) =>
@@ -295,6 +322,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         _advanced.Clear();
         _returned.Clear();
         _lastResolveDay = -1;
+        _lastResolveHour = -1;
+        _membershipElapsed = 0;
         _lastDischargeDay = -1;
     }
 
@@ -308,10 +337,23 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         if (!_time.ModeActive)
             return;
 
-        // Committee convenes: settle chair elections and prune departed members.
-        if (InCommitteeHour && _lastResolveDay != _time.Day)
+        // Check membership at a bounded cadence, including outside the voting windows.
+        _membershipElapsed += frameTime;
+        if (_membershipElapsed >= 1f)
+        {
+            _membershipElapsed = 0;
+            foreach (var committee in _committees)
+            {
+                Prune(committee);
+                ReleaseEmptyCommittee(committee);
+            }
+        }
+
+        // Each window gets its own opening, while the next-day discharge remains unchanged.
+        if (InCommitteeHour && (_lastResolveDay != _time.Day || _lastResolveHour != _time.CurrentHour))
         {
             _lastResolveDay = _time.Day;
+            _lastResolveHour = _time.CurrentHour;
             foreach (var committee in _committees)
             {
                 Prune(committee);
@@ -366,6 +408,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
         if (committee.Chair == person)
             VacateChair(committee);
+        ReleaseEmptyCommittee(committee);
 
         return true;
     }

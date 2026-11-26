@@ -1,0 +1,90 @@
+<ui:SWTerminalWindow
+    xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client._SW.UserInterface;assembly=Content.Client"
+    Title="{Loc 'sw-quest-board-title'}"
+    MinSize="760 520" SetSize="900 620">
+    <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="10">
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+            <Control HorizontalExpand="True" />
+            <PanelContainer StyleClasses="SWTermFrame">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="6,2">
+                    <TextureRect Name="ViewerIcon" MinSize="24 24" Stretch="KeepAspectCentered" Visible="False" />
+                    <Label Name="ViewerName" StyleClasses="SWTermText" />
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8" VerticalExpand="True">
+            <PanelContainer StyleClasses="SWTermFrame" MinWidth="260">
+                <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="6">
+                    <Label Text="{Loc 'sw-quest-board-list'}" StyleClasses="SWTermValue" />
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                        <BoxContainer Name="QuestList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2" />
+                    </ScrollContainer>
+                    <Button Name="CreateButton" Text="{Loc 'sw-quest-board-create'}" />
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer StyleClasses="SWTermFrame" HorizontalExpand="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="6" HorizontalExpand="True">
+                    <BoxContainer Name="GuidePanel" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True" Visible="False">
+                        <Label Text="{Loc 'sw-board-guide-title'}" StyleClasses="SWTermValue" />
+                        <RichTextLabel Name="GuideBody" HorizontalExpand="True" VerticalExpand="True" />
+                    </BoxContainer>
+                    <BoxContainer Name="DetailsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="6">
+                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
+                                <RichTextLabel Name="DetailTitle" StyleClasses="SWTermValue" />
+                                <BoxContainer Name="ProgressRow" Orientation="Vertical" SeparationOverride="2" Visible="False">
+                                    <ProgressBar Name="DetailProgress" MinHeight="6" HorizontalExpand="True" />
+                                    <Label Name="DetailProgressCount" StyleClasses="SWTermText" />
+                                </BoxContainer>
+                                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                                    <Label Name="DetailGiverPrefix" StyleClasses="SWTermText" Text="{Loc 'sw-quest-board-giver-prefix'}" />
+                                    <TextureRect Name="GiverIcon" MinSize="32 32" Stretch="KeepAspectCentered" Visible="False" />
+                                    <Label Name="DetailGiver" StyleClasses="SWTermText" VerticalExpand="True" />
+                                </BoxContainer>
+                                <Label Name="DetailReward" StyleClasses="SWTermText" />
+                                <Label Name="DetailContact" StyleClasses="SWTermText" />
+                                <Label Name="DetailTakersHeader" StyleClasses="SWTermText" />
+                                <BoxContainer Name="TakersList" Orientation="Vertical" SeparationOverride="2" />
+                                <RichTextLabel Name="DetailDescription" HorizontalExpand="True" />
+                                <Label Name="CommentsHeader" StyleClasses="SWTermText" />
+                                <BoxContainer Name="CommentsList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                            <Button Name="TakeButton" Text="{Loc 'sw-quest-board-take'}" />
+                            <Button Name="LeaveButton" Text="{Loc 'sw-quest-board-leave'}" />
+                            <Button Name="CommentButton" Text="{Loc 'sw-quest-board-comment'}" />
+                            <Button Name="CompleteButton" Text="{Loc 'sw-quest-board-complete'}" />
+                            <Button Name="QuestCloseButton" Text="{Loc 'sw-quest-board-close'}" />
+                        </BoxContainer>
+                        <BoxContainer Name="CommentForm" Orientation="Vertical" Visible="False" SeparationOverride="4">
+                            <LineEdit Name="InputComment" PlaceHolder="{Loc 'sw-quest-board-field-comment'}" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                                <Button Name="CommentSubmit" Text="{Loc 'sw-quest-board-comment-send'}" />
+                                <Button Name="CommentCancel" Text="{Loc 'sw-quest-board-cancel'}" />
+                            </BoxContainer>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="CreateForm" Orientation="Vertical" Visible="False" SeparationOverride="4">
+                        <Label Text="{Loc 'sw-quest-board-create'}" StyleClasses="SWTermValue" />
+                        <LineEdit Name="InputTitle" PlaceHolder="{Loc 'sw-quest-board-field-title'}" />
+                        <LineEdit Name="InputDescription" PlaceHolder="{Loc 'sw-quest-board-field-description'}" />
+                        <LineEdit Name="InputReward" PlaceHolder="{Loc 'sw-quest-board-field-reward'}" />
+                        <LineEdit Name="InputContact" PlaceHolder="{Loc 'sw-quest-board-field-contact'}" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                            <Button Name="SubmitButton" Text="{Loc 'sw-quest-board-submit'}" />
+                            <Button Name="CancelButton" Text="{Loc 'sw-quest-board-cancel'}" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+        <PanelContainer StyleClasses="SWTermFrame" MinHeight="30" HorizontalExpand="True" RectClipContent="True">
+            <BoxContainer Name="TickerRow" Orientation="Horizontal" SeparationOverride="0" Margin="6,5">
+                <Label Name="TickerTextA" StyleClasses="SWTermText" />
+                <Label Name="TickerTextB" StyleClasses="SWTermText" />
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</ui:SWTerminalWindow>

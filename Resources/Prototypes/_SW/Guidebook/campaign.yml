@@ -1,0 +1,5 @@
+- type: guideEntry
+  id: SWGlobalWarCampaign
+  name: sw-guide-entry-campaign
+  text: "/ServerInfo/_SW/Guidebook/Campaign.xml"
+  priority: -1

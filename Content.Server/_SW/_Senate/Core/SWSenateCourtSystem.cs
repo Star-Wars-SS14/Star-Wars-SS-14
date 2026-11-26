@@ -7,6 +7,8 @@ using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -46,6 +48,9 @@ public sealed class SWSenateCourtSystem : EntitySystem
         public string Nominee = string.Empty;
         public bool ForChief;
         public bool Accepted;
+        public EntityUid? AcceptedBody;
+        public NetUserId? AcceptedPlayer;
+        public bool IdentityAmbiguous;
         public readonly Dictionary<string, bool> Votes = new();
         public double DeadlineActiveHour;
     }
@@ -94,6 +99,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnNomineeAttached);
         SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
         {
             if (!ev.FinalDay)
@@ -120,7 +126,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         _morningInitialAttempted = false;
     }
 
-    public bool TakeOffice(SWSenatePosition position, string name)
+    public bool TakeOffice(SWSenatePosition position, string name, EntityUid? actor = null)
     {
         if (!CanTakeOffice(position, name))
             return false;
@@ -131,21 +137,25 @@ public sealed class SWSenateCourtSystem : EntitySystem
                 if (Chief != null)
                     return false;
                 Chief = name;
+                RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-chief", actor));
                 return true;
             case SWSenatePosition.Judge:
                 if (_judges.Count >= 2)
                     return false;
                 _judges.Add(name);
+                RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent($"court-judge-{_judges.Count - 1}", actor));
                 return true;
             case SWSenatePosition.Prosecutor:
                 if (Prosecutor != null)
                     return false;
                 Prosecutor = name;
+                RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-prosecutor", actor));
                 return true;
             case SWSenatePosition.Defender:
                 if (Defender != null)
                     return false;
                 Defender = name;
+                RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-defender", actor));
                 return true;
             default:
                 return false;
@@ -241,12 +251,16 @@ public sealed class SWSenateCourtSystem : EntitySystem
         {
             _cards.SynchronizeHolder(name, SWSenatePosition.Senator);
             Chief = null;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-chief", null));
             Announce($"Верховный Судья {name} сложил полномочия.");
             return true;
         }
 
-        if (_judges.Remove(name))
+        var judgeIndex = _judges.IndexOf(name);
+        if (judgeIndex >= 0)
         {
+            InvalidateJudgeSlotsFrom(judgeIndex);
+            _judges.RemoveAt(judgeIndex);
             _cards.SynchronizeHolder(name, SWSenatePosition.Senator);
             Announce($"Республиканский Судья {name} сложил полномочия.");
             return true;
@@ -256,6 +270,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         {
             _cards.RevokeHolder(name, SWSenatePosition.Prosecutor);
             Prosecutor = null;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-prosecutor", null));
             return true;
         }
 
@@ -263,10 +278,27 @@ public sealed class SWSenateCourtSystem : EntitySystem
         {
             _cards.RevokeHolder(name, SWSenatePosition.Defender);
             Defender = null;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-defender", null));
             return true;
         }
 
         return false;
+    }
+
+    // List indices are office identities for existing ambitions. A removal shifts every
+    // subsequent slot; none of those old results can safely follow the new occupant.
+    private void InvalidateJudgeSlotsFrom(int index)
+    {
+        for (var i = index; i < _judges.Count; i++)
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent($"court-judge-{i}", null));
+    }
+
+    private void OnNomineeAttached(PlayerAttachedEvent ev)
+    {
+        if (_nomination is not { Accepted: true, AcceptedBody: { } body, AcceptedPlayer: { } player } nom)
+            return;
+        if ((ev.Entity == body && ev.Player.UserId != player) || (ev.Entity != body && ev.Player.UserId == player))
+            nom.IdentityAmbiguous = true;
     }
 
     // --- nomination ---
@@ -350,7 +382,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
             : "Канцлер предлагает вам пост Республиканского Судьи.";
     }
 
-    public bool RespondNomination(string name, bool accept)
+    public bool RespondNomination(string name, bool accept, EntityUid? actor = null)
     {
         if (!IsNominee(name))
             return false;
@@ -364,6 +396,11 @@ public sealed class SWSenateCourtSystem : EntitySystem
         }
 
         _nomination!.Accepted = true;
+        if (actor is { } body && TryComp<ActorComponent>(body, out var player))
+        {
+            _nomination.AcceptedBody = body;
+            _nomination.AcceptedPlayer = player.PlayerSession.UserId;
+        }
         _nomination.DeadlineActiveHour = _time.ActiveGameHours + ConfirmHours;
         Announce($"Сенат рассматривает кандидатуру {name} на пост {(_nomination.ForChief ? "Верховного Судьи" : "Республиканского Судьи")}. Голосование в консоли голосования.");
         return true;
@@ -423,10 +460,14 @@ public sealed class SWSenateCourtSystem : EntitySystem
             return;
         }
 
-        Appoint(nom.Nominee, nom.ForChief);
+        EntityUid? verifiedActor = null;
+        if (!nom.IdentityAmbiguous && nom.AcceptedBody is { } body && nom.AcceptedPlayer is { } player
+            && TryComp<ActorComponent>(body, out var current) && current.PlayerSession.UserId == player)
+            verifiedActor = body;
+        Appoint(nom.Nominee, nom.ForChief, verifiedActor);
     }
 
-    private void Appoint(string name, bool forChief)
+    private void Appoint(string name, bool forChief, EntityUid? actor)
     {
         foreach (var (sectorId, holder) in _senate.SectorHolders.ToList())
         {
@@ -443,20 +484,35 @@ public sealed class SWSenateCourtSystem : EntitySystem
         if (_senate.Speaker == name)
             _senate.ResignSpeaker();
         if (Prosecutor == name)
+        {
             Prosecutor = null;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-prosecutor", null));
+        }
         if (Defender == name)
+        {
             Defender = null;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-defender", null));
+        }
 
         if (forChief)
         {
-            _judges.Remove(name);
+            var previousIndex = _judges.IndexOf(name);
+            if (previousIndex >= 0)
+            {
+                InvalidateJudgeSlotsFrom(previousIndex);
+                _judges.RemoveAt(previousIndex);
+            }
             Chief = name;
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent("court-chief", actor));
             Announce($"Сенат утвердил {name} в должности Верховного Судьи Республики.");
         }
         else
         {
             if (!_judges.Contains(name))
+            {
                 _judges.Add(name);
+                RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent($"court-judge-{_judges.Count - 1}", actor));
+            }
             Announce($"Сенат утвердил {name} в должности Республиканского Судьи.");
         }
 

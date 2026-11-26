@@ -1,0 +1,34 @@
+- type: entity
+  parent: BasePDACartridge
+  id: SWHolonetCartridge
+  name: картридж Голонета
+  description: Новости, форум и почта галактической сети.
+  components:
+  - type: Sprite
+    state: cart-y
+  - type: UIFragment
+    ui: !type:SWHolonetUi
+  - type: Cartridge
+    programName: sw-holonet-program-name
+    icon:
+      sprite: Interface/Misc/program_icons.rsi
+      state: news_read
+  - type: SWHolonetCartridge
+
+- type: entity
+  parent: BaseComputer
+  id: SWHolonetTerminal
+  name: терминал Голонета
+  description: Публичный терминал галактической сети. Вход выполняется под личным каналом абонента.
+  components:
+  - type: SWHolonetTerminal
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_info_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

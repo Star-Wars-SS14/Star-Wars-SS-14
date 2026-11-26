@@ -787,3 +787,19 @@ SpawnPointBoxer: null
 FigureSpawner: MechFigurineSpawner50
 ToySpawner: PlushieSpawner50
 SpacemenFigureSpawner: SpacemenFigurineSpawner90
+
+# Legacy Holonet screen now uses the shared terminal.
+SWPressVideoScreen: SWHolonetTerminal
+
+# SW 2026-10-30
+SWMobEmpiдтнааreIntelligenceAgent: SWMobEmpireIntelligenceAgent
+RedCartridgeBlast: null
+SWZ1RedCartridgeBlast: null
+SWGreenCartridgeBlast: null
+SWH206GreenCartridgeBlast: null
+SWBlueCartridgeBlast: null
+SWCannonBlueCartridgeBlast: null
+SWSniperRifleBlueCartridgeBlast: null
+SWYellowCartridgeBlast: null
+SWCannonYellowCartridgeBlast: null
+SWSniperRifleYellowCartridgeBlast: null

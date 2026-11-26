@@ -1,0 +1,84 @@
+- type: entity
+  id: SWTurretMounted
+  name: Mounted Turret
+  description: A stationary weapon. Sit and shoot.
+  suffix: SW
+  parent: BaseStructure
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Turrets/turrets.rsi
+    drawdepth: Mobs
+    layers:
+      - state: syndie_lethal
+
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.3,0.3,0.3"
+        density: 100
+        mask: [ MachineMask ]
+        layer: [ MachineLayer ]
+
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 1500
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleDriver
+    vehicleParts:
+      cannon:
+        entProto: SWTurretGunPart
+        buckleCoords: "0.0, -0.5"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.5"
+
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+
+  - type: Input
+    context: "human"
+  - type: NoRotateOnInteract
+  - type: NoRotateOnMove
+
+  - type: SWInertialVehicle
+    acceleration: 0
+    reverseAcceleration: 0
+    brakeAcceleration: 100
+    maxForwardSpeed: 0
+    maxReverseSpeed: 0
+    turnAcceleration: 0         
+    maxAngularVelocity: 0       
+    angularDamping: 100         
+    rollingFriction: 100
+    sidewaysFriction: 100
+
+  - type: SWVehicleHeadlight
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 10
+    energy: 2
+    color: "#e8f2ff"
+
+
+  - type: SWTurretAim

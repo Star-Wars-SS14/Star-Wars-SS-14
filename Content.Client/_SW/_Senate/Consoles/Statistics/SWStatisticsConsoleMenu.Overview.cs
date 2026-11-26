@@ -13,12 +13,14 @@ public sealed partial class SWStatisticsConsoleMenu
     private int _period = 360;
     private bool _showComponents;
     private bool _showObservations;
-    private readonly RichTextLabel _brief = SWConsoleStyle.Wrap(string.Empty, SWConsoleStyle.TextDim);
+    private string _componentsSignature = string.Empty;
+    private string _observationsSignature = string.Empty;
+    private readonly RichTextLabel _brief = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextDim);
     private readonly BoxContainer _analysis = VerticalStack(10);
-    private readonly RichTextLabel _metricTitle = SWConsoleStyle.Wrap(string.Empty, SWConsoleStyle.TextBright);
+    private readonly RichTextLabel _metricTitle = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextBright);
     private readonly Label _value = SWConsoleStyle.Text(string.Empty, SWConsoleStyle.Accent, SWConsoleStyle.Title);
     private readonly Label _policy = SWConsoleStyle.Text(string.Empty, SWConsoleStyle.Brass, SWConsoleStyle.Body);
-    private readonly RichTextLabel _change = SWConsoleStyle.Wrap(string.Empty, SWConsoleStyle.TextDim);
+    private readonly RichTextLabel _change = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextDim);
     private readonly SWStatisticsTrend _trend = new();
     private readonly Dictionary<int, Button> _periodButtons = new();
     private readonly Button _componentsButton = SWConsoleStyle.TabButton("Состав политики");
@@ -35,9 +37,8 @@ public sealed partial class SWStatisticsConsoleMenu
         _value.Margin = new Thickness(0, 0, 24, 0);
         readings.AddChild(_value);
         readings.AddChild(_policy);
-        _analysis.AddChild(readings);
-        _analysis.AddChild(_change);
-        var periods = new WrapContainer();
+        readings.AddChild(_change);
+        var periods = new WrapContainer { SeparationOverride = 4 };
         foreach (var (minutes, title) in new[] { (360, "6 часов"), (720, "12 часов"), (0, "Весь журнал") })
         {
             var button = SWConsoleStyle.TabButton(title);
@@ -45,7 +46,8 @@ public sealed partial class SWStatisticsConsoleMenu
             _periodButtons.Add(minutes, button);
             periods.AddChild(button);
         }
-        _analysis.AddChild(periods);
+        readings.AddChild(periods);
+        _analysis.AddChild(readings);
         _analysis.AddChild(_trend);
         var legend = new BoxContainer { SeparationOverride = 10 };
         legend.AddChild(new SWStatisticsKey());
@@ -61,7 +63,7 @@ public sealed partial class SWStatisticsConsoleMenu
         _analysis.AddChild(disclosures);
         _analysis.AddChild(_components);
         _analysis.AddChild(_observations);
-        RepublicStats.AddChild(new SWConsoleColumns(_metrics, _analysis, 215, 700, fixedFirst: true));
+        RepublicStats.AddChild(new SWConsoleColumns(PagePanel(_metrics), PagePanel(_analysis), 215, 700, fixedFirst: true));
     }
 
     private void RefreshOverview()
@@ -95,22 +97,27 @@ public sealed partial class SWStatisticsConsoleMenu
         SWConsoleStyle.StyleTabButton(_observationsButton, _showObservations);
         _components.Visible = _showComponents;
         _observations.Visible = _showObservations;
-        if (_showComponents)
+        var componentKey = g.Id + "|" + string.Join(";", g.Subs.Select(x => $"{x.Id}:{x.Name}:{x.Value}:{x.Min}:{x.Max}")) + "|" +
+            SituationSignature(_state.SituationalStats.Where(x => x.SectorId == null && g.Subs.Any(sub => sub.Id == x.SubstatId)));
+        if (_showComponents && componentKey != _componentsSignature)
         {
+            _componentsSignature = componentKey;
             _components.RemoveAllChildren();
             foreach (var sub in g.Subs)
             {
                 var detail = _state.SituationalStats.FirstOrDefault(x => x.SectorId == null && x.SubstatId == sub.Id);
                 _components.AddChild(detail == null ? Metric(sub.Name, sub.Value, sub.Min, sub.Max) : SWSituationalStatDisplay.Make(detail, _situationExpanded));
             }
-            if (g.Subs.Count == 0) _components.AddChild(SWConsoleStyle.Wrap("Подробных показателей нет.", SWConsoleStyle.TextDim));
+            if (g.Subs.Count == 0) _components.AddChild(SWStatisticsText.Wrap("Подробных показателей нет.", SWConsoleStyle.TextDim));
         }
-        if (_showObservations)
+        var observationKey = g.Id + "|" + _period + "|" + string.Join(";", series.Select(p => $"{p.Minute}:{p.Actual}:{p.Policy}"));
+        if (_showObservations && observationKey != _observationsSignature)
         {
+            _observationsSignature = observationKey;
             _observations.RemoveAllChildren();
-            _observations.AddChild(SWConsoleStyle.Wrap("Время          Факт          Политика", SWConsoleStyle.TextDim));
+            _observations.AddChild(SWStatisticsText.Wrap("Время          Факт          Политика", SWConsoleStyle.TextDim));
             foreach (var p in series.AsEnumerable().Reverse())
-                _observations.AddChild(SWConsoleStyle.Wrap($"{SWStatisticsPresentation.Time(p.Minute)}    {SWStatisticsPresentation.Number(p.Actual ?? float.NaN)}    {SWStatisticsPresentation.Number(p.Policy ?? float.NaN)}", SWConsoleStyle.TextBright));
+                _observations.AddChild(SWStatisticsText.Wrap($"{SWStatisticsPresentation.Time(p.Minute)}    {SWStatisticsPresentation.Number(p.Actual ?? float.NaN)}    {SWStatisticsPresentation.Number(p.Policy ?? float.NaN)}", SWConsoleStyle.TextBright));
         }
     }
 }

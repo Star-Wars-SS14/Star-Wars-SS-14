@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using Content.Shared._SW.GlobalWar.Access; //SW
+using System.Linq;
 using Content.Shared.Ghost;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
@@ -93,18 +94,6 @@ public abstract class SharedPortalSystem : EntitySystem
         if (Transform(subject).Anchored)
             return;
 
-        // break pulls before portal enter so we don't break shit
-        if (TryComp<PullableComponent>(subject, out var pullable) && pullable.BeingPulled)
-        {
-            _pulling.TryStopPull(subject, pullable);
-        }
-
-        if (TryComp<PullerComponent>(subject, out var pullerComp)
-            && TryComp<PullableComponent>(pullerComp.Pulling, out var subjectPulling))
-        {
-            _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling);
-        }
-
         // if they came from another portal, just return and wait for them to exit the portal
         if (HasComp<PortalTimeoutComponent>(subject))
         {
@@ -123,14 +112,7 @@ public abstract class SharedPortalSystem : EntitySystem
             // pick a target and teleport there
             var target = _random.Pick(link.LinkedEntities);
 
-            if (HasComp<PortalComponent>(target))
-            {
-                // if target is a portal, signal that they shouldn't be immediately teleported back
-                var timeout = EnsureComp<PortalTimeoutComponent>(subject);
-                timeout.EnteredPortal = ent;
-                Dirty(subject, timeout);
-            }
-
+            //SW: timeout and pull changes occur only after transfer permission is checked.
             TeleportEntity(ent, subject, Transform(target).Coordinates, target);
             return;
         }
@@ -225,6 +207,36 @@ public abstract class SharedPortalSystem : EntitySystem
 
             return;
         }
+
+        //SW start
+        if (_netMan.IsClient && !onSameMap &&
+            (HasComp<SWGlobalWarGuardedMapComponent>(Transform(subject).MapUid) ||
+             HasComp<SWGlobalWarGuardedMapComponent>(Transform(target.EntityId).MapUid)))
+            return;
+        var permission = new SWGlobalWarPortalAttemptEvent(subject, target);
+        RaiseLocalEvent(ref permission);
+        if (permission.Cancelled)
+            return;
+
+        // break pulls before portal enter so we don't break shit
+        if (TryComp<PullableComponent>(subject, out var pullable) && pullable.BeingPulled)
+        {
+            _pulling.TryStopPull(subject, pullable);
+        }
+
+        if (TryComp<PullerComponent>(subject, out var pullerComp)
+            && TryComp<PullableComponent>(pullerComp.Pulling, out var subjectPulling))
+        {
+            _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling);
+        }
+
+        if (playSound && HasComp<PortalComponent>(targetEntity))
+        {
+            var timeout = EnsureComp<PortalTimeoutComponent>(subject);
+            timeout.EnteredPortal = ent;
+            Dirty(subject, timeout);
+        }
+        //SW end
 
         var arrivalSound = CompOrNull<PortalComponent>(targetEntity)?.ArrivalSound ?? ent.Comp.ArrivalSound;
         var departureSound = ent.Comp.DepartureSound;

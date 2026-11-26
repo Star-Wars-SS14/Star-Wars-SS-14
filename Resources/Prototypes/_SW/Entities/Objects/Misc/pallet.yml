@@ -61,3 +61,13 @@
   - type: DeviceNetwork
     deviceNetId: Wired
     receiveFrequencyId: BasicDevice
+
+- type: entity
+  id: SWCargoPalletQuestBoard
+  parent: CargoPallet
+  name: quest board cargo pallet
+  description: A public pallet for bulletin board quests. Place carcasses or datapads here to submit them.
+  suffix: Доска заданий
+  components:
+  - type: SWTransferPallet
+    ownerFaction: SWQuestBoardPublic

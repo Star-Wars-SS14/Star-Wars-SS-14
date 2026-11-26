@@ -10,7 +10,7 @@ public sealed partial class SWMinistryDefenseSystem
 {
     private void GenerateIncident()
     {
-        if (_incidents.Count(e => !e.Resolved) >= 4) return;
+        if (_incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 4) return;
         // Threat selection is weighted by local institutions and uncovered crossings.
         var candidates = new List<(string World, string Edge, SWDefenseEventKind Kind, float Weight)>();
         foreach (var world in _worlds.Values.Where(w => w.Faction == "republic" && w.SectorId.Length > 0))
@@ -23,7 +23,7 @@ public sealed partial class SWMinistryDefenseSystem
             candidates.Add((world.Id, edge?.ID ?? "", SWDefenseEventKind.Piracy, Math.Max(1, 110 - security - LocalCoverage(world.Id))));
             candidates.Add((world.Id, "", SWDefenseEventKind.Unrest, Math.Max(1, 80 - defense)));
         }
-        if (ImperialThreatsEnabled)
+        if (ImperialThreatsEnabled && AutoImperialThreatsAllowed)
             foreach (var border in _borders.Where(b => b.Faction == "empire"))
             {
                 candidates.Add((border.RepublicWorldId, border.Id, _random.Prob(.25f) ? SWDefenseEventKind.Blockade : SWDefenseEventKind.Incursion,
@@ -46,7 +46,7 @@ public sealed partial class SWMinistryDefenseSystem
 
     private void GenerateMinorDisruption()
     {
-        if (_incidents.Any(e => !e.Resolved)) return;
+        if (_incidents.Any(e => !e.Resolved && !e.ImperialContact)) return;
         var worlds = _worlds.Values.Where(w => w.Faction == "republic" && w.SectorId.Length > 0).ToArray();
         if (worlds.Length == 0) return;
         var world = worlds[_random.Next(worlds.Length)];
@@ -76,7 +76,7 @@ public sealed partial class SWMinistryDefenseSystem
     public bool TryCreateImperialIncident(string sectorId, bool blockade)
     {
         EnsureGroups();
-        if (!_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled || _incidents.Count(e => !e.Resolved) >= 4) return false;
+        if (!_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled || _incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 4) return false;
         var crossing = _borders.FirstOrDefault(b => b.Faction == "empire" && _worlds[b.RepublicWorldId].SectorId == sectorId);
         if (crossing == null) return false;
         return CreateIncident(crossing.RepublicWorldId, crossing.Id, blockade ? SWDefenseEventKind.Blockade : SWDefenseEventKind.Incursion,
@@ -91,9 +91,9 @@ public sealed partial class SWMinistryDefenseSystem
     };
 
     private bool CreateIncident(string world, string edge, SWDefenseEventKind kind, float severity, float enemy,
-        double duration, bool director, string title)
+        double duration, bool director, string title, bool allowDuplicate = false)
     {
-        if (_incidents.Any(e => !e.Resolved && e.WorldId == world && e.Kind == kind)) return false;
+        if (!allowDuplicate && _incidents.Any(e => !e.Resolved && !e.ImperialContact && e.WorldId == world && e.Kind == kind)) return false;
         var incident = new SWDefenseEventView { Id = _nextEventId++, Title = title.Length == 0 ? IncidentTitle(kind) : title,
             WorldId = world, EdgeId = edge, Kind = kind, Severity = severity, EnemyStrength = enemy,
             ExpiresAt = _time.ActiveGameHours + duration, DirectorCreated = director, Status = "Требует реагирования",
@@ -129,9 +129,10 @@ public sealed partial class SWMinistryDefenseSystem
         if (kind == SWDefenseEventKind.Blockade && edgeId.Length == 0) return false;
         var ev = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
         if (eventId != 0 && ev == null) return false;
+        if (ev != null && _imperialCrossings.ContainsKey(ev.Id)) return false;
         if (ev == null)
         {
-            if (_incidents.Count(e => !e.Resolved) >= 8) return false;
+            if (_incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 8) return false;
             return CreateIncident(worldId, edgeId, kind, severity, enemyStrength, durationHours, true, title.Trim());
         }
         // Editing an assigned operation cannot teleport its objective underneath a traveling formation.
@@ -145,7 +146,7 @@ public sealed partial class SWMinistryDefenseSystem
     public bool ResolveDirectorEvent(int eventId, bool success = true)
     {
         var ev = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
-        if (ev == null) return false;
+        if (ev == null || _imperialCrossings.ContainsKey(eventId)) return false;
         ResolveIncident(ev, success); return true;
     }
 
@@ -235,6 +236,8 @@ public sealed partial class SWMinistryDefenseSystem
     // One source of truth for the enforced restriction and the public statistics card.
     private (string Edge, double Factor)? IncidentTransitRestriction(SWDefenseEventView ev)
     {
+        if (_imperialCrossings.ContainsKey(ev.Id))
+            return !ev.Resolved && _imperialBlockades.TryGetValue(ev.Id, out var blockade) ? (blockade, 0) : null;
         if (ev.Resolved || ev.EdgeId.Length == 0 || !MinisterActive || ev.Kind == SWDefenseEventKind.Raid) return null;
         var factor = ev.Kind == SWDefenseEventKind.Blockade && ev.Severity >= 75 ? 0 : Math.Clamp(1 - ev.Severity / 125d, .3, .8);
         if (factor > 0) factor += (1 - factor) * .2 * OrbitalReadiness(ev.WorldId);
@@ -271,6 +274,20 @@ public sealed partial class SWMinistryDefenseSystem
         var supplies = _economy.GetNavySupplyState();
         state.SupplyHour = supplies.Hour;
         state.SupplyFlows = supplies.Flows.ToList();
+        if (includeOrderOptions)
+            foreach (var ev in _incidents.Where(e => !e.Resolved))
+            {
+                if (_imperialCrossings.ContainsKey(ev.Id))
+                {
+                    if (ev.ImperialPhase != SWImperialCrossingPhase.Battle) continue;
+                    foreach (var defender in GetImperialDefenders(ev.Id))
+                        state.SupportTargets.Add(new SWDefenseSupportTargetView { LeaderFleetId = defender.Id, EventId = ev.Id });
+                }
+                else
+                    foreach (var defender in _groups.Where(g => g.Alive && g.EventId == ev.Id && g.Order == SWDefenseFleetOrder.Respond
+                                 && g.Phase == SWDefenseOperationPhase.Execution))
+                        state.SupportTargets.Add(new SWDefenseSupportTargetView { LeaderFleetId = defender.Id, EventId = ev.Id });
+            }
         foreach (var link in _links)
         {
             var military = !link.Accessible && (_worlds[link.From].Faction == "empire" || _worlds[link.To].Faction == "empire");

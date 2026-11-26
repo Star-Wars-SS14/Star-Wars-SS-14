@@ -1,0 +1,1468 @@
+# Starting contracts. Shares split a common requirement; they do not duplicate recipient demand.
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R0FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R0FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R3FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R3FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R4FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R4FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R5FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R5FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R6FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R6FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R7FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R7FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R8FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R8FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R9FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR9
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1R9FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarR9
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1N0FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1N0FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1N1FRecipientMandatory
+  source: SWGlobalWarR1
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR1N1FRecipientGrowth
+  source: SWGlobalWarR1
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R0FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R0FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R3FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R3FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R4FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R4FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R5FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R5FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R6FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R6FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R7FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R7FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R8FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R8FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R9FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR9
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2R9FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarR9
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2N0FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2N0FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2N1FRecipientMandatory
+  source: SWGlobalWarR2
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR2N1FRecipientGrowth
+  source: SWGlobalWarR2
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R0ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R1ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR1
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R2ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR2
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R3ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R4ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R5ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7R6ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR7N0ERecipientMandatory
+  source: SWGlobalWarR7
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R0ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R1ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR1
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R2ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR2
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R3ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R4ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R5ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8R6ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR8N0ERecipientMandatory
+  source: SWGlobalWarR8
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR3R7FeProductionInput
+  source: SWGlobalWarR3
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR3R8FeProductionInput
+  source: SWGlobalWarR3
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR3N1FeProductionInput
+  source: SWGlobalWarR3
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR4R7CProductionInput
+  source: SWGlobalWarR4
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR4R8CProductionInput
+  source: SWGlobalWarR4
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR4N1CProductionInput
+  source: SWGlobalWarR4
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR5R7AuProductionInput
+  source: SWGlobalWarR5
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR5R8AuProductionInput
+  source: SWGlobalWarR5
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR5N1AuProductionInput
+  source: SWGlobalWarR5
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR6R7LnProductionInput
+  source: SWGlobalWarR6
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR6R8LnProductionInput
+  source: SWGlobalWarR6
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR6N1LnProductionInput
+  source: SWGlobalWarR6
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1R7EProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarE
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1R7SProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarS
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1R8EProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarE
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1R8SProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarS
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN0R0LNeutralLuxury
+  source: SWGlobalWarN0
+  destination: SWGlobalWarR0
+  commodity: SWGlobalWarL
+  rateMode: NeutralLuxury
+  share: 0.5
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R1LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR1
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R2LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR2
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R3LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR3
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R4LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR4
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R5LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR5
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R6LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR6
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R7LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR7
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowR0R8LRecipientMandatory
+  source: SWGlobalWarR0
+  destination: SWGlobalWarR8
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E0FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E0FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E3FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E3FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E4FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E4FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E5FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E5FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E6FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E6FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E7FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E7FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E8FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E8FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E9FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE9
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1E9FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarE9
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1N0FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1N0FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1N1FRecipientMandatory
+  source: SWGlobalWarE1
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE1N1FRecipientGrowth
+  source: SWGlobalWarE1
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E0FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E0FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E3FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E3FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E4FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E4FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E5FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E5FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E6FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E6FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E7FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E7FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E8FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E8FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E9FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE9
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2E9FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarE9
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.5
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2N0FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2N0FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2N1FRecipientMandatory
+  source: SWGlobalWarE2
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: MandatoryFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE2N1FRecipientGrowth
+  source: SWGlobalWarE2
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarF
+  rateMode: RecipientGrowth
+  share: 0.25
+  priority: GrowthFood
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E0ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E1ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE1
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E2ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE2
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E3ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E4ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E5ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7E6ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE7N0ERecipientMandatory
+  source: SWGlobalWarE7
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E0ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E1ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE1
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E2ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE2
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E3ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E4ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E5ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8E6ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.5
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE8N0ERecipientMandatory
+  source: SWGlobalWarE8
+  destination: SWGlobalWarN0
+  commodity: SWGlobalWarE
+  rateMode: RecipientMandatory
+  share: 0.25
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE3E7FeProductionInput
+  source: SWGlobalWarE3
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE3E8FeProductionInput
+  source: SWGlobalWarE3
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE3N1FeProductionInput
+  source: SWGlobalWarE3
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarFe
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE4E7CProductionInput
+  source: SWGlobalWarE4
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE4E8CProductionInput
+  source: SWGlobalWarE4
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE4N1CProductionInput
+  source: SWGlobalWarE4
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarC
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE5E7AuProductionInput
+  source: SWGlobalWarE5
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE5E8AuProductionInput
+  source: SWGlobalWarE5
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE5N1AuProductionInput
+  source: SWGlobalWarE5
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarAu
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE6E7LnProductionInput
+  source: SWGlobalWarE6
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE6E8LnProductionInput
+  source: SWGlobalWarE6
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 1
+  priority: DomesticCivilian
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE6N1LnProductionInput
+  source: SWGlobalWarE6
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarLn
+  rateMode: ProductionInput
+  share: 0.5
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1E7EProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarE
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1E7SProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarS
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1E8EProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarE
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN1E8SProducerSurplus
+  source: SWGlobalWarN1
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarS
+  rateMode: ProducerSurplus
+  share: 0.25
+  priority: NeutralIndustry
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN0E0LNeutralLuxury
+  source: SWGlobalWarN0
+  destination: SWGlobalWarE0
+  commodity: SWGlobalWarL
+  rateMode: NeutralLuxury
+  share: 0.5
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E1LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE1
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E2LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE2
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E3LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE3
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E4LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE4
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E5LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE5
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E6LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE6
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E7LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE7
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowE0E8LRecipientMandatory
+  source: SWGlobalWarE0
+  destination: SWGlobalWarE8
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion
+
+- type: swGlobalWarEconomyFlow
+  id: SWGlobalWarFlowN0N1LRecipientMandatory
+  source: SWGlobalWarN0
+  destination: SWGlobalWarN1
+  commodity: SWGlobalWarL
+  rateMode: RecipientMandatory
+  share: 1
+  priority: LuxuryAndExpansion

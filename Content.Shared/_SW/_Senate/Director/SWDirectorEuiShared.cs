@@ -27,6 +27,10 @@ public enum SWDirectorActionKind : byte
     Strike,
     Merc,
     EconomyIncident,
+    SecurityCreate,
+    SecurityCancel,
+    JusticeCreate,
+    JusticeCancel,
 }
 
 [Serializable, NetSerializable]
@@ -52,7 +56,12 @@ public sealed class SWDiploEntry
 public sealed class SWDirectorEuiState : EuiStateBase
 {
     public SWDefenseMapState? DefenseMap;
+    public SWSecurityMapState? SecurityMap;
+    public List<SWJusticeInstitutionView> JusticeInstitutions = new();
+    public List<SWJusticeCaseView> JusticeCases = new();
     public SWDirectorMode Mode;
+    public bool CouncilPlayerControl;
+    public bool AllowImperialWithoutMinister;
     public string ControllerName = string.Empty;
     public bool IAmController;
     public int Influence;
@@ -80,6 +89,12 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public int CostDilemma;
     public int CostStrike;
     public int CostMerc;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDirectorSetImperialMinisterOverrideMessage(bool enabled) : EuiMessageBase
+{
+    public bool Enabled = enabled;
 }
 
 [Serializable, NetSerializable]

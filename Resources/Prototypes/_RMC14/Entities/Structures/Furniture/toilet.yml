@@ -27,9 +27,11 @@
   - type: PlungerUse
   - type: Appearance
   - type: SecretStash
-    secretPartName: secret-stash-part-toilet
-    examineStash: toilet-component-on-examine-found-hidden-item
-    openableStash: true
+    secretStashName: secret-stash-toilet
+  - type: ToolOpenable
+    openToolQualityNeeded: Prying
+    closeToolQualityNeeded: Prying
+    name: secret-stash-toilet
   - type: Drain
     autoDrain: false
   - type: StaticPrice

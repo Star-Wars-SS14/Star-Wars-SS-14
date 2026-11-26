@@ -86,6 +86,30 @@ public partial class AtmosphereSystem
         return _atmosQuery.HasComponent(gridUid);
     }
 
+    //SW start
+    /// <summary>
+    /// Reads known tile pressure movement and pending topology revalidation without advancing the simulation.
+    /// False means unknown state, not a safe destination. Difference is the solver's native value, not always kPa.
+    /// </summary>
+    public bool TryGetKnownTilePressureState(EntityUid gridUid, Vector2i indices,
+        out bool revalidating, out bool pressureMovement, out float difference, out AtmosDirection direction)
+    {
+        revalidating = true;
+        pressureMovement = false;
+        difference = 0;
+        direction = AtmosDirection.Invalid;
+        if (!_atmosQuery.TryGetComponent(gridUid, out var grid) || !grid.Simulated || grid.ProcessingPaused ||
+            !grid.Tiles.TryGetValue(indices, out var tile))
+            return false;
+        // A nearby topology change can change this tile's connectivity before the next atmospheric pass.
+        revalidating = grid.InvalidatedCoords.Count != 0 || grid.CurrentRunInvalidatedTiles.Count != 0;
+        pressureMovement = grid.HighPressureDelta.Contains(tile) || tile.PressureDifference != 0;
+        difference = tile.PressureDifference;
+        direction = tile.PressureDirection;
+        return true;
+    }
+    //SW end
+
     /// <summary>
     /// Sets whether a grid is simulated by Atmospherics.
     /// </summary>

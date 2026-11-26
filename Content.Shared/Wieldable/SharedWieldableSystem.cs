@@ -278,9 +278,13 @@ public abstract class SharedWieldableSystem : EntitySystem
     ///     Attempts to wield an item, starting a UseDelay after.
     /// </summary>
     /// <returns>True if the attempt wasn't blocked.</returns>
-    public bool TryWield(EntityUid used, WieldableComponent component, EntityUid user)
+    //SW start: allow automatic wielding without dropping other items
+    public bool TryWield(EntityUid used, WieldableComponent component, EntityUid user, bool dropOthers = true, bool quiet = false)
+    //SW end
     {
-        if (!CanWield(used, component, user))
+        //SW start: let callers report a single contextual failure
+        if (!CanWield(used, component, user, quiet))
+        //SW end
             return false;
 
         if (TryComp(used, out UseDelayComponent? useDelay) && component.UseDelayOnWield)
@@ -294,7 +298,9 @@ public abstract class SharedWieldableSystem : EntitySystem
 
         if (attemptEv.Cancelled)
         {
-            if (attemptEv.Message != null)
+            //SW start: let callers report a single contextual failure
+            if (!quiet && attemptEv.Message != null)
+            //SW end
                 //SW hide popus to avoid invisibility revealing 
                 _popup.PopupEntity(attemptEv.Message, user, user);
             return false;
@@ -316,7 +322,9 @@ public abstract class SharedWieldableSystem : EntitySystem
         for (var i = 0; i < component.FreeHandsRequired; i++)
         {
             // don't show a popup when dropping items because it will overlap with the popup for wielding
-            if (_virtualItem.TrySpawnVirtualItemInHand(used, user, out var virtualItem, true, silent: true))
+            //SW start: preserve held items during automatic wielding
+            if (_virtualItem.TrySpawnVirtualItemInHand(used, user, out var virtualItem, dropOthers, silent: true))
+            //SW end
             {
                 virtuals.Add(virtualItem.Value);
                 continue;

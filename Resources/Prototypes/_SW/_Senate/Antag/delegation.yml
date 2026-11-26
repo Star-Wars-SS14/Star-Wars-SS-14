@@ -1,0 +1,45 @@
+- type: entity
+  id: SWDelegationPoint
+  name: точка эвакуации представителей
+  description: Здесь представитель может завершить визит и покинуть Сенат.
+  suffix: Сенат
+  components:
+  - type: SWDelegationPoint
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Structures/Wallmounts/signs.rsi
+    layers:
+    - state: direction_evac
+    - state: direction_evac_glow
+      shader: unshaded
+
+- type: entity
+  id: SWDelegationSpawner
+  parent: MarkerBase
+  name: представитель сектора
+  components:
+  - type: GhostRole
+    name: Представитель сектора
+    description: Прибудьте в Сенат и обсудите поручение с профильным министром.
+    rules: Действуйте от лица своего сектора. Подробности поручения доступны после прибытия.
+    raffle:
+      settings: short
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidDelegate
+
+- type: entity
+  id: SWRandomHumanoidDelegate
+  parent: SWBaseRandomHumanoid
+  name: представитель сектора
+  components:
+  - type: SWDelegationMember
+  - type: Loadout
+    prototypes: [SWDelegateGear]
+
+- type: startingGear
+  id: SWDelegateGear
+  equipment:
+    shoes: SWClothingShoesBootsCitizen
+    jumpsuit: ClothingUniformJumpsuitMonasticRobeLight
+    back: ClothingBackpack

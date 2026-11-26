@@ -1,0 +1,387 @@
+# Private practice; real hands, containers and SWLathe recipes. No campaign permissions or rewards.
+- type: swTutorialScenario
+  id: SWTutorialNewToGame
+  mode: NewToGame
+  version: 2
+  guidedPractice: true
+  map: /Maps/SW/Mega/Tutorial/civil_workshop.yml
+  gear: SWTutorialCivilianGear
+  steps: [SWTutorialCivilOrient, SWTutorialCivilPick, SWTutorialCivilStore, SWTutorialCivilRetrieve, SWTutorialCivilProduce, SWTutorialCivilRadio, SWTutorialCivilTransfer]
+
+- type: swTutorialScenario
+  id: SWTutorialNewToServer
+  mode: NewToServer
+  version: 2
+  guidedPractice: true
+  map: /Maps/SW/Mega/Tutorial/civil_workshop.yml
+  gear: SWTutorialCivilianGear
+  steps: [SWTutorialCivilPick, SWTutorialCivilProduce, SWTutorialCivilRadio, SWTutorialCivilTransfer]
+
+- type: startingGear
+  id: SWTutorialCivilianGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: ClothingShoesBootsJack
+    ears: SWTutorialHeadset
+
+- type: entity
+  parent: SWElectronicsLathe
+  id: SWTutorialElectronicsLathe
+  categories: [HideSpawnMenu]
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false # Explicitly prepared training supply; this exercise only teaches missing input.
+  - type: Fixtures
+    fixtures:
+      base:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4, 0.4,0.4"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+      in1: # As large as the frame the student is shown, so what lands inside the frame goes in.
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.75, 0.0, -0.75, -1.75"
+        density: 190
+        mask:
+        - ItemMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: SWLathe
+    recipes: [SWTutorialElectronicsRecipe]
+    selectedRecipe: SWTutorialElectronicsRecipe
+
+- type: swLatheRecipe
+  id: SWTutorialElectronicsRecipe
+  materials:
+    SWAdvancedCables1: 1
+    SWSheetLantanid1: 1
+  result:
+    SWElectronics1: 1
+  produceTime: 4 # Visible practice cycle; same ingredients/output as the campaign electronics recipe.
+
+- type: swTutorialStep
+  id: SWTutorialCivilOrient
+  checkpoint: true
+  beats:
+  - focus:
+      point: supply
+    moveKeys: true
+  completion: !type:SWTutorialReachCondition
+    point: supply
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilPick
+  checkpoint: true
+  onStart:
+  - !type:SWTutorialSpawnAction
+    proto: SWSheetLantanid1
+    point: material
+    tag: material
+  - !type:SWTutorialSpawnAction
+    proto: CrateGenericSteel
+    point: box
+    tag: box
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialElectronicsLathe
+    point: machine
+    tag: machine
+  - !type:SWTutorialSpawnAction
+    proto: SWAdvancedCables1
+    point: machineInput
+    tag: cable
+  show: [Hands]
+  beats:
+  - hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  completion: !type:SWTutorialHoldingCondition
+    tag: material
+  mistakes:
+  - mistake: TooFar
+    prompt: sw-tutorial-beat-far
+  - mistake: HandBusy
+    prompt: sw-tutorial-beat-busy
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilStore
+  beats:
+  - hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialActiveHoldingCondition
+      tag: material
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: material
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-open-box
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialActiveHoldingCondition
+      tag: material
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-put-sheet
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: material
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialHoldingCondition
+        tag: material
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    - !type:SWTutorialPlacedCondition
+      tag: material
+      nearTag: box
+    hint: sw-tutorial-beat-close-box
+    focus:
+      tag: box
+  completion: !type:SWTutorialContainedCondition
+    tag: material
+    containerTag: box
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilRetrieve
+  beats:
+  - hint: sw-tutorial-beat-open-box
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  completion: !type:SWTutorialHoldingCondition
+    tag: material
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilProduce
+  beats:
+  - hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    hint: sw-tutorial-beat-carry-sheet
+    focus:
+      point: machineInput
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: machineInput
+      range: 1.2
+    hint: sw-tutorial-beat-drop-sheet
+    focus:
+      point: machineInput
+    highlight: ActiveHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: machineInput
+      range: 1.2
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: material
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialGoneCondition
+      tag: material
+    hint: sw-tutorial-beat-wait
+    focus:
+      tag: machine
+    wait: true
+  - when:
+    - !type:SWTutorialProducedCondition
+    hint: sw-tutorial-beat-take-module
+    focus:
+      tag: product
+  completion: !type:SWTutorialHoldingCondition
+    tag: product
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilRadio
+  checkpoint: true
+  show: [Hands, Chat]
+  beats:
+  - hint: sw-tutorial-beat-radio
+    highlight: ChatInput
+  completion: !type:SWTutorialSaidOnRadioCondition
+    channel: SWTutorialRadio
+  mistakes:
+  - mistake: NotOnRadio
+    prompt: sw-tutorial-beat-radio-local
+
+
+- type: swTutorialStep
+  id: SWTutorialCivilTransfer
+  checkpoint: true
+  onStart:
+  - !type:SWTutorialDeleteAction
+    tag: machine
+  - !type:SWTutorialDeleteAction
+    tag: material
+  - !type:SWTutorialDeleteAction
+    tag: cable
+  - !type:SWTutorialDeleteAction
+    tag: product
+  - !type:SWTutorialDeleteAction
+    tag: box
+  - !type:SWTutorialSpawnAction
+    proto: SWSheetLantanid1
+    point: secondMaterial
+    tag: material
+  - !type:SWTutorialSpawnAction
+    proto: CrateGenericSteel
+    point: acceptance
+    tag: box
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialElectronicsLathe
+    point: secondMachine
+    tag: machine
+  - !type:SWTutorialSpawnAction
+    proto: SWAdvancedCables1
+    point: secondInput
+    tag: cable
+  beats:
+  - hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    hint: sw-tutorial-beat-carry-sheet
+    focus:
+      point: secondInput
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: secondInput
+      range: 1.2
+    hint: sw-tutorial-beat-drop-sheet
+    focus:
+      point: secondInput
+    highlight: ActiveHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: secondInput
+      range: 1.2
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: material
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialGoneCondition
+      tag: material
+    hint: sw-tutorial-beat-wait
+    focus:
+      tag: machine
+    wait: true
+  - when:
+    - !type:SWTutorialProducedCondition
+    hint: sw-tutorial-beat-take-module
+    focus:
+      tag: product
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-open-box
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-put-module
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    - !type:SWTutorialPlacedCondition
+      tag: product
+      nearTag: box
+    hint: sw-tutorial-beat-close-box
+    focus:
+      tag: box
+  completion: !type:SWTutorialContainedCondition
+    tag: product
+    containerTag: box
+

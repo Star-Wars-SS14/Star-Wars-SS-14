@@ -1,0 +1,30 @@
+- type: entity
+  id: SWElectricCollar
+  name: electric collar
+  description: A collar with electrode contacts. The wearer cannot remove it themselves.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _SW/Items/electric_collar.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Clothing
+    sprite: _SW/Items/electric_collar.rsi
+    slots:
+    - Neck
+    quickEquip: false
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: BasicDevice
+  - type: WirelessNetworkConnection
+    range: 15
+  - type: DeviceLinkSink
+    ports:
+    - SWCollarShock
+  - type: SWElectricCollar
+    damage:
+      types:
+        Shock: 5
+    stunTime: 2
+    port: SWCollarShock

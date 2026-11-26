@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original antenna and freight overlay drawn in code by Codex for Star-Wars-SS14, 2026. Displayed over the unchanged Structures/Machines/silo.rsi by MrDoomBringer for tgstation (CC-BY-SA-3.0).",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "base"
+        }
+    ]
+}

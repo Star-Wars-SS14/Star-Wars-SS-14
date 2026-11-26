@@ -196,7 +196,13 @@ public sealed partial class SWMinistryFinanceSystem : EntitySystem
             _keyRate = rate;
     }
 
-    public void SetTax(int level) => _taxLevel = Math.Clamp(level, 0, 2);
+    public void SetTax(int level)
+    {
+        var next = Math.Clamp(level, 0, 2);
+        if (_taxLevel == next) return;
+        _taxLevel = next;
+        RaiseLocalEvent(new SWFinanceTaxSettingsChangedEvent(null, false));
+    }
 
     public void SelectProgram(string programId)
     {

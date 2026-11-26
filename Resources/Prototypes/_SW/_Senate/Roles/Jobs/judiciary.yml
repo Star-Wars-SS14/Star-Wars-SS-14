@@ -61,7 +61,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: ChiefJusticeGear
+  startingGear: ChiefJusticeGearJob
   icon: "JobIconChiefJustice"
   supervisors: job-supervisors-empire
   access:
@@ -75,7 +75,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: RepublicJudgeGear
+  startingGear: RepublicJudgeGearJob
   icon: "JobIconRepublicJudge"
   supervisors: job-supervisors-empire
   access:
@@ -89,7 +89,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: ProsecutorGear
+  startingGear: ProsecutorGearJob
   icon: "JobIconProsecutor"
   supervisors: job-supervisors-empire
   access:
@@ -103,7 +103,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: DefenderGear
+  startingGear: DefenderGearJob
   icon: "JobIconDefender"
   supervisors: job-supervisors-empire
   access:
@@ -154,6 +154,52 @@
     id: SWDefenderPDA
     ears: SWClothingHeadsetCourt
     jumpsuit: ClothingUniformJumpsuitLawyerBlue
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: ChiefJusticeGearJob
+  equipment:
+    id: SWChiefJusticePDA
+    ears: SWClothingHeadsetCourtChief
+    outerClothing: ClothingOuterRobesJudge
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: RepublicJudgeGearJob
+  equipment:
+    id: SWRepublicJudgePDA
+    ears: SWClothingHeadsetCourt
+    outerClothing: ClothingOuterRobesJudge
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: ProsecutorGearJob
+  equipment:
+    id: SWProsecutorPDA
+    ears: SWClothingHeadsetCourt
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: DefenderGearJob
+  equipment:
+    id: SWDefenderPDA
+    ears: SWClothingHeadsetCourt
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     back: ClothingBackpack

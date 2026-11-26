@@ -28,7 +28,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: MinisterGear
+  startingGear: MinisterGearJob
   icon: "JobIconMinister"
   supervisors: job-supervisors-empire
   access:
@@ -43,6 +43,17 @@
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     jumpsuit: ClothingUniformJumpsuitLawyerBlack
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: MinisterGearJob
+  equipment:
+    id: SWMinisterPDA
+    ears: SWClothingHeadsetSenateMinister
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern

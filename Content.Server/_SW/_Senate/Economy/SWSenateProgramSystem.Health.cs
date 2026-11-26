@@ -18,7 +18,7 @@ public sealed partial class SWSenateProgramSystem
     private void InitializeHealthPrograms(SWGalacticMapPrototype map)
     {
         foreach (var world in map.Worlds)
-            if (world.Sector is { } sector && _proto.Index<SWPlanetEconomyPrototype>(world.Id).ActiveEconomy)
+            if (world.Sector is { } sector && map.GetWorldFaction(world) == "republic" && _proto.Index<SWPlanetEconomyPrototype>(world.Id).ActiveEconomy)
                 _healthWorldSectors[world.Id] = sector.Id;
     }
     public bool ApplyFromHealth(string worldId, string programId)

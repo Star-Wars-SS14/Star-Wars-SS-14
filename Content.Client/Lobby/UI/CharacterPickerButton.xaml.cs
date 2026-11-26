@@ -1,4 +1,3 @@
-using System.Linq;
 using Content.Client.Humanoid;
 using Content.Shared.Clothing;
 using Content.Shared.Humanoid;
@@ -49,15 +48,12 @@ public sealed partial class CharacterPickerButton : ContainerButton
         }
         else
         {
-            _previewDummy = UserInterfaceManager.GetUIController<LobbyUIController>()
-                .LoadProfileEntity(humanoid, null, true);
+            var controller = UserInterfaceManager.GetUIController<LobbyUIController>();
+            var highPriorityJob = controller.GetHighPriorityJob(humanoid);
+            _previewDummy = controller.LoadProfileEntity(humanoid, highPriorityJob, true);
 
-            var highPriorityJob = humanoid.JobPriorities.SingleOrDefault(p => p.Value == JobPriority.High).Key;
-            if (highPriorityJob != default)
-            {
-                var jobName = prototypeManager.Index(highPriorityJob).LocalizedName;
-                description = $"{description}\n{jobName}";
-            }
+            if (highPriorityJob != null)
+                description = $"{description}\n{highPriorityJob.LocalizedName}";
         }
 
         Pressed = isSelected;

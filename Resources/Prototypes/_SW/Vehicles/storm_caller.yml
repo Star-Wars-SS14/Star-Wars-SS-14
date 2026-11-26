@@ -208,9 +208,9 @@
 
 - type: entity
   id: SWStormCallerCannonBlast
+  categories: [ HideSpawnMenu ]
   name: StormCaller blast
   parent: BaseBulletTrigger
-  noSpawn: true
   components:
   - type: Projectile
     damage:

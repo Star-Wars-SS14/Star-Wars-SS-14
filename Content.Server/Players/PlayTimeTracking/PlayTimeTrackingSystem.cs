@@ -181,9 +181,27 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
 
     private void OnIsRoleAllowed(ref IsRoleAllowedEvent ev)
     {
-        if (!IsAllowed(ev.Player, ev.Jobs) || !IsAllowed(ev.Player, ev.Antags))
+        //SW start
+        var jobsAllowed = ev.ActiveCharacterProfile is { } character
+            ? IsAllowed(ev.Player, ev.Jobs, character)
+            : IsAllowed(ev.Player, ev.Jobs);
+        if (!jobsAllowed || !IsAllowed(ev.Player, ev.Antags))
             ev.Cancelled = true;
+        //SW end
     }
+
+    //SW start
+    /// <summary>Checks an already-created character without substituting editable lobby preferences.</summary>
+    public bool IsAllowed(ICommonSession player, List<ProtoId<JobPrototype>>? jobs, HumanoidCharacterProfile character)
+    {
+        if (!_cfg.GetCVar(CCVars.GameRoleTimers) || jobs == null)
+            return true;
+        if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
+            return false;
+        return jobs.All(job => JobRequirements.TryRequirementsMet(_roles.GetRoleRequirements(job), playTimes,
+            out _, EntityManager, _prototypes, character));
+    }
+    //SW end
 
     private void OnGetDisallowedJobs(ref GetDisallowedJobsEvent ev)
     {

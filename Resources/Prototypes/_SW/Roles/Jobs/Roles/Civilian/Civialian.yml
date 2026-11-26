@@ -1,6 +1,7 @@
 - type: job
   id: SWCivialian
   name: Житель
+  description: job-description-sw-civilian
   playTimeTracker: Job_Civilian
   requirements:
   - !type:OverallPlaytimeRequirement

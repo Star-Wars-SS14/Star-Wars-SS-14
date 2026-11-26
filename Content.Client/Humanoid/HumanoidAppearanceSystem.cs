@@ -57,7 +57,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
     private static bool IsHidden(HumanoidAppearanceComponent humanoid, HumanoidVisualLayers layer)
         => humanoid.HiddenLayers.ContainsKey(layer) || humanoid.PermanentlyHidden.Contains(layer);
 
-    private void UpdateLayers(Entity<HumanoidAppearanceComponent, SpriteComponent> entity)
+            private void UpdateLayers(Entity<HumanoidAppearanceComponent, SpriteComponent> entity)
     {
         var component = entity.Comp1;
         var sprite = entity.Comp2;

@@ -5,6 +5,9 @@
   suffix: SW
   components:
   - type: SWRespawnGameruleSpawnpoint
+    blacklist:
+      tags:
+        - Wall
     respawnProto: SWWallRockMining
   - type: Sprite
     layers:
@@ -17,6 +20,9 @@
   suffix: SW
   components:
   - type: SWRespawnGameruleSpawnpoint
+    blacklist:
+      tags:
+        - Wall
     respawnProto: WallRock
   - type: Sprite
     layers:

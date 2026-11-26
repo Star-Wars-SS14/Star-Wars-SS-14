@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
@@ -18,6 +19,31 @@ public sealed partial class SWGalacticMapPrototype : IPrototype
     [DataField] public List<SWGalacticMapCorridor> Corridors = new();
     // Scenario control zones are separate from Senate constituencies and trade routes.
     [DataField] public List<SWGalacticMapPoliticalArea> PoliticalAreas = new();
+
+    /// <summary>The explicit controller takes precedence over the visual area for legacy worlds.</summary>
+    public string GetWorldFaction(SWGalacticMapWorld world) => !string.IsNullOrWhiteSpace(world.Faction)
+        ? world.Faction : PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction ?? "neutral";
+
+    public string GetWorldPoliticalName(SWGalacticMapWorld world)
+    {
+        var faction = GetWorldFaction(world);
+        var controller = faction switch
+        {
+            "republic" => "Галактическая Республика",
+            "empire" => "Ситхская империя",
+            "neutral" => "Нейтральная территория",
+            _ => faction,
+        };
+        if (!string.IsNullOrWhiteSpace(world.PoliticalStatus))
+        {
+            if (faction == "neutral") return world.PoliticalStatus;
+            if (faction == "empire" && world.PoliticalStatus == "оккупация") return "Имперская оккупация";
+            return $"{controller} — {world.PoliticalStatus}";
+        }
+        if (!string.IsNullOrWhiteSpace(world.Faction)) return controller;
+        var area = PoliticalAreas.LastOrDefault(a => a.Contains(world.Position));
+        return area != null && area.Faction == faction ? area.Name : controller;
+    }
 }
 
 [DataDefinition]
@@ -54,6 +80,7 @@ public sealed partial class SWGalacticMapWorld
     // A gameplay constituency, not a claim about geographic or political ownership.
     [DataField] public ProtoId<SWSectorPrototype>? Sector;
     [DataField] public bool Anchor;
+    [DataField] public int LabelPriority;
     // Small worlds share this catalogue but do not crowd the galaxy overview.
     [DataField] public bool Overview = true;
     [DataField] public Vector2? LocalPosition;
@@ -62,6 +89,11 @@ public sealed partial class SWGalacticMapWorld
     // Explicit star-system membership, independent of the Senate constituency.
     [DataField] public string SystemId = string.Empty;
     [DataField] public string SystemName = string.Empty;
+    // An explicit political controller is independent of the Senate constituency and map shading.
+    [DataField] public string Faction = string.Empty;
+    [DataField] public string PoliticalStatus = string.Empty;
+    [DataField] public string PoliticalSectorId = string.Empty;
+    [DataField] public string PoliticalSectorName = string.Empty;
 }
 
 [DataDefinition]

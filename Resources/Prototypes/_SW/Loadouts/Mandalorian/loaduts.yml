@@ -81,3 +81,10 @@
   equipment:
     outerClothing: SWMandalorianLeaderSuit3
     head: SW_ClothingHeadMandalorianLeaderHelmet3
+
+- type: loadout
+  id: SWMandWarriorFur
+  name: броня воина с меховым плащом
+  equipment:
+    outerClothing: SWWinterMandalorianFurSuit
+    head: SW_ClothingHeadMandalorianWarriorHelmet

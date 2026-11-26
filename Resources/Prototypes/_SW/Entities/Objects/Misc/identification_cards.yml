@@ -303,7 +303,8 @@
     layers:
     - state: image4
   - type: PresetIdCard
-    job: SWBalmorranLeader
+    # SW: job SWBalmorranLeader is not defined, the Balmorran jobs were never added.
+    # job: SWBalmorranLeader
 
 - type: entity
   parent: SWIDCardStandard
@@ -314,7 +315,8 @@
     layers:
     - state: image5
   - type: PresetIdCard
-    job: SWBalmorranOfficer
+    # SW: job SWBalmorranOfficer is not defined, the Balmorran jobs were never added.
+    # job: SWBalmorranOfficer
 
 - type: entity
   parent: SWIDCardStandard
@@ -325,7 +327,8 @@
     layers:
     - state: image6
   - type: PresetIdCard
-    job: SWBalmorranMedic
+    # SW: job SWBalmorranMedic is not defined, the Balmorran jobs were never added.
+    # job: SWBalmorranMedic
 
 - type: entity
   parent: SWIDCardStandard
@@ -336,7 +339,8 @@
     layers:
     - state: image7
   - type: PresetIdCard
-    job: SWBalmorranSoldier
+    # SW: job SWBalmorranSoldier is not defined, the Balmorran jobs were never added.
+    # job: SWBalmorranSoldier
 
 - type: entity
   parent: SWIDCardStandard
@@ -347,7 +351,8 @@
     layers:
     - state: image8
   - type: PresetIdCard
-    job: SWBalmorranRecruit
+    # SW: job SWBalmorranRecruit is not defined, the Balmorran jobs were never added.
+    # job: SWBalmorranRecruit
 
 #Empire Intelligence ID cards
 - type: entity

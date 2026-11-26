@@ -26,11 +26,14 @@ public sealed partial class PointsCostLoadoutEffect : LoadoutEffect
             return true;
         }
 
-        if (loadout.Points <= Cost)
+        //SW start
+        // Upstream said <= here, so the last point could not be spent, and showed the key instead of a text.
+        if (loadout.Points < Cost)
         {
-            reason = FormattedMessage.FromUnformatted("loadout-group-points-insufficient");
+            reason = FormattedMessage.FromUnformatted(Loc.GetString("sw-loadout-points-short", ("cost", Cost), ("left", loadout.Points ?? 0)));
             return false;
         }
+        //SW end
 
         return true;
     }

@@ -1,6 +1,6 @@
+using Content.Shared._SW.Loadouts; //SW
 using System.Linq;
 using Content.Client.Guidebook;
-using Content.Client.Corvax.TTS;
 using Content.Client.Humanoid;
 using Content.Client.Inventory;
 using Content.Client.Lobby.UI;
@@ -175,22 +175,21 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     /// </summary>
     private void RefreshLobbyPreview()
     {
-        if (PreviewPanel == null)
+        if (PreviewPanel is not { } panel)
             return;
 
-        // Get selected character, load it, then set it
-        var character = _preferencesManager.Preferences?.SelectedCharacter;
-
-        if (character is not HumanoidCharacterProfile humanoid)
+        if (!_preferencesManager.ServerDataLoaded ||
+            _preferencesManager.Preferences?.SelectedCharacter is not HumanoidCharacterProfile humanoid)
         {
-            PreviewPanel.SetSprite(EntityUid.Invalid);
-            PreviewPanel.SetSummaryText(string.Empty);
+            panel.SetSprite(EntityUid.Invalid);
+            panel.SetCharacterDetails(null, null);
             return;
         }
 
-        var dummy = LoadProfileEntity(humanoid, null, true);
-        PreviewPanel.SetSprite(dummy);
-        PreviewPanel.SetSummaryText(humanoid.Summary);
+        var priorityJob = GetHighPriorityJob(humanoid);
+        var dummy = LoadProfileEntity(humanoid, priorityJob, true);
+        panel.SetSprite(dummy);
+        panel.SetCharacterDetails(humanoid.Name, priorityJob?.LocalizedName);
     }
 
     private void RefreshProfileEditor()
@@ -237,6 +236,14 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             {
                 if (!ContainsMarkingOfCategory(EditedProfile.Appearance.Markings, category))
                 {
+                    //SW start
+                    UIManager.Popup(
+                        Loc.GetString(
+                            "sw-profile-save-required-marking",
+                            ("category", Loc.GetString($"markings-category-{category}"))),
+                        Loc.GetString("sw-profile-save-refused-title"),
+                        clipboardButton: false);
+                    //SW end
                     return false;
                 }
             }
@@ -411,9 +418,13 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     /// </summary>
     public JobPrototype GetPreferredJob(HumanoidCharacterProfile profile)
     {
-        var highPriorityJob = profile.JobPriorities.FirstOrDefault(p => p.Value == JobPriority.High).Key;
-        // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract (what is resharper smoking?)
-        return _prototypeManager.Index<JobPrototype>(highPriorityJob.Id ?? SharedGameTicker.FallbackOverflowJob);
+        return GetHighPriorityJob(profile) ?? _prototypeManager.Index<JobPrototype>(SharedGameTicker.FallbackOverflowJob);
+    }
+
+    internal JobPrototype? GetHighPriorityJob(HumanoidCharacterProfile profile)
+    {
+        var jobId = profile.JobPriorities.FirstOrDefault(p => p.Value == JobPriority.High).Key;
+        return !string.IsNullOrEmpty(jobId.Id) && _prototypeManager.TryIndex(jobId, out var job) ? job : null;
     }
 
     public void GiveDummyLoadout(EntityUid uid, RoleLoadout? roleLoadout)
@@ -432,6 +443,37 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             }
         }
     }
+
+    //SW start
+    /// <summary>
+    /// Dresses the dummy in what the character would spawn in. A failed item is deleted here, as nothing else would.
+    /// </summary>
+    private void SWDressDummy(EntityUid dummy, HumanoidCharacterProfile profile, JobPrototype job)
+    {
+        if (!_inventory.TryGetSlots(dummy, out var slots))
+            return;
+
+        var roleId = LoadoutSystem.GetJobPrototype(job.ID);
+        _prototypeManager.TryIndex<RoleLoadoutPrototype>(roleId, out var role);
+        var loadout = role == null
+            ? null
+            : profile.GetLoadoutOrDefault(roleId, _playerManager.LocalSession, profile.Species, EntityManager, _prototypeManager);
+
+        _prototypeManager.Resolve(job.StartingGear, out var jobGear);
+        IEquipmentLoadout gear = SWMergedGear.Build(jobGear, loadout, role, _prototypeManager);
+
+        foreach (var slot in slots)
+        {
+            var itemType = gear.GetGear(slot.Name);
+            if (itemType == string.Empty || !SWSpeciesSlots.CanWear(profile.Species, slot.Name, _prototypeManager, EntityManager.ComponentFactory))
+                continue;
+
+            var item = EntityManager.SpawnEntity(itemType, MapCoordinates.Nullspace);
+            if (!_inventory.TryEquip(dummy, item, slot.Name, silent: true))
+                EntityManager.DeleteEntity(item);
+        }
+    }
+    //SW end
 
     /// <summary>
     /// Applies the specified job's clothes to the dummy.
@@ -547,13 +589,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         {
             DebugTools.Assert(job != null);
 
-            GiveDummyJobClothes(dummyEnt, humanoid, job);
-
-            if (_prototypeManager.HasIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID)))
-            {
-                var loadout = humanoid.GetLoadoutOrDefault(LoadoutSystem.GetJobPrototype(job.ID), _playerManager.LocalSession, humanoid.Species, EntityManager, _prototypeManager);
-                GiveDummyLoadout(dummyEnt, loadout);
-            }
+            SWDressDummy(dummyEnt, humanoid, job); //SW
         }
 
         return dummyEnt;

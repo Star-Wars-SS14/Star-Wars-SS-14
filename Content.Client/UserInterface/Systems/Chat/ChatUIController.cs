@@ -278,7 +278,7 @@ public sealed partial class ChatUIController : UIController
                  && style is StyleBoxFlat propStyleBoxFlat)
             color = propStyleBoxFlat.BackgroundColor;
         else
-            color = Color.FromHex("#25252ADD");
+            color = Color.FromHex("#101215DD"); //SW
 
         panel.PanelOverride = new StyleBoxFlat
         {

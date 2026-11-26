@@ -26,7 +26,6 @@
 
         <Button Margin="8 32 8 2" Name="CreateButton" Text="{Loc 'ui-vote-create-button'}" />
 
-        <PanelContainer StyleClasses="LowDivider" />
-        <Label Margin="12 0 0 0" StyleClasses="LabelSubText" Text="{Loc 'ui-vote-fluff'}" />
+        <!-- #SW: no "powered by Robust" footer line -->
     </BoxContainer>
 </ui:VoteCallMenu>

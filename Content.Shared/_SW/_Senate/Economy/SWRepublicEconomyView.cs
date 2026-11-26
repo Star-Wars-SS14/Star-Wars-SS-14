@@ -6,6 +6,7 @@ namespace Content.Shared._SW._Senate.Economy;
 [Serializable, NetSerializable]
 public sealed class SWEconomyView
 {
+    public string ViewerFaction = "none";
     public bool Ready;
     public bool Paused;
     public int Revision;
@@ -88,6 +89,7 @@ public sealed class SWEconomyGoodView
 {
     public string Good = string.Empty;
     public double Stock;
+    public double AvailableForProjects;
     public double Capacity;
     public double ProducedPerHour;
     public double ConsumedPerHour;
@@ -129,9 +131,10 @@ public sealed class SWEconomyLinkView
 }
 
 [Serializable, NetSerializable]
-public sealed class SWRepublicEconomyUpdateEvent(SWEconomyView view) : EntityEventArgs
+public sealed class SWRepublicEconomyUpdateEvent(SWEconomyView view, NetEntity? viewerEntity = null) : EntityEventArgs
 {
     public readonly SWEconomyView View = view;
+    public readonly NetEntity? ViewerEntity = viewerEntity;
 }
 
 [Serializable, NetSerializable]

@@ -130,6 +130,18 @@ public sealed partial class ExplosionSystem
             // TODO EXPLOSION  check if active explosion is on a paused map. If it is... I guess support swapping out &
             // storing the "currently active" explosion?
 
+            //SW start
+            var authorization = new SWExplosionAttemptEvent(_activeExplosion.Epicenter, _activeExplosion.Cause,
+                _activeExplosion.User);
+            RaiseLocalEvent(ref authorization);
+            if (authorization.Cancelled)
+            {
+                QueueDel(_activeExplosion.VisualEnt);
+                _activeExplosion = null;
+                continue;
+            }
+            //SW end
+
 #if EXCEPTION_TOLERANCE
             try
             {
@@ -685,6 +697,7 @@ sealed class Explosion
     public readonly EntityUid VisualEnt;
 
     public readonly EntityUid? Cause;
+    public readonly EntityUid? User; //SW
 
     /// <summary>
     ///     Initialize a new instance for processing
@@ -703,11 +716,13 @@ sealed class Explosion
         IEntityManager entMan,
         EntityUid visualEnt,
         EntityUid? cause,
+        EntityUid? user, //SW
         SharedMapSystem mapSystem,
         Shared.Damage.Systems.DamageableSystem damageable)
     {
         VisualEnt = visualEnt;
         Cause = cause;
+        User = user; //SW
         _system = system;
         _mapSystem = mapSystem;
         ExplosionType = explosionType;
@@ -939,4 +954,6 @@ public sealed class QueuedExplosion(ExplosionPrototype proto)
     public int MaxTileBreak;
     public bool CanCreateVacuum;
     public EntityUid? Cause; // The entity that exploded, for logging purposes.
+    public EntityUid? User; // Stable attribution retained after the source entity is deleted. //SW
+    public bool SeparateInitiators; //SW: protected modes keep separate authorization for different initiators.
 }

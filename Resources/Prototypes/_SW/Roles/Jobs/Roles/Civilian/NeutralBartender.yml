@@ -1,6 +1,7 @@
 - type: job
   id: SWNeutralBartender
   name: Бармен "Фарса"
+  description: job-description-sw-bartender
   playTimeTracker: Job_NeutralBartender
   requirements:
   - !type:OverallPlaytimeRequirement

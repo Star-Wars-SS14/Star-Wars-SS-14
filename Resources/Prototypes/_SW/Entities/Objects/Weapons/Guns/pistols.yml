@@ -24,6 +24,10 @@
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Item
     size: Small
+  - type: Clothing # Fits the suit's holder too, for a pistol chosen in place of the rifle in a job's loadout.
+    quickEquip: false
+    slots:
+    - suitStorage
   - type: Gun
     maxAngle: 10
     minAngle: 0

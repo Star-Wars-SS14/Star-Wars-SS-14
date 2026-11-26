@@ -2,6 +2,10 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Content.Client.Humanoid;
+using Content.Client._SW.Loadouts; //SW
+//SW start Species name generation
+using Content.Client._SW.Names;
+//SW end
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -11,7 +15,6 @@ using Content.Client.Sprite;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
-using Content.Shared.Corvax.CCCVars;
 using Content.Shared.GameTicking;
 using Content.Shared.Guidebook;
 using Content.Shared.Humanoid;
@@ -36,7 +39,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
 using static Content.Client.Corvax.SponsorOnlyHelpers; // Corvax-Sponsors
-using Content.Client.Corvax.TTS; // Corvax-TTS
 
 namespace Content.Client.Lobby.UI
 {
@@ -58,15 +60,13 @@ namespace Content.Client.Lobby.UI
 
         // CCvar.
         private int _maxNameLength;
-        private bool _allowFlavorText;
 
         private FlavorText.FlavorText? _flavorText;
         private TextEdit? _flavorTextEdit;
 
         // One at a time.
-        private LoadoutWindow? _loadoutWindow;
+        private SWLoadoutWindow? _loadoutWindow; //SW
 
-        private TTSTab? _ttsTab; // Corvax-TTS
 
         private bool _exporting;
         private bool _imaging;
@@ -141,7 +141,6 @@ namespace Content.Client.Lobby.UI
             _sprite = _entManager.System<SpriteSystem>();
 
             _maxNameLength = _cfgManager.GetCVar(CCVars.MaxNameLength);
-            _allowFlavorText = _cfgManager.GetCVar(CCVars.FlavorText);
 
             ImportButton.OnPressed += args =>
             {
@@ -436,7 +435,6 @@ namespace Content.Client.Lobby.UI
 
             RefreshFlavorText();
 
-            RefreshVoiceTab(); // Corvax-TTS
 
             #region Dummy
 
@@ -472,7 +470,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void RefreshFlavorText()
         {
-            if (_allowFlavorText)
+            if (_cfgManager.GetCVar(CCVars.FlavorText))
             {
                 if (_flavorText != null)
                     return;
@@ -481,6 +479,7 @@ namespace Content.Client.Lobby.UI
                 TabContainer.AddChild(_flavorText);
                 TabContainer.SetTabTitle(TabContainer.ChildCount - 1, Loc.GetString("humanoid-profile-editor-flavortext-tab"));
                 _flavorTextEdit = _flavorText.CFlavorTextInput;
+                UpdateFlavorTextEdit();
 
                 _flavorText.OnFlavorTextChanged += OnFlavorTextChange;
             }
@@ -489,7 +488,16 @@ namespace Content.Client.Lobby.UI
                 if (_flavorText == null)
                     return;
 
+                var flavorTab = _flavorText.GetPositionInParent();
+                var selectedTab = TabContainer.CurrentTab;
+                // TabContainer keeps its selected index when a child is removed.
+                if (selectedTab >= flavorTab)
+                    TabContainer.CurrentTab = 0;
+
                 TabContainer.RemoveChild(_flavorText);
+                if (selectedTab > flavorTab)
+                    TabContainer.CurrentTab = selectedTab - 1;
+
                 _flavorText.OnFlavorTextChanged -= OnFlavorTextChange;
                 _flavorText.Dispose();
                 _flavorTextEdit?.Dispose();
@@ -498,55 +506,6 @@ namespace Content.Client.Lobby.UI
             }
         }
 
-        // Corvax-TTS-Start
-        #region Voice
-
-        private void RefreshVoiceTab()
-        {
-            if (!_cfgManager.GetCVar(CCCVars.TTSEnabled))
-                return;
-
-            _ttsTab = new TTSTab();
-            var children = new List<Control>();
-            foreach (var child in TabContainer.Children)
-                children.Add(child);
-
-            TabContainer.RemoveAllChildren();
-
-            for (int i = 0; i < children.Count; i++)
-            {
-                if (i == 1) // Set the tab to the 2nd place.
-                {
-                    TabContainer.AddChild(_ttsTab);
-                }
-                TabContainer.AddChild(children[i]);
-            }
-
-            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-voice-tab"));
-
-            _ttsTab.OnVoiceSelected += voiceId =>
-            {
-                SetVoice(voiceId);
-                _ttsTab.SetSelectedVoice(voiceId);
-            };
-
-            _ttsTab.OnPreviewRequested += voiceId =>
-            {
-                _entManager.System<TTSSystem>().RequestPreviewTTS(voiceId);
-            };
-        }
-
-        private void UpdateTTSVoicesControls()
-        {
-            if (Profile is null || _ttsTab is null)
-                return;
-
-            _ttsTab.UpdateControls(Profile, Profile.Sex);
-            _ttsTab.SetSelectedVoice(Profile.Voice);
-        }
-
-        #endregion
-        // Corvax-TTS-End
 
         /// <summary>
         /// Refreshes traits selector
@@ -834,7 +793,6 @@ namespace Content.Client.Lobby.UI
             UpdateEyePickers();
             UpdateSaveButton();
             UpdateMarkings();
-            UpdateTTSVoicesControls(); // Corvax-TTS
             UpdateHairPickers();
             UpdateCMarkingsHair();
             UpdateCMarkingsFacialHair();
@@ -947,7 +905,7 @@ namespace Content.Client.Lobby.UI
 
                     category.AddChild(new PanelContainer
                     {
-                        PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#464966") },
+                        PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#4F5666") }, //SW
                         Children =
                         {
                             new Label
@@ -1088,37 +1046,16 @@ namespace Content.Client.Lobby.UI
             JobOverride = jobProto;
             var session = _playerManager.LocalSession;
 
-            _loadoutWindow = new LoadoutWindow(Profile, roleLoadout, roleLoadoutProto, _playerManager.LocalSession, collection)
-            {
-                Title = Loc.GetString("loadout-window-title-loadout", ("job", $"{jobProto?.LocalizedName}")),
-            };
+            //SW start
+            _loadoutWindow = new SWLoadoutWindow(Profile, roleLoadout, roleLoadoutProto, jobProto, "sw-loadout-hint-editor", session, collection);
+            _loadoutWindow.OpenCentered();
 
-            // Refresh the buttons etc.
-            _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-            _loadoutWindow.OpenCenteredLeft();
-
-            _loadoutWindow.OnNameChanged += name =>
+            _loadoutWindow.OnLoadoutChanged += changed =>
             {
-                roleLoadout.EntityName = name;
-                Profile = Profile.WithLoadout(roleLoadout);
-                SetDirty();
-            };
-
-            _loadoutWindow.OnLoadoutPressed += (loadoutGroup, loadoutProto) =>
-            {
-                roleLoadout.AddLoadout(loadoutGroup, loadoutProto, _prototypeManager);
-                _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-                Profile = Profile?.WithLoadout(roleLoadout);
+                Profile = Profile?.WithLoadout(changed);
                 ReloadPreview();
             };
-
-            _loadoutWindow.OnLoadoutUnpressed += (loadoutGroup, loadoutProto) =>
-            {
-                roleLoadout.RemoveLoadout(loadoutGroup, loadoutProto, _prototypeManager);
-                _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-                Profile = Profile?.WithLoadout(roleLoadout);
-                ReloadPreview();
-            };
+            //SW end
 
             JobOverride = jobProto;
             ReloadPreview();
@@ -1246,7 +1183,6 @@ namespace Content.Client.Lobby.UI
             }
 
             UpdateGenderControls();
-            UpdateTTSVoicesControls(); // Corvax-TTS
             Markings.SetSex(newSex);
             ReloadPreview();
         }
@@ -1257,13 +1193,6 @@ namespace Content.Client.Lobby.UI
             ReloadPreview();
         }
 
-        // Corvax-TTS-Start
-        private void SetVoice(string newVoice)
-        {
-            Profile = Profile?.WithVoice(newVoice);
-            IsDirty = true;
-        }
-        // Corvax-TTS-End
 
         private void SetSpecies(string newSpecies)
         {
@@ -1612,6 +1541,9 @@ namespace Content.Client.Lobby.UI
         private void RandomizeEverything()
         {
             Profile = HumanoidCharacterProfile.Random();
+            //SW start Species name generation
+            Profile = Profile.WithName(SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase)));
+            //SW end
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
@@ -1619,7 +1551,9 @@ namespace Content.Client.Lobby.UI
         private void RandomizeName()
         {
             if (Profile == null) return;
-            var name = HumanoidCharacterProfile.GetName(Profile.Species, Profile.Gender);
+            //SW start Species name generation
+            var name = SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase));
+            //SW end
             SetName(name);
             UpdateNameEdit();
         }

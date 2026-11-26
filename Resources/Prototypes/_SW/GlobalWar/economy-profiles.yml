@@ -1,0 +1,184 @@
+# Rates and opening stock are logical commodity units, converted once to 60000 quanta per unit.
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyCapital
+  exportReserves: { SWGlobalWarF: 240 }
+  mandatory:
+    SWGlobalWarF: 12
+    SWGlobalWarE: 0.4
+    SWGlobalWarL: 2
+  openingStock:
+    SWGlobalWarF: 240
+  hubCapacity: 150
+  maximumHubCapacity: 250
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyAgriculture
+  mandatory:
+    SWGlobalWarF: 2
+    SWGlobalWarE: 0.4
+    SWGlobalWarL: 0.1
+  recipes:
+  - output: SWGlobalWarF
+    perMinute: 30
+  hubCapacity: 25
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyIron
+  mandatory:
+    SWGlobalWarF: 3
+    SWGlobalWarE: 0.2
+    SWGlobalWarL: 0.1
+  openingStock:
+    SWGlobalWarFe: 60
+  recipes:
+  - output: SWGlobalWarFe
+    perMinute: 30
+  hubCapacity: 25
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyCoal
+  mandatory:
+    SWGlobalWarF: 3
+    SWGlobalWarE: 0.2
+    SWGlobalWarL: 0.1
+  openingStock:
+    SWGlobalWarC: 60
+  recipes:
+  - output: SWGlobalWarC
+    perMinute: 20
+  hubCapacity: 25
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyGold
+  mandatory:
+    SWGlobalWarF: 3
+    SWGlobalWarE: 0.2
+    SWGlobalWarL: 0.1
+  openingStock:
+    SWGlobalWarAu: 60
+  recipes:
+  - output: SWGlobalWarAu
+    perMinute: 42
+  hubCapacity: 50
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyLanthanide
+  mandatory:
+    SWGlobalWarF: 3
+    SWGlobalWarE: 0.2
+    SWGlobalWarL: 0.1
+  openingStock:
+    SWGlobalWarLn: 60
+  recipes:
+  - output: SWGlobalWarLn
+    perMinute: 20
+  hubCapacity: 25
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyIndustry
+  exportReserves: { SWGlobalWarLn: 180 }
+  mandatory:
+    SWGlobalWarF: 5
+    SWGlobalWarE: 0.1
+    SWGlobalWarL: 0.2
+  openingStock:
+    SWGlobalWarFe: 80
+    SWGlobalWarC: 40
+    SWGlobalWarAu: 120
+    SWGlobalWarLn: 180
+    SWGlobalWarS: 40
+    SWGlobalWarE: 20
+  recipes:
+  - output: SWGlobalWarE
+    perMinute: 2
+    inputs:
+      SWGlobalWarAu: 6
+      SWGlobalWarLn: 3
+  - output: SWGlobalWarS
+    perMinute: 4
+    inputs:
+      SWGlobalWarFe: 2
+      SWGlobalWarC: 1
+  hubCapacity: 50
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyDockworks
+  exportReserves: { SWGlobalWarLn: 180 }
+  mandatory:
+    SWGlobalWarF: 5
+    SWGlobalWarE: 0.1
+    SWGlobalWarL: 0.2
+  openingStock:
+    SWGlobalWarFe: 80
+    SWGlobalWarC: 40
+    SWGlobalWarAu: 120
+    SWGlobalWarLn: 180
+    SWGlobalWarS: 40
+    SWGlobalWarE: 20
+    SWGlobalWarAE: 10
+  recipes:
+  - output: SWGlobalWarE
+    perMinute: 2
+    inputs:
+      SWGlobalWarAu: 6
+      SWGlobalWarLn: 3
+  - output: SWGlobalWarS
+    perMinute: 4
+    inputs:
+      SWGlobalWarFe: 2
+      SWGlobalWarC: 1
+  hubCapacity: 50
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyForce
+  mandatory:
+    SWGlobalWarF: 1
+  hubCapacity: 25
+  maximumHubCapacity: 100
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyNeutralLuxury
+  mandatory:
+    SWGlobalWarF: 3
+    SWGlobalWarE: 0.2
+    SWGlobalWarL: 0.1
+  recipes:
+  - output: SWGlobalWarL
+    perMinute: 8
+  hubCapacity: 25
+  maximumHubCapacity: 100
+  halfProductionBeforeThirtyMinutes: true
+
+- type: swGlobalWarEconomyProfile
+  id: SWGlobalWarEconomyNeutralIndustry
+  mandatory:
+    SWGlobalWarF: 5
+    SWGlobalWarE: 0.1
+    SWGlobalWarL: 0.2
+  openingStock:
+    SWGlobalWarFe: 80
+    SWGlobalWarC: 40
+    SWGlobalWarAu: 120
+    SWGlobalWarLn: 60
+  recipes:
+  - output: SWGlobalWarE
+    perMinute: 2
+    inputs:
+      SWGlobalWarAu: 6
+      SWGlobalWarLn: 3
+  - output: SWGlobalWarS
+    perMinute: 4
+    inputs:
+      SWGlobalWarFe: 2
+      SWGlobalWarC: 1
+  hubCapacity: 50
+  maximumHubCapacity: 100
+  halfProductionBeforeThirtyMinutes: true

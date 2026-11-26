@@ -103,9 +103,10 @@ public sealed class SWRepublicEconomySystem : EntitySystem
         foreach (var good in _definition.Goods)
             _goodNames[good.Id] = _prototypes.Index<SWCommodityPrototype>(good.Id).Name;
         var scenario = _prototypes.Index<SWRepublicEconomyScenarioPrototype>("SenateRepublicEconomy");
-        foreach (var world in _prototypes.Index(scenario.Map).Worlds)
+        var map = _prototypes.Index(scenario.Map);
+        foreach (var world in map.Worlds)
         {
-            if (world.Sector is { } sector
+            if (world.Sector is { } sector && map.GetWorldFaction(world) == "republic"
                 && _prototypes.TryIndex<SWPlanetEconomyPrototype>(world.Id, out var economy) && economy.ActiveEconomy)
                 _worldSectors[world.Id] = sector.Id;
         }
@@ -135,6 +136,8 @@ public sealed class SWRepublicEconomySystem : EntitySystem
     {
         if (_runner == null)
             return;
+        if (!_defense.ImperialOperationsAllowed)
+            _runner.CancelPendingExternalWithdrawals();
         var running = _time.ModeActive && _time.DayActive;
         var activeHours = (double) _time.ActiveSeconds(frameTime) / SWSenateTimeSystem.RealSecondsPerGameHour;
         // Capture Senate conditions once before a scheduled step, not for every frame or console.

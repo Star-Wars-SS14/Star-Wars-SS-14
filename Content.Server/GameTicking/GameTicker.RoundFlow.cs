@@ -486,6 +486,7 @@ namespace Content.Server.GameTicking
             _sawmill.Info("Ending round!");
 
             RunLevel = GameRunLevel.PostRound;
+            EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().MarkEnding();
 
             try
             {
@@ -530,6 +531,7 @@ namespace Content.Server.GameTicking
             var pvsOverride = _cfg.GetCVar(CCVars.RoundEndPVSOverrides);
             while (allMinds.MoveNext(out var mindId, out var mind))
             {
+                if (HasComp<Content.Server._SW.Tutorial.SWTutorialPlayerComponent>(mind.CurrentEntity)) continue; //SW
                 // TODO don't list redundant observer roles?
                 // I.e., if a player was an observer ghost, then a hamster ghost role, maybe just list hamster and not
                 // the observer role?
@@ -599,6 +601,8 @@ namespace Content.Server.GameTicking
                 listOfPlayerInfoFinal,
                 sound
             );
+            roundEndMessageEvent.SenateHistory = EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().Capture();
+            EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().RememberScoreboard(roundEndMessageEvent);
             RaiseNetworkEvent(roundEndMessageEvent);
             RaiseLocalEvent(roundEndMessageEvent);
             RaiseLocalEvent(new RoundEndedEvent(RoundId, roundDuration)); // Corvax

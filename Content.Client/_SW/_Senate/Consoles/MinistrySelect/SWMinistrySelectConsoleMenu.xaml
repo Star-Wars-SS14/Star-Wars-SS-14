@@ -1,23 +1,37 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
-    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="Назначение в исполнительную власть"
-    MinSize="560 560">
+    xmlns:ministry="clr-namespace:Content.Client._SW._Senate.Consoles.MinistrySelect"
+    Title="Назначение в исполнительную власть" MinSize="640 460" SetSize="1100 780">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
-        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-            <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
-                    <senate:SWConsoleSeal Margin="0 0 12 0" />
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
-                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
-                    </BoxContainer>
+        <ministry:SWMinistryLayout HorizontalExpand="True" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                <PanelContainer Name="HeaderPanel"><BoxContainer Orientation="Horizontal" Margin="12 8" SeparationOverride="10">
+                    <TextureRect Name="Seal" SetSize="30 30" Stretch="KeepAspectCentered" CanShrink="True" />
+                    <Label Name="HeaderTitle" Text="СЕНАТ / НАЗНАЧЕНИЕ В ИСПОЛНИТЕЛЬНУЮ ВЛАСТЬ" ClipText="True" HorizontalExpand="True" VerticalAlignment="Center" />
+                </BoxContainer></PanelContainer>
+                <BoxContainer Orientation="Horizontal" Margin="8 0" SeparationOverride="6">
+                    <Button Name="MinistriesTab" Text="Министерства" HorizontalExpand="True" />
+                    <Button Name="DepartmentsTab" Text="Департаменты" HorizontalExpand="True" />
+                    <Button Name="BureausTab" Text="Бюро" HorizontalExpand="True" />
                 </BoxContainer>
+            </BoxContainer>
+            <ministry:SWMinistryColumns HorizontalExpand="True" VerticalExpand="True" Margin="8" Gap="10">
+                <PanelContainer Name="ListPanel"><BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+                    <Label Name="ListTitle" Text="ПОРТФЕЛИ РЕСПУБЛИКИ" />
+                    <ScrollContainer Name="ListScroll" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="MinistryList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="5" />
+                    </ScrollContainer>
+                </BoxContainer></PanelContainer>
+                <ScrollContainer Name="DetailScroll" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Name="Dossier" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" />
+                </ScrollContainer>
+            </ministry:SWMinistryColumns>
+            <PanelContainer Name="FooterPanel" Margin="8 0 8 8">
+                <ministry:SWMinistryColumns Footer="True" Gap="12" Margin="10 8">
+                    <BoxContainer Name="FooterText" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" />
+                    <Button Name="ClaimButton" Text="Занять портфель" VerticalAlignment="Center" />
+                </ministry:SWMinistryColumns>
             </PanelContainer>
-            <Label Name="StatusLabel" Margin="12 8 12 6" />
-            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="8">
-                <BoxContainer Name="MinistryList" Orientation="Vertical" HorizontalExpand="True" />
-            </ScrollContainer>
-        </BoxContainer>
+        </ministry:SWMinistryLayout>
     </PanelContainer>
 </controls:FancyWindow>

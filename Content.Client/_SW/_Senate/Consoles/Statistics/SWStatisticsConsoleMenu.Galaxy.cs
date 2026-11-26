@@ -9,13 +9,13 @@ public sealed partial class SWStatisticsConsoleMenu
 
     private void InitializeGalaxy()
     {
-        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true, showMedicalToggle: false);
+        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true, showMedicalToggle: false, viewerFaction: "none", fullPlanetScreen: true);
         _galaxy.SelectionChanged += () => _sectorId = _galaxy.SelectedLiveSectorId;
         _galaxy.SectorSummaryRequested += OpenSectorSummary;
         GalaxyPanel.AddChild(_galaxy);
     }
 
-    public void SelectGalaxyWorld(string id, bool focus = false) => _galaxy.SelectWorld(id, focus);
+    public void SelectGalaxyWorld(string id, bool focus = false) => _galaxy.SelectWorldByUser(id, focus);
 
     private void RefreshGalaxy()
     {

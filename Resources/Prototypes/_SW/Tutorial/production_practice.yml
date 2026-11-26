@@ -1,0 +1,310 @@
+# Optional private workshop. Actual APC, SWLathe input contacts, output and pause control.
+- type: swTutorialScenario
+  id: SWTutorialProduction
+  mode: Production
+  version: 1
+  guidedPractice: true
+  map: /Maps/SW/Mega/Tutorial/civil_workshop.yml
+  gear: SWTutorialCivilianGear
+  steps: [SWTutorialProductionPower, SWTutorialProductionInput, SWTutorialProductionOutput, SWTutorialProductionFault]
+
+- type: entity
+  parent: SWTutorialElectronicsLathe
+  id: SWTutorialPoweredLathe
+  categories: [HideSpawnMenu]
+  components:
+  - type: ApcPowerReceiver
+    needsPower: true
+
+- type: entity
+  parent: SWTutorialPoweredLathe
+  id: SWTutorialPausedLathe
+  categories: [HideSpawnMenu]
+  components:
+  - type: SWLathe
+    productionDisabled: true
+
+- type: entity
+  parent: APCBasic
+  id: SWTutorialPracticeAPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: AccessReader
+    access: []
+  - type: Battery
+    maxCharge: 10000000 # Finite prepared reserve: reading the exercise does not drain a tiny starter cell.
+    startingCharge: 10000000
+
+- type: entity
+  parent: SWTutorialPracticeAPC
+  id: SWTutorialPracticeAPCOff
+  categories: [HideSpawnMenu]
+  components:
+  - type: Apc
+    enabled: false
+  - type: PowerNetworkBattery
+    canDischarge: false
+
+- type: swTutorialStep
+  id: SWTutorialProductionPower
+  checkpoint: true
+  onStart:
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialPoweredLathe
+    point: machine
+    tag: machine
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialPracticeAPCOff
+    point: machine
+    offset: 1, 0
+    tag: power
+  show: [Hands]
+  beats:
+  - hint: sw-tutorial-beat-open-panel
+    focus:
+      tag: power
+  - when:
+    - !type:SWTutorialUiOpenCondition
+      tag: power
+    hint: sw-tutorial-beat-breaker
+    highlight: ApcBreaker
+  completion: !type:SWTutorialPoweredCondition
+
+
+- type: swTutorialStep
+  id: SWTutorialProductionInput
+  onStart:
+  - !type:SWTutorialSpawnAction
+    proto: SWAdvancedCables1
+    point: machineInput
+    tag: cable
+  - !type:SWTutorialSpawnAction
+    proto: SWSheetLantanid1
+    point: material
+    tag: material
+  - !type:SWTutorialSpawnAction
+    proto: CrateGenericSteel
+    point: acceptance
+    tag: box
+  beats:
+  - hint: sw-tutorial-beat-take-sheet
+    focus:
+      tag: material
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    hint: sw-tutorial-beat-carry-sheet
+    focus:
+      point: machineInput
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: machineInput
+      range: 1.2
+    hint: sw-tutorial-beat-drop-sheet
+    focus:
+      point: machineInput
+    highlight: ActiveHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: material
+    - !type:SWTutorialReachCondition
+      point: machineInput
+      range: 1.2
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: material
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialGoneCondition
+      tag: material
+    hint: sw-tutorial-beat-wait
+    focus:
+      tag: machine
+    wait: true
+  completion: !type:SWTutorialProducedCondition
+
+
+- type: swTutorialStep
+  id: SWTutorialProductionOutput
+  beats:
+  - hint: sw-tutorial-beat-take-module
+    focus:
+      tag: product
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-open-box
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-put-module
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    - !type:SWTutorialPlacedCondition
+      tag: product
+      nearTag: box
+    hint: sw-tutorial-beat-close-box
+    focus:
+      tag: box
+  completion: !type:SWTutorialContainedCondition
+    tag: product
+    containerTag: box
+
+
+- type: swTutorialStep
+  id: SWTutorialProductionFault
+  checkpoint: true
+  onStart:
+  - !type:SWTutorialDeleteAction
+    tag: machine
+  - !type:SWTutorialDeleteAction
+    tag: power
+  - !type:SWTutorialDeleteAction
+    tag: cable
+  - !type:SWTutorialDeleteAction
+    tag: material
+  - !type:SWTutorialDeleteAction
+    tag: product
+  - !type:SWTutorialDeleteAction
+    tag: box
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialPracticeAPC
+    point: secondMachine
+    tag: power
+    offset: 1, 0
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialPausedLathe
+    point: secondMachine
+    tag: machine
+  - !type:SWTutorialSpawnAction
+    proto: SWAdvancedCables1
+    point: secondInput
+    tag: cable
+  - !type:SWTutorialSpawnAction
+    proto: SWSheetLantanid1
+    point: secondInput
+    tag: material
+  - !type:SWTutorialSpawnAction
+    proto: CrateGenericSteel
+    point: acceptance
+    tag: box
+  beats:
+  - hint: sw-tutorial-beat-open-machine
+    focus:
+      tag: machine
+  - when:
+    - !type:SWTutorialUiOpenCondition
+      tag: machine
+    hint: sw-tutorial-beat-resume
+    highlight: LatheMode
+  - when:
+    - !type:SWTutorialLatheRunningCondition
+      tag: machine
+    hint: sw-tutorial-beat-wait
+    focus:
+      tag: machine
+    wait: true
+  - when:
+    - !type:SWTutorialProducedCondition
+    hint: sw-tutorial-beat-take-module
+    focus:
+      tag: product
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialBoxOpenCondition
+        tag: box
+    hint: sw-tutorial-beat-open-box
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialActiveHoldingCondition
+      tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-put-module
+    focus:
+      tag: box
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: product
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialHoldingCondition
+        tag: product
+    - !type:SWTutorialBoxOpenCondition
+      tag: box
+    - !type:SWTutorialPlacedCondition
+      tag: product
+      nearTag: box
+    hint: sw-tutorial-beat-close-box
+    focus:
+      tag: box
+  completion: !type:SWTutorialContainedCondition
+    tag: product
+    containerTag: box
+

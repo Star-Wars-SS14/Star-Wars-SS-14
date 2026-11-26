@@ -270,3 +270,26 @@
   - type: Sprite
     layers:
     - state: green
+
+- type: entity
+  id: SWSpawnPointHolonetCorrespondent
+  parent: SpawnPointJobBase
+  name: Holonet Correspondent
+  components:
+  - type: SpawnPoint
+    job_id: SWHolonetCorrespondent
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointHolonetCorrespondentLJ
+  parent: SpawnPointJobBase
+  name: Holonet Correspondent LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWHolonetCorrespondent
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

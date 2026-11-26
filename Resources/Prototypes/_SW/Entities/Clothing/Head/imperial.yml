@@ -1,5 +1,5 @@
 - type: entity
-  parent: SWBaseHelmet
+  parent: [SWBaseHelmet, SWEmpireJobHud]
   id: SW_ClothingHeadImperialHelmet
   name: imperial helmet
   components:
@@ -41,7 +41,7 @@
     sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
 
 - type: entity
-  parent: SWBaseHelmet
+  parent: [SWBaseHelmet, SWEmpireJobHud]
   id: SWClothingHeadImperialPilotHelmet
   name: imperial pilot helmet
   components:

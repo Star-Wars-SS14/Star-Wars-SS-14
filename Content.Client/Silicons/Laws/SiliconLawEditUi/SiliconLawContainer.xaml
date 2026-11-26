@@ -13,7 +13,7 @@
             MinHeight="128"
         >
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#1B1B1B"></graphics:StyleBoxFlat>
+                <graphics:StyleBoxFlat BackgroundColor="#16181C"></graphics:StyleBoxFlat>
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Horizontal" SeparationOverride="5">
                 <TextEdit Name="LawContent" HorizontalExpand="True" Editable="True" MinWidth="500" MinHeight="80"></TextEdit>
@@ -29,3 +29,4 @@
         <Button Name="Delete" Text="{Loc silicon-law-ui-delete}" ModulateSelfOverride="Red"></Button>
     </BoxContainer>
 </BoxContainer>
+<!-- #SW: terminal colours -->

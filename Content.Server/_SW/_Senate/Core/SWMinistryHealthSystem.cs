@@ -47,6 +47,7 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
     public int HospitalsBuilt => _hospitalsBuilt;
     public int HospitalServicePercent => (int) MathF.Round(Weighted(Care) * 100);
     public bool PathogenActive => _active;
+    public int PathogenEpisode => _episode;
     public string PathogenName => _name;
     public int PathogenStrain => _strain;
     public int Virulence => (int) MathF.Round(_virulence * 100);
@@ -58,9 +59,10 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         UpdatesAfter.Add(typeof(SWRepublicEconomySystem));
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
-        foreach (var map in _proto.Index(scenario.Map).Worlds)
-            if (map.Sector != null && _proto.TryIndex<SWPlanetEconomyPrototype>(map.Id, out var economy) && economy.ActiveEconomy)
-                _worlds[map.Id] = new World(map, Math.Max(.001, economy.PopulationUnits));
+        var geography = _proto.Index(scenario.Map);
+        foreach (var world in geography.Worlds)
+            if (world.Sector != null && geography.GetWorldFaction(world) == "republic" && _proto.TryIndex<SWPlanetEconomyPrototype>(world.Id, out var economy) && economy.ActiveEconomy)
+                _worlds[world.Id] = new World(world, Math.Max(.001, economy.PopulationUnits));
         _links = _proto.EnumeratePrototypes<SWTransitLinkPrototype>().Where(l => l.Accessible && _worlds.ContainsKey(l.From) && _worlds.ContainsKey(l.To)).ToArray();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -83,6 +85,11 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
     private World? ResolveWorld(string? id) => id == null ? null : _worlds.GetValueOrDefault(id) ??
         _worlds.Values.Where(w => w.Map.Sector?.Id == id).OrderByDescending(w => w.Infection).ThenByDescending(w => w.Map.Anchor).FirstOrDefault();
     public float PlanetInfection(string world) => _worlds.GetValueOrDefault(world)?.Infection ?? 0;
+    /// <summary>Republic worlds with a current outbreak, for selecting a real aid destination.</summary>
+    public List<(string Id, string Name, string Sector)> InfectedWorlds() => !_active
+        ? new()
+        : _worlds.Values.Where(w => w.Infection > 1f && w.Map.Sector != null)
+            .Select(w => (w.Map.Id, w.Map.Name, w.Map.Sector!.Value.Id)).ToList();
     public float SectorInfection(string sector) => Weighted(w => w.Infection, sector);
     public float InfectionAvg() => Weighted(w => w.Infection);
     private float Care(string id) => _worlds.TryGetValue(id, out var world) ? Care(world) : 0;

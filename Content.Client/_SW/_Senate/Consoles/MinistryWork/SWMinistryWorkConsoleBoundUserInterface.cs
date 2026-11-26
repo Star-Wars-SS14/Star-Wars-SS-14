@@ -71,26 +71,6 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSecuritySetPostureMessage(posture));
     }
 
-    public void SelectSecProgram(string programId)
-    {
-        SendMessage(new SWSecuritySelectProgramMessage(programId));
-    }
-
-    public void DeployCell(int cellId, string target)
-    {
-        SendMessage(new SWSecurityDeployCellMessage(cellId, target));
-    }
-
-    public void LaunchSecOp(string opId, string target)
-    {
-        SendMessage(new SWSecurityLaunchOpMessage(opId, target));
-    }
-
-    public void RaidPlot(int plotId)
-    {
-        SendMessage(new SWSecurityRaidPlotMessage(plotId));
-    }
-
     public void HealthAction(SWHealthActionMessage message) => SendMessage(message);
 
     public void SelectEconomyGood(string good) => SendMessage(new SWEconomySelectGoodMessage(good));
@@ -173,8 +153,8 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWBudgetSubmitMessage());
     }
 
-    public void SubmitBudget(int revision, int sector, int reserve, System.Collections.Generic.Dictionary<string, int> weights)
-        => SendMessage(new SWBudgetSubmitMessage(revision, sector, reserve, weights));
+    public void SubmitBudget(int revision, int sector, int reserve, int republic, System.Collections.Generic.Dictionary<string, int> weights)
+        => SendMessage(new SWBudgetSubmitMessage(revision, sector, reserve, republic, weights));
 
     public void TransferReserve(int revision, string requestId, bool ministry, string target, int amount, string purpose)
         => SendMessage(new SWBudgetReserveTransferMessage(revision, requestId, ministry, target, amount, purpose));
@@ -185,55 +165,12 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
     public void SetFinanceTax(string id, int rate, bool relief, string requestId)
         => SendMessage(new SWFinanceTaxSetMessage(id, rate, relief, requestId));
 
-    public void Investigate(int caseId)
-    {
-        SendMessage(new SWJusticeInvestigateMessage(caseId));
-    }
-
-    public void SendToCourt(int caseId)
-    {
-        SendMessage(new SWJusticeSendToCourtMessage(caseId));
-    }
-
-    public void HoldHearing(int caseId)
-    {
-        SendMessage(new SWJusticeHoldHearingMessage(caseId));
-    }
-
-    public void Verdict(int caseId, SWVerdict verdict)
-    {
-        SendMessage(new SWJusticeVerdictMessage(caseId, verdict));
-    }
-
-    public void SetJusticeStance(SWJusticeStance stance)
-    {
-        SendMessage(new SWJusticeSetStanceMessage(stance));
-    }
-
-    public void SelectJusticeProgram(string programId)
-    {
-        SendMessage(new SWJusticeSelectProgramMessage(programId));
-    }
-
-    public void Overtime()
-    {
-        SendMessage(new SWJusticeOvertimeMessage());
-    }
-
-    public void DeclareTribunal()
-    {
-        SendMessage(new SWJusticeDeclareTribunalMessage());
-    }
-
-    public void ScreenCorruption(string key, bool sector)
-    {
-        SendMessage(new SWCorruptionScreenMessage(key, sector));
-    }
-
-    public void ProsecuteCorruption(string key, bool sector)
-    {
-        SendMessage(new SWCorruptionProsecuteMessage(key, sector));
-    }
+    public void OpenJusticeInspection(string institutionId) => SendMessage(new SWJusticeOpenInspectionMessage(institutionId));
+    public void RunJusticeCheck(int caseId, string checkId) => SendMessage(new SWJusticeRunCheckMessage(caseId, checkId));
+    public void ConcludeJusticeInspection(int caseId, SWJusticeConclusion conclusion, System.Collections.Generic.List<string> evidenceIds)
+        => SendMessage(new SWJusticeConcludeMessage(caseId, conclusion, evidenceIds));
+    public void ApplyJusticeRemedy(int caseId, SWJusticeRemedy remedy) => SendMessage(new SWJusticeRemedyMessage(caseId, remedy));
+    public void FollowUpJusticeInspection(int caseId) => SendMessage(new SWJusticeFollowUpMessage(caseId));
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {
@@ -253,4 +190,9 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
 
         _menu?.Dispose();
     }
+    public void SecurityOrder(int teamId, SWSecurityOrder order, string worldId, int caseId = 0)
+        => SendMessage(new SWSecurityTeamOrderMessage(teamId, order, worldId, caseId));
+
+    public void SecurityCell(string worldId, bool deploy)
+        => SendMessage(new SWSecurityCellCommandMessage(worldId, deploy));
 }

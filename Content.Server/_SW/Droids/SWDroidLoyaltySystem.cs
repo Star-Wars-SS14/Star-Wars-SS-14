@@ -14,6 +14,12 @@ public sealed class SWDroidLoyaltySystem : EntitySystem
 
     public bool IsTargetProtected(EntityUid droid, EntityUid target)
     {
+        // A mode that knows real allegiance decides first; a card or job id can be taken from a body.
+        var decision = new SWDroidTargetAllegianceEvent(target);
+        RaiseLocalEvent(droid, ref decision);
+        if (decision.Protected is { } decided)
+            return decided;
+
         if (!TryComp<BorgChassisComponent>(droid, out var chassis) ||
             !TryGetTargetJob(target, out var targetJob))
         {
@@ -63,3 +69,7 @@ public sealed class SWDroidLoyaltySystem : EntitySystem
         return false;
     }
 }
+
+/// <summary>Raised on a droid choosing a target. A handler sets <see cref="Protected"/> when it knows the answer.</summary>
+[ByRefEvent]
+public record struct SWDroidTargetAllegianceEvent(EntityUid Target, bool? Protected = null);

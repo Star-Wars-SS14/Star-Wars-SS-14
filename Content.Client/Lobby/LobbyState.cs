@@ -1,3 +1,4 @@
+using Content.Client.Stylesheets;
 using Content.Client.Audio;
 using Content.Client.GameTicking.Managers;
 using Content.Client.LateJoin;
@@ -70,7 +71,6 @@ namespace Content.Client.Lobby
 
             Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
-            Lobby.ReadyButton.OnToggled += OnReadyToggled;
 
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
@@ -90,7 +90,6 @@ namespace Content.Client.Lobby
 
             Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
-            Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
 
             Lobby = null;
         }
@@ -111,15 +110,11 @@ namespace Content.Client.Lobby
         {
             if (!_gameTicker.IsGameStarted)
             {
+                SetReady(!_gameTicker.AreWeReady);
                 return;
             }
 
             new LateJoinGui().OpenCentered();
-        }
-
-        private void OnReadyToggled(BaseButton.ButtonToggledEventArgs args)
-        {
-            SetReady(args.Pressed);
         }
 
         public override void FrameUpdate(FrameEventArgs e)
@@ -181,16 +176,26 @@ namespace Content.Client.Lobby
             if (_gameTicker.IsGameStarted)
             {
                 Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
-                Lobby!.ReadyButton.ToggleMode = false;
-                Lobby!.ReadyButton.Pressed = false;
                 Lobby!.ObserveButton.Disabled = false;
+                //SW start
+                Lobby!.ReadyStatus.Visible = false;
+                Lobby!.ReadyButton.AddStyleClass(StyleClass.Positive);
+                //SW end
             }
             else
             {
                 Lobby!.StartTime.Text = string.Empty;
-                Lobby!.ReadyButton.Pressed = _gameTicker.AreWeReady;
-                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "lobby-state-player-status-ready": "lobby-state-player-status-not-ready");
-                Lobby!.ReadyButton.ToggleMode = true;
+                //SW start: render readiness from the server's lobby status.
+                var ready = _gameTicker.AreWeReady;
+                Lobby!.ReadyButton.Text = Loc.GetString(ready ? "sw-lobby-ready-cancel" : "sw-lobby-ready-action");
+                Lobby!.ReadyStatus.Text = Loc.GetString(ready ? "sw-lobby-ready-status" : "sw-lobby-not-ready-status");
+                Lobby!.ReadyStatus.SetOnlyStyleClass(ready ? StyleClass.Positive : StyleClass.LabelWeak);
+                Lobby!.ReadyStatus.Visible = true;
+                if (ready)
+                    Lobby!.ReadyButton.AddStyleClass(StyleClass.Positive);
+                else
+                    Lobby!.ReadyButton.RemoveStyleClass(StyleClass.Positive);
+                //SW end
                 Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ObserveButton.Disabled = true;
             }
@@ -204,6 +209,7 @@ namespace Content.Client.Lobby
             if (minutesToday > 60)
             {
                 Lobby!.PlaytimeComment.Visible = true;
+                Lobby!.PlaytimePlate.Visible = true; //SW
 
                 var hoursToday = Math.Round(minutesToday / 60f, 1);
 

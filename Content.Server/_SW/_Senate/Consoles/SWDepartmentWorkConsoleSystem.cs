@@ -110,6 +110,7 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
         ministryComp.Ministry = parentId;
         var title = Loc.GetString("sw-ministry-title-ministry", ("name", parentProto.TitleName));
         _idCard.TryChangeJobTitle(card.Value, title);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
         _popup.PopupCursor(Loc.GetString("sw-ministry-select-success", ("title", title)), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }

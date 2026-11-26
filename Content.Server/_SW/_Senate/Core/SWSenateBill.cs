@@ -30,6 +30,9 @@ public sealed class SWSenateBill
     public string? ReturnReason;
     public bool Repealed;
     public bool AwaitingTiebreak;
+    // Sector tally at the moment a tied ballot is sent to the Chancellor.
+    public int TiebreakVotesFor;
+    public int TiebreakVotesAgainst;
     public bool Emergency;
     public int EmergencyCrisisId;
     public float EmergencyRelief;
@@ -39,6 +42,7 @@ public sealed class SWSenateBill
     public SWEmergencyPower SpecialMotionPower;
     public int RequiredPercent;
 
+    public bool IsDecree;
     public bool IsElection;
     public List<string> Candidates = new();
     public Dictionary<string, string> ElectionVotes = new();

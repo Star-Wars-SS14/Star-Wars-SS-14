@@ -36,7 +36,7 @@ public sealed partial class SWAbilityThrowSwordSystem : EntitySystem
             return;
         }
         RemComp<SWUnpickuppableComponent>(ent);
-        _force.StartAttractingByForce(args.User.Value, ent.Owner);
+        _force.StartAttractingByForce(args.User.Value, ent.Owner, returnToAnyHand: ent.Comp.ReturnToAnyHand);
         _physicsSystem.ApplyAngularImpulse(ent.Owner, 2f);
     }
 }

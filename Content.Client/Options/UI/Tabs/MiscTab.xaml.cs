@@ -40,8 +40,15 @@ public sealed partial class MiscTab : Control
         // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
         ShowOocPatronColor.Visible = _playerManager.LocalSession?.Channel?.UserData.PatronTier is { };
 
-        Control.AddOptionDropDown(CVars.InterfaceTheme, DropDownHudTheme, themeEntries);
-        Control.AddOptionDropDown(CCVars.UILayout, DropDownHudLayout, layoutEntries);
+        //SW start: only our two looks are offered, the base game's themes and layouts stay hidden
+        // Control.AddOptionDropDown(CVars.InterfaceTheme, DropDownHudTheme, themeEntries);
+        // Control.AddOptionDropDown(CCVars.UILayout, DropDownHudLayout, layoutEntries);
+        Control.AddOptionDropDown(SWVars.HudStyle, DropDownHudStyle, new List<OptionDropDownCVar<string>.ValueOption>
+        {
+            new("light", Loc.GetString("sw-ui-options-hud-style-light")),
+            new("console", Loc.GetString("sw-ui-options-hud-style-console")),
+        });
+        //SW end
 
         Control.AddOptionCheckBox(CVars.DiscordEnabled, DiscordRich);
         Control.AddOptionCheckBox(CCVars.ShowOocPatronColor, ShowOocPatronColor);

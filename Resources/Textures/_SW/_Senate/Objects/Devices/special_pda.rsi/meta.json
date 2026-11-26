@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "PDA artwork by OpenAI Codex with Pillow, 2026.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "pda"
+    },
+    {
+      "name": "pda-syndi-commander"
+    }
+  ]
+}

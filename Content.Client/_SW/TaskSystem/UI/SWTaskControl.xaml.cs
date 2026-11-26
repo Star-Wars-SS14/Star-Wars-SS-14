@@ -13,11 +13,13 @@ public sealed partial class SWTaskControl : Control
     {
         RobustXamlLoader.Load(this);
 
-        var progress = task.Status.Float();
+        var progress = task.Status?.Float() ?? 0f;
+        if (task.Status == null)
+            ProgressRow.Visible = false;
         var done = progress >= 1f;
 
         TaskName.Text = task.TaskName;
-        TaskDescription.Text = task.TaskDesc;
+        TaskDescription.Text = task.TaskDesc + (task.Status == null ? "\n" + Loc.GetString("sw-task-console-final-only") : string.Empty);
         TaskPercent.Text = Loc.GetString("sw-task-console-percent", ("percent", MathF.Round(progress * 100f)));
         TaskDone.Visible = done;
         if (done)

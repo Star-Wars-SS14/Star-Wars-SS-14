@@ -1,0 +1,10 @@
+- type: entity
+  parent: SWTaskBase
+  id: SWTaskEliminateCult
+  name: Устранение культа
+  components:
+  - type: SWTask
+    name: Устранение культа
+    description: Культ может присутствовать. К концу раунда каждый культист должен быть мёртв.
+    finalOnly: true
+  - type: SWEliminateCultTask

@@ -140,6 +140,11 @@ public sealed partial class TaskConsoleSystem : EntitySystem
         foreach(var task in list)
         {
             // A task aimed at a person is worth what the target's job is worth, not its base score.
+            if (task.Comp.FinalOnly)
+            {
+                listComp.Add(new TaskInfo(task.Comp.Name, task.Comp.Description, null, new List<string>(), string.Empty));
+                continue;
+            }
             var score = _sWTasks.GetTaskScore(task);
             var scoreText = score > 0 ? Loc.GetString("sw-task-console-score", ("score", score)) : string.Empty;
             listComp.Add(new TaskInfo(task.Comp.Name, task.Comp.Description, task.Comp.Completeness, GetRewards(task, score), scoreText));

@@ -6,7 +6,7 @@
             <BoxContainer Name="RewardList" Orientation="Horizontal" SeparationOverride="4" />
         </BoxContainer>
         <RichTextLabel Name="TaskDescription" StyleClasses="SWTermText" />
-        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+        <BoxContainer Name="ProgressRow" Orientation="Horizontal" SeparationOverride="8">
             <PanelContainer StyleClasses="SWTermBarFrame" HorizontalExpand="True" VerticalAlignment="Center">
                 <ProgressBar Name="TaskProgress" Margin="2" MinHeight="12" MinValue="0" MaxValue="1" />
             </PanelContainer>

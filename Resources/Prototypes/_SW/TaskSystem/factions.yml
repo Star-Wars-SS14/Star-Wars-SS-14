@@ -33,8 +33,10 @@
   - type: SWTaskContainer
     availableTasks: RepublicTasksSet
     addIntervalInSeconds: 1200 #20 min    
-    startAmountOfTasks : 4
-    maxAmountOfTasks: 10
+    requiredStartTasks:
+    - SWTaskEliminateCult
+    startAmountOfTasks : 5
+    maxAmountOfTasks: 11
   - type: SWBankAccountContainer
     currentAmount:
       SWRepublicCreditCurrency: 10500.0
@@ -73,8 +75,10 @@
   - type: SWTaskContainer
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 1200 #20 min   
-    startAmountOfTasks : 4
-    maxAmountOfTasks: 10
+    requiredStartTasks:
+    - SWTaskEliminateCult
+    startAmountOfTasks : 5
+    maxAmountOfTasks: 11
   - type: SWFactionSeparatedTaskPipeline
     tasks:
     - taskAddTime: 300

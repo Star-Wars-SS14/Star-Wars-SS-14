@@ -25,13 +25,15 @@ public sealed partial class TaskConsoleMenu : SWTerminalWindow
 
     public void PopulateTasks(List<TaskInfo> list)
     {
-        var done = list.Count(task => task.Status.Float() >= 1f);
-        Summary.Text = Loc.GetString("sw-task-console-summary", ("done", done), ("total", list.Count));
+        static bool IsCompleted(TaskInfo task) => task.Status is { } status && status.Float() >= 1f;
+        var done = list.Count(IsCompleted);
+        var known = list.Count(task => task.Status != null);
+        Summary.Text = Loc.GetString("sw-task-console-summary", ("done", done), ("total", known));
 
         TaskList.Children.Clear();
 
         // What still needs doing comes first: a finished task needs no action.
-        foreach (var task in list.OrderBy(task => task.Status.Float() >= 1f))
+        foreach (var task in list.OrderBy(IsCompleted))
         {
             TaskList.AddChild(new SWTaskControl(task, Accent));
         }

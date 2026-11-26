@@ -41,10 +41,10 @@ public sealed class TaskInfo
 {
     public string TaskName;
     public string TaskDesc;
-    public FixedPoint2 Status;
+    public FixedPoint2? Status;
     public List<string> Rewards;
     public string Score;
-    public TaskInfo(string tn, string td, FixedPoint2 s, List<string> rewards, string score)
+    public TaskInfo(string tn, string td, FixedPoint2? s, List<string> rewards, string score)
     {
         TaskName = tn;
         TaskDesc = td;

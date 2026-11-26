@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server._SW.TaskSystem;
 using Content.Server.Administration;
 using Content.Shared.Administration;
+using Content.Shared._SW.TaskSystem;
 using Robust.Shared.Console;
 using Robust.Shared.Prototypes;
 
@@ -57,6 +58,13 @@ public sealed class SWTaskCommand : LocalizedEntityCommands
             return;
         }
 
+        // Sealed tasks are assigned by their rule, not through the testing command.
+        if (proto.Components["SWTask"].Component is SWTaskComponent { FinalOnly: true })
+        {
+            shell.WriteLine(Loc.GetString("sw-task-console-final-only"));
+            return;
+        }
+
         var task = force ? _tasks.AddTask(faction, taskProto) : _tasks.TryAddTask(faction, taskProto);
         if (task == null)
         {
@@ -80,6 +88,11 @@ public sealed class SWTaskCommand : LocalizedEntityCommands
         }
 
         var task = tasks[number - 1];
+        if (task.Comp.FinalOnly)
+        {
+            shell.WriteLine(Loc.GetString("sw-task-console-final-only"));
+            return;
+        }
         _tasks.ForceCompleteTask(task);
         shell.WriteLine(Loc.GetString("sw-cmd-task-completed",
             ("task", task.Comp.Name),

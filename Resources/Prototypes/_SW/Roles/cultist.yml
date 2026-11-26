@@ -1,0 +1,104 @@
+- type: antag
+  id: SWCultist
+  name: sw-cultist-role-name
+  antagonist: true
+  setPreference: true
+  objective: sw-cultist-role-description
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleSWCultist
+  name: Cultist Role
+  components:
+  - type: MindRole
+    antagPrototype: SWCultist
+    exclusiveAntag: true
+    subtype: sw-cultist-role-name
+
+- type: entity
+  id: SWCultistSelectionTemplate
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SWCultistForceSelection
+  - type: AntagSelection
+    definitions:
+    - prefRoles: [ SWCultist ]
+      min: 1
+      max: 2
+      playerRatio: 1
+      mindRoles: [ MindRoleSWCultist ]
+      components:
+      - type: SWPushAbility
+      - type: SWStrangulateAbility
+      - type: SWAbilityThrowSword
+      - type: ForceAbilityDistanceInteract
+      - type: SWForceUserBlock
+      - type: SWDashAbility
+      - type: SWLightningAbility
+        damage:
+          types:
+            Heat: 25
+      - type: SWSendMessageAbility
+      - type: SWHealAbility
+        damageContainers:
+          - Biological
+        modifyBloodLevel: 30
+        delay: 1
+        damage:
+          groups:
+            Burn: -15
+            Toxin: -15
+            Airloss: -15
+            Brute: -15
+        healingBeginSound:
+          path: "/Audio/Items/Medical/ointment_begin.ogg"
+        healingEndSound:
+          path: "/Audio/Items/Medical/ointment_end.ogg"
+
+- type: entity
+  parent: BaseGameRule
+  id: SWCultistGameRule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWCultistGameRule
+    eligibleJobs: [ SWCivialian, SWEmpireSoldier, SWRepublicSoldier ]
+    targetJobs: [ SWJedi, SWSith, SWRepublicGeneral, SWEmpireMoff ]
+    commandIds:
+      SWEmpireMoff: SWIDCardEmpireMoff
+      SWEmpireMajor: SWIDCardEmpireMajor
+      SWEmpireLieutenant: SWIDCardEmpireLieutenant
+      SWRepublicGeneral: SWIDCardRepublicGeneral
+      SWRepublicCaptain: SWIDCardRepublicCaptain
+      SWRepublicLieutenant: SWIDCardRepublicLieutenant
+    legacySwords:
+      SWJedi: SWEnergySwordJedi
+      SWSith: SWEnergySwordSith
+    modularSwords: [ SWModularSaber, SWModularSaberDouble ]
+    deliverySword: SWCultistModularSaber
+    mindRole: MindRoleSWCultist
+    selectionTemplate: SWCultistSelectionTemplate
+    mainObjective: SWCultistMainObjective
+    survivalObjective: SWCultistSurvivalObjective
+    briefingSound: /Audio/Ambience/Antag/traitor_start.ogg
+    selectionMinSeconds: 300
+    selectionMaxSeconds: 600
+    noCultistWeight: 20
+    oneCultistWeight: 70
+    twoCultistWeight: 10
+
+- type: entity
+  parent: BaseObjective
+  id: SWCultistMainObjective
+  name: Цель культа
+  components:
+  - type: Objective
+    difficulty: 1
+    issuer: sw-cultist-objective-issuer
+    icon: { sprite: Objects/Weapons/Melee/e_sword.rsi, state: icon }
+  - type: SWCultistObjective
+
+- type: entity
+  parent: SWCultistMainObjective
+  id: SWCultistSurvivalObjective
+  name: Выживание культа

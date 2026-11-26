@@ -14,6 +14,9 @@ public sealed partial class SWTaskContainerComponent : Component
     [DataField]
     public ProtoId<WeightedRandomPrototype>? AvailableTasks = null;
 
+    [DataField]
+    public List<EntProtoId> RequiredStartTasks = new();
+
     public List<Entity<SWTaskComponent>> CurrentTasks = new();
 
     [DataField]

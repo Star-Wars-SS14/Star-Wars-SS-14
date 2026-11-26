@@ -1,6 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
+  "copyright": "Airlock base from the RMC14 CM-SS13 airlock sprite family. Taken/modified from cmss13 at https://github.com/cmss13-devs/cmss13/blob/f7b9367cb5c083a8c052a40dece9417031e28ffe/icons/obj/structures/doors/comdoor.dmi. Senate variations added in Star Wars SS14 commit 3aa1f2c6c6390e44d9068e44dc1c815681a66418.",
   "size": {
     "x": 32,
     "y": 32

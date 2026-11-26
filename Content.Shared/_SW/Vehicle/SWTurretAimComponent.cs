@@ -1,3 +1,4 @@
+using System;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
 
@@ -20,8 +21,24 @@ public sealed partial class SWTurretAimComponent : Component
 
     /// <summary>
     /// Rotation speed toward the cursor, deg/s.
-    /// 120 = 180 / 1.5 (base turret MouseRotator = 180).
     /// </summary>
     [DataField]
     public float RotationSpeed = 120f;
+
+    [DataField, AutoNetworkedField]
+    public float FiringCone = 25f;
+
+    /// <summary>
+    /// Vehicle part id of the gun this aim component gates.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public string GunPartId = "cannon";
+
+    /// <summary>
+    /// Empirical one-time compensation added to the snapped barrel angle when
+    /// computing the shot direction. Applied only at shot time in the gate,
+    /// never per-tick (feeding it into Update would spin the turret forever).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public Angle ShotAngleOffset = new(-Math.PI / 2);
 }

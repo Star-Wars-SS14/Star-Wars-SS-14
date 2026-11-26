@@ -11,12 +11,14 @@ using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Toggleable;
 using Content.Shared.Whitelist;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 
 namespace Content.Server._SW.ModularSaber;
 
 public sealed class SWModularSaberSystem : EntitySystem
 {
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TagSystem _tags = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
@@ -123,6 +125,8 @@ public sealed class SWModularSaberSystem : EntitySystem
             !_containers.CanInsert(args.Used, slot.ContainerSlot) ||
             !_containers.Insert(args.Used, slot.ContainerSlot))
             _hands.PickupOrDrop(args.User, args.Used, dropNear: true);
+        else if (!TerminatingOrDeleted(ent.Owner))
+            _audio.PlayPvs(slot.InsertSound, ent.Owner);
     }
 
     private bool FitsSlot(EntityUid part, ItemSlot slot) =>
@@ -160,6 +164,8 @@ public sealed class SWModularSaberSystem : EntitySystem
         if (!CanModify(saber, user) || slot.Item is not { } item || slot.ContainerSlot == null ||
             !_blocker.CanPickup(user, item) || !_containers.Remove(item, slot.ContainerSlot))
             return;
+        if (!TerminatingOrDeleted(saber))
+            _audio.PlayPvs(slot.EjectSound, saber);
         _hands.PickupOrDrop(user, item, dropNear: true);
     }
 
@@ -219,9 +225,15 @@ public sealed class SWModularSaberSystem : EntitySystem
             return;
         }
 
-        var damage = emitterComp.Damage * focusComp.DamageMultiplier;
+        var bladeDamage = emitterComp.Damage;
+        if (ent.Comp.ActivatedDamageBonus is { } bonus)
+            bladeDamage += bonus;
+
+        var damage = bladeDamage * focusComp.DamageMultiplier;
         if (emitterComp.Damage.DamageDict.TryGetValue("Structural", out var structural))
             damage.DamageDict["Structural"] = structural;
+        else if (ent.Comp.ActivatedDamageBonus != null)
+            damage.DamageDict.Remove("Structural");
         toggleMelee.ActivatedDamage = damage;
         Dirty(ent, toggleMelee);
         if (TryComp<AppearanceComponent>(ent, out var appearance))
@@ -235,7 +247,7 @@ public sealed class SWModularSaberSystem : EntitySystem
 
         melee.AttackRate = args.Activated && ent.Comp.Focus?.Item is { } focus &&
                            TryComp<SWSaberFocusComponent>(focus, out var focusComp)
-            ? focusComp.AttackRateMultiplier
+            ? ent.Comp.BaseAttackRate * focusComp.AttackRateMultiplier
             : 1f;
         DirtyField(ent, melee, nameof(MeleeWeaponComponent.AttackRate));
     }

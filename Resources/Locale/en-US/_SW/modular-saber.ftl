@@ -3,10 +3,14 @@ sw-modular-saber-slot-crystal = Kyber crystal
 sw-modular-saber-slot-emitter = Emitter
 sw-modular-saber-slot-focus = Focusing assembly
 
-ent-SWModularSaber = modular lightsaber hilt
+ent-SWModularSaber = modular single-bladed lightsaber
     .desc = A modular hilt for a single blade. The saber can be used one-handed.
-ent-SWModularSaberDouble = double-bladed modular lightsaber hilt
+ent-SWModularSaberDouble = modular double-bladed lightsaber
     .desc = A modular hilt for two blades. The saber can be used one-handed.
+ent-SWModularSaberDualPhase = modular dual-phase lightsaber
+    .desc = A one-handed modular hilt for a longer, more powerful blade. It swings more slowly and holds its guard for less time.
+ent-SWModularSaberLongHilt = modular long-hilt lightsaber
+    .desc = An elongated one-handed modular hilt. It extends the blade's reach and lets you hold a guard longer.
 ent-SWSaberEmitterStandard = standard lightsaber emitter
     .desc = A standard emitter for a modular lightsaber.
 ent-SWSaberEmitterReinforced = reinforced lightsaber emitter

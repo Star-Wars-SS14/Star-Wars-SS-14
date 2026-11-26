@@ -37,8 +37,19 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         _sawmill = Logger.GetSawmill("taskSystem");
         SubscribeLocalEvent<SWTaskGameruleComponent, SWTaskProgressUpdateEvent>(OnTaskComplete);
         SubscribeLocalEvent<SWTaskComponent, SWTaskProvideDescriptionEvent>(OnGetDescription);
+        SubscribeLocalEvent<SWTaskComponent, ComponentRemove>(OnTaskRemoved);
         SubscribeLocalEvent<SWManualControlledTaskComponent, MapInitEvent>(OnMapInit);
     }
+
+    private void OnTaskRemoved(Entity<SWTaskComponent> task, ref ComponentRemove args)
+    {
+        var containers = EntityManager.AllEntityQueryEnumerator<SWTaskContainerComponent>();
+        while (containers.MoveNext(out _, out var container))
+        {
+            container.CurrentTasks.RemoveAll(entry => entry.Owner == task.Owner);
+        }
+    }
+
     private void OnMapInit(Entity<SWManualControlledTaskComponent> ent, ref MapInitEvent args)
     {
         var faction = _swFaction.GetFactionEntity(ent.Comp.Faction);

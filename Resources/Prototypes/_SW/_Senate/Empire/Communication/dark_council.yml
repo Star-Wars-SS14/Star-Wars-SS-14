@@ -1,7 +1,7 @@
 - type: radioChannel
   id: SWDarkCouncil
   name: Тёмный совет
-  keycode: 'ф'
+  keycode: 'ы'
   frequency: 2057
   color: "#a12b45"
   longRange: true

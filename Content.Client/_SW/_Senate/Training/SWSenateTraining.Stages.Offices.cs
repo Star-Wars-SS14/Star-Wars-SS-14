@@ -21,8 +21,8 @@ public static partial class SWTrainingSamples
 
     private const string GuardChannel = ":в для канала Гвардия (205.2)";
     private const string StaffChannel = ":е для канала Персонал Сената (205.1)";
-    private const string SenateChannel = ":с для канала Сенат (205.0)";
-    private const string ChanceryChannel = ":ц для канала Администрация Канцлера (205.3)";
+    private const string SenateChannel = ":ш для канала Сенат (205.0)";
+    private const string ChanceryChannel = ":а для канала Администрация Канцлера (205.3)";
 
     public static SWTrainingStage[] RadioKeys() => Steps(
         Picture(AtEntrance(At(SWTrainingArt.FigGuardOfficer, true)), 3f, ScreenNote("Сая Брин осматривает свою гарнитуру офицера гвардии.")),
@@ -59,7 +59,7 @@ public static partial class SWTrainingSamples
             At(SWTrainingArt.FigGuardOfficer, true, 1)));
 
     public static SWTrainingStage[] RadioSenate() => Steps(
-        Picture(AtEntrance(At(SWTrainingArt.FigUsher, true)), 3f, ScreenNote("Ден Маро объявляет сенаторам: «:с Заседание через десять минут, галерея закрыта».")),
+        Picture(AtEntrance(At(SWTrainingArt.FigUsher, true)), 3f, ScreenNote("Ден Маро объявляет сенаторам: «:ш Заседание через десять минут, галерея закрыта».")),
         Cut(SWTrainingScene.HallEmpty),
         Picture(new SWTrainingVisual(SWTrainingScene.HallEmpty, Array.Empty<SWTrainingOverlay>()), ResultHold,
             Heard("[Сенат] Ден Маро говорит, \"Заседание через десять минут, галерея закрыта.\"", null,

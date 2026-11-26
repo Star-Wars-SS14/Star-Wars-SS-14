@@ -1,0 +1,10 @@
+sw-senate-training-lobby-button = Обучение Сената
+sw-guide-entry-senate = Сенат Республики
+sw-guide-entry-senate-start = Первые шаги
+sw-guide-entry-senate-sector = Сектор и дилеммы
+sw-guide-entry-senate-legislation = Законы, комитеты и выборы
+sw-guide-entry-senate-ministries = Министерства и бюджет
+sw-guide-entry-senate-agencies = Департаменты и бюро
+sw-guide-entry-senate-court = Суд Республики
+sw-guide-entry-senate-holonet = Голонет и корреспонденты
+sw-guide-entry-senate-service = Пристав, гвардия и врач

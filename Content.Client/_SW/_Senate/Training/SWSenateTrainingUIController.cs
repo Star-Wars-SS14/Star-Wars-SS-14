@@ -37,7 +37,7 @@ public sealed class SWSenateTrainingUIController : UIController, IOnStateEntered
         if (ready?.Parent is not { } row)
             return;
 
-        _button = new Button { Text = "Обучение", StyleClasses = { "ButtonBig" }, Visible = _available };
+        _button = new Button { Text = Loc.GetString("sw-senate-training-lobby-button"), StyleClasses = { "ButtonBig" }, Visible = _available };
         _button.OnPressed += _ => Show();
         row.AddChild(_button);
     }
@@ -94,7 +94,9 @@ public sealed class SWSenateTrainingUIController : UIController, IOnStateEntered
 
     private void Show()
     {
-        if (_training != null || UIManager.GetUIController<SWSenateIntroUIController>().IsOpen)
+        if (!EntityManager.System<SWSenateIntroSystem>().Available ||
+            _training != null ||
+            UIManager.GetUIController<SWSenateIntroUIController>().IsOpen)
             return;
 
         _training = new SWSenateTraining(ResolveJob(), _config.GetCVar(CCVars.ReducedMotion));

@@ -1,0 +1,204 @@
+- type: entity
+  id: SWLandspeeder
+  name: landspeeder
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _SW/Vehicles/landspeeder.rsi
+    state: landspeeder
+    drawdepth: OverMobs
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.7,-1.6,0.7,1.6"
+        density: 1200
+        mask:
+        - HighImpassable
+        layer:
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.7,-1.6,0.7,1.6"
+        hard: false
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageContainer: SWVehicleArmored
+    damageModifierSet: SWLightVehicle
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 800
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+  - type: Pullable
+  - type: Rotatable
+    increment: 10
+  - type: Clickable
+  - type: InteractionOutline
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleLandspeederDriver
+      passenger1:
+        role: SWVehicleRoleLandspeederPassenger1
+      passenger2:
+        role: SWVehicleRoleLandspeederPassenger2
+      passenger3:
+        role: SWVehicleRoleLandspeederPassenger3
+      passenger4:
+        role: SWVehicleRoleLandspeederPassenger4
+    vehicleParts:
+      cannon:
+        entProto: SWLandspeederCannon
+        buckleCoords: "0.0, -1.4"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.85"
+      passenger1_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "-0.45, 0.05"
+      passenger2_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.45, 0.05"
+      passenger3_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "-0.45, 0.75"
+      passenger4_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.45, 0.75"
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: Storage
+    grid:
+    - 0,0,9,9
+    maxItemSize: Huge
+    openOnActivate: false
+    clickInsert: false
+    showVerb: true
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: InputMover
+  - type: SWInertialVehicle
+    acceleration: 4
+    reverseAcceleration: 4
+    brakeAcceleration: 18
+    maxForwardSpeed: 15
+    maxReverseSpeed: 8
+    turnAcceleration: 5
+    maxAngularVelocity: 4
+    angularDamping: 15
+    rollingFriction: 5
+    sidewaysFriction: 15
+    turnSpeedReference: 2.5
+  - type: SWVehicleKnockback
+    knockdownTime: 1
+    throwSpeed: 12
+  - type: SWVehicleMovementSound
+    sound:
+      path: /Audio/_SW/Vehicles/speeder.ogg
+      params:
+        volume: -6
+        maxDistance: 14
+  - type: SWVehicleHeadlight
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 10
+    energy: 2
+    color: "#e8f2ff"
+  - type: SWExplosionThrowModifier
+    throwMultiplier: 0.0
+  - type: SWVehicleExtractable
+    aliveDelay: 6
+    criticalDelay: 3
+    deadDelay: 1.5
+
+- type: swVehicleRole
+  id: SWVehicleRoleLandspeederDriver
+  localizedName: sw-vehicle-role-driver
+  components:
+  - type: SWRedirectMovement
+  - type: SWVehicleFaceForward
+  - type: SWVehicleDriverDrawDepth
+    vehicleDrawDepthOffset: 1
+  - type: SWVehicleRequiresHandsUser
+  - type: SWVehicleHeadlightUser
+  - type: SWShootByVehicleUser
+    part: cannon
+  - type: SWBuckleToVehiclePart
+    part: driver_seat
+  - type: SWVehicleProjectilePass
+
+- type: swVehicleRole
+  id: SWVehicleRoleLandspeederPassenger1
+  localizedName: sw-vehicle-role-landspeeder-passenger-1
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 0
+  - type: SWVehicleDriverDrawDepth
+    vehicleDrawDepthOffset: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger1_seat
+  - type: SWVehicleProjectilePass
+
+- type: swVehicleRole
+  id: SWVehicleRoleLandspeederPassenger2
+  localizedName: sw-vehicle-role-landspeeder-passenger-2
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 0
+  - type: SWVehicleDriverDrawDepth
+    vehicleDrawDepthOffset: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger2_seat
+  - type: SWVehicleProjectilePass
+
+- type: swVehicleRole
+  id: SWVehicleRoleLandspeederPassenger3
+  localizedName: sw-vehicle-role-landspeeder-passenger-3
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 0
+  - type: SWVehicleDriverDrawDepth
+    vehicleDrawDepthOffset: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger3_seat
+  - type: SWVehicleProjectilePass
+
+- type: swVehicleRole
+  id: SWVehicleRoleLandspeederPassenger4
+  localizedName: sw-vehicle-role-landspeeder-passenger-4
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 0
+  - type: SWVehicleDriverDrawDepth
+    vehicleDrawDepthOffset: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger4_seat
+  - type: SWVehicleProjectilePass
+
+- type: entity
+  name: landspeeder cannon
+  id: SWLandspeederCannon
+  suffix: НЕ МАППИТЬ, SW
+  categories: [ HideSpawnMenu ]
+  parent: SWSpiderCannon

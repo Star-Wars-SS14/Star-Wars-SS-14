@@ -1,0 +1,63 @@
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentHealthcare
+  suffix: Department of Healthcare
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-healthcare
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentJustice
+  suffix: Department of Justice
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-justice
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentArbitrage
+  suffix: Department of Arbitration
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-arbitrage
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentExpenditure
+  suffix: Department of Expenditure Accounting
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-expenditure
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateHall
+  suffix: Senate Hall
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-hall
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateArchive
+  suffix: Archive
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-archive
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateChancellor
+  suffix: Supreme Chancellor
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-chancellor
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateSpeaker
+  suffix: Senate Speaker
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-speaker

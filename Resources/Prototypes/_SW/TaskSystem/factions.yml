@@ -5,6 +5,19 @@
     name: Республика
     isMajor: true
     relatedJobs:
+    - SWGlobalWarRepublicHead
+    - SWGlobalWarRepublicWarMinister
+    - SWGlobalWarRepublicLogisticsMinister
+    - SWGlobalWarRepublicIndustryMinister
+    - SWGlobalWarRepublicLogisticsWorker
+    - SWGlobalWarRepublicIndustryWorker
+    - SWGlobalWarRepublicSeniorOfficer
+    - SWGlobalWarRepublicJuniorOfficer
+    - SWGlobalWarRepublicPilot
+    - SWGlobalWarRepublicSoldier
+    - SWGlobalWarRepublicForceUser
+    - SWGlobalWarRepublicIntelligence
+    - SWGlobalWarRepublicCitizen
     - SWRepublicCommanderCommander
     - SWRepublicCommanderLieutenant
     - SWRepublicCommanderMedic
@@ -47,6 +60,19 @@
     name: Империя
     isMajor: true
     relatedJobs:
+    - SWGlobalWarEmpireHead
+    - SWGlobalWarEmpireWarMinister
+    - SWGlobalWarEmpireLogisticsMinister
+    - SWGlobalWarEmpireIndustryMinister
+    - SWGlobalWarEmpireLogisticsWorker
+    - SWGlobalWarEmpireIndustryWorker
+    - SWGlobalWarEmpireSeniorOfficer
+    - SWGlobalWarEmpireJuniorOfficer
+    - SWGlobalWarEmpirePilot
+    - SWGlobalWarEmpireSoldier
+    - SWGlobalWarEmpireForceUser
+    - SWGlobalWarEmpireIntelligence
+    - SWGlobalWarEmpireCitizen
     - SWSobrikCaptain
     - SWSobrikOfficer
     - SWSobrikMedic

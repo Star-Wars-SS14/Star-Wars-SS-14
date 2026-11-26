@@ -311,13 +311,13 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
                 return false;
             }
 
-            var placements = new List<(EntityUid Droid, EntityCoordinates Position)>();
+            var placements = new List<(EntityUid Droid, EntityCoordinates Position, EntityUid FollowTarget)>();
             var reserved = new List<EntityCoordinates> { coordinates };
             if (load != null) reserved.Add(loadCoordinates);
             var followers = AllEntityQuery<SWDroidCommandableComponent>();
             while (followers.MoveNext(out var droid, out _))
             {
-                if (droid == load || !_droids.IsFollowingDatapad(droid, user) ||
+                if (droid == load || !TryGetCarriedFollowTarget(droid, user, out var followTarget) ||
                     !_transform.InRange(droid, teleporter, radius))
                     continue;
                 if (!CanTransferDroid(droid, user) ||
@@ -328,7 +328,7 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
                     return false;
                 }
                 reserved.Add(position);
-                placements.Add((droid, position));
+                placements.Add((droid, position, followTarget));
             }
 
             decision = _policy.EvaluateTransition(user, planet, peer.Location, SWGlobalWarTransitionKind.Landing,
@@ -355,15 +355,15 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
                     _physics.SetLinearVelocity(load.Value, Vector2.Zero, body: loadBody);
                 _towsToResume.Add((user, load.Value, _timing.CurTime + TowResumeDelay));
             }
-            foreach (var (droid, position) in placements)
+            foreach (var (droid, position, followTarget) in placements)
             {
                 _transform.SetCoordinates(droid, position);
                 if (TryComp<PhysicsComponent>(droid, out var droidBody))
                     _physics.SetLinearVelocity(droid, Vector2.Zero, body: droidBody);
-                _droids.TrySetFollowTarget(droid, user);
+                _droids.TrySetFollowTarget(droid, followTarget);
             }
-            if (load is { } towed && _droids.IsFollowingDatapad(towed, user))
-                _droids.TrySetFollowTarget(towed, user);
+            if (load is { } towed && TryGetCarriedFollowTarget(towed, user, out var towedTarget))
+                _droids.TrySetFollowTarget(towed, towedTarget);
             _audio.PlayPvs(destination.ArrivalSound, target);
             reason = string.Empty;
             return true;
@@ -372,6 +372,22 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
         {
             _planets.ReleaseArrival(map.Value, user);
         }
+    }
+
+    private bool TryGetCarriedFollowTarget(EntityUid droid, EntityUid user, out EntityUid target)
+    {
+        if (!_droids.TryGetFollowTarget(droid, out target)) return false;
+        if (target == user) return true;
+        if (!HasComp<SWDroidTargetingTabletComponent>(target)) return false;
+        // The tablet must actually travel in this player's hands or inventory, not just be nearby or have its UI open.
+        var parent = Transform(target).ParentUid;
+        while (parent.IsValid())
+        {
+            if (parent == user) return true;
+            if (!TryComp<TransformComponent>(parent, out var transform)) return false;
+            parent = transform.ParentUid;
+        }
+        return false;
     }
 
     private bool CanTransferDroid(EntityUid droid, EntityUid user)

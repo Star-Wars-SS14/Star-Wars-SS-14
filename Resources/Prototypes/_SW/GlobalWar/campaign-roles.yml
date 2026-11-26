@@ -9,7 +9,7 @@
   components:
   # First-version values for 10-30 players, see the design decision of 2026-11-02.
   - type: SWGlobalWarCampaign
-    peaceDuration: 1200
+    peaceDuration: 10
     neutralFundingDuration: 600
     maximumDuration: 7200
     participantAbsenceDuration: 86400

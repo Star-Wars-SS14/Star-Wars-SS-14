@@ -13,6 +13,7 @@ public sealed partial class SWGlobalWarMarketSystem
     private const float MiningConveyorRange = 1.5f;
     private static readonly TimeSpan PhysicalMiningInterval = TimeSpan.FromSeconds(1);
     private readonly Dictionary<string, HashSet<EntityUid>> _physicalMiningSites = new();
+    private const int MaxDrillsPerPlanet = 10;
 
     private bool CanRunPhysicalMine(Entity<SWGlobalWarFactoryComponent> ent, SWGlobalWarFaction owner,
         out string world, out string commodity)
@@ -29,7 +30,7 @@ public sealed partial class SWGlobalWarMarketSystem
             _physicalMiningSites[world] = sites = new();
         sites.RemoveWhere(uid => TerminatingOrDeleted(uid) || !Transform(uid).Anchored ||
             !TryGetTerminalMarket(uid, out var site) || site.Planet != market.Planet || site.Owner != owner);
-        if (!sites.Contains(ent) && sites.Count >= 2)
+        if (!sites.Contains(ent) && sites.Count >= MaxDrillsPerPlanet)
             return false;
         if (FindMiningConveyor(ent) == null)
             return false;

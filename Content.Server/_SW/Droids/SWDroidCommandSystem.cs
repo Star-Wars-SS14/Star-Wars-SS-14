@@ -1,3 +1,6 @@
+using Content.Server._SW.GlobalWar.Politics;
+using Content.Shared._SW.GlobalWar.Politics;
+using Content.Shared._SW.GlobalWar;
 using System.Linq;
 using System.Numerics;
 using Content.Server._SW.TaskSystem;
@@ -43,6 +46,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
     [Dependency] private readonly SWAutoTargetingGunSystem _autoGun = default!;
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
+    [Dependency] private readonly SWGlobalWarAssignmentsSystem _assignments = default!;
     private const float UpdateDelay = 0.5f;
     private const float StayTime = 999999f;
     private const string DroidCommandTarget = "DroidCommandTarget";
@@ -84,7 +88,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
             var commander = CompOrNull<SWDroidCommanderComponent>(uid);
             var hasNearbyDroid = TryFindNearbyDroidForAction(
-                factionMember,
+                uid, factionMember,
                 transform,
                 out _);
 
@@ -368,7 +372,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         while (query.MoveNext(out var uid, out var commandable, out var droidTransform))
         {
             if (!IsAvailableDroid(uid) ||
-                !TryGetCommandRank(factionMember, commandable.Faction, out var candidateRank) ||
+                !TryGetCommandRank(commander, factionMember, commandable.Faction, out var candidateRank) ||
                 !CanTakeCommand(commander, commandable, candidateRank) ||
                 !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
                 distance > commandable.CommandRange ||
@@ -387,7 +391,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     }
 
     private bool TryFindNearbyDroidForAction(
-        SWFactionMemberComponent factionMember,
+        EntityUid commander, SWFactionMemberComponent factionMember,
         TransformComponent commanderTransform,
         out int rank)
     {
@@ -397,7 +401,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         while (query.MoveNext(out var uid, out var commandable, out var droidTransform))
         {
             if (!IsAvailableDroid(uid) ||
-                !TryGetCommandRank(factionMember, commandable.Faction, out rank) ||
+                !TryGetCommandRank(commander, factionMember, commandable.Faction, out rank) ||
                 !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
                 distance > commandable.CommandRange)
             {
@@ -439,12 +443,33 @@ public sealed class SWDroidCommandSystem : EntitySystem
         return droid != default;
     }
 
-    private bool TryGetCommandRank(SWFactionMemberComponent factionMember, string factionId, out int rank)
+    private bool TryGetCommandRank(EntityUid commander, SWFactionMemberComponent factionMember, string factionId, out int rank)
     {
         rank = 0;
 
         if (factionMember.Faction != factionId)
             return false;
+
+        if (TryComp<ActorComponent>(commander, out var player) &&
+            _assignments.TryGetAssignment(player.PlayerSession.UserId, out var assignment) &&
+            _assignments.TryGetActor(player.PlayerSession, assignment.Generation, assignment.Revision, out assignment))
+        {
+            var side = assignment.Faction == SWGlobalWarFaction.Republic ? "RepublicFaction" : "EmpireFaction";
+            if (side != factionId) return false;
+            rank = assignment.Role switch
+            {
+                SWGlobalWarRole.Head => 100,
+                SWGlobalWarRole.WarMinister => 90,
+                SWGlobalWarRole.SeniorOfficer => 80,
+                SWGlobalWarRole.ForceUser => 70,
+                SWGlobalWarRole.JuniorOfficer => 60,
+                SWGlobalWarRole.LogisticsMinister or SWGlobalWarRole.IndustryMinister => 50,
+                SWGlobalWarRole.Intelligence => 40,
+                SWGlobalWarRole.Pilot or SWGlobalWarRole.Soldier => 20,
+                _ => 10,
+            };
+            return true;
+        }
 
         var factionEntity = _factions.GetFactionEntity(factionId);
         if (factionEntity == null)
@@ -607,15 +632,19 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
     public bool IsFollowingDatapad(EntityUid droid, EntityUid datapad)
     {
+        return TryGetFollowTarget(droid, out var target) && target == datapad;
+    }
+
+    public bool TryGetFollowTarget(EntityUid droid, out EntityUid target)
+    {
+        target = default;
         if (!TryComp<HTNComponent>(droid, out var htn) ||
             !htn.Blackboard.TryGetValue<SWDroidOrderType>(NPCBlackboard.CurrentOrders, out var order, EntityManager) ||
             order != SWDroidOrderType.Follow ||
             !htn.Blackboard.TryGetValue<EntityCoordinates>(NPCBlackboard.FollowTarget, out var followTarget, EntityManager))
-        {
             return false;
-        }
-
-        return followTarget.EntityId == datapad;
+        target = followTarget.EntityId;
+        return !TerminatingOrDeleted(target);
     }
 
     private void StopFollowingMovement(EntityUid droid, HTNComponent htn, bool removeFollowTarget = true)

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Discord histendik",
+  "size": {
+    "x": 64,
+    "y": 160
+  },
+  "states": [
+    {
+      "name": "spire"
+    },
+    {
+      "name": "spire_active",
+      "delays": [
+        [
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09,
+          0.09
+        ]
+      ]
+    },
+    {
+      "name": "screen_none"
+    },
+    {
+      "name": "screen_empire"
+    },
+    {
+      "name": "screen_republic"
+    },
+    {
+      "name": "screen_mandalore"
+    },
+    {
+      "name": "screen_blacksun"
+    },
+    {
+      "name": "screen_exchange"
+    }
+  ]
+}

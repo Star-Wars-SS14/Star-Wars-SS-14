@@ -1,0 +1,51 @@
+<ui:SWTerminalWindow xmlns:ui="clr-namespace:Content.Client._SW.UserInterface;assembly=Content.Client"
+                     xmlns="https://spacestation14.io"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     x:Class="Content.Client._SW.Economy.SWFactionSpireWindow"
+                     MinSize="640 600" SetSize="720 700">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <TextureRect Name="MascotRect" SetSize="176 154" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="KeepAspectCentered" />
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" VerticalAlignment="Top">
+                <Label Name="SpireNameLabel" StyleClasses="SWTermTitle" />
+                <Label Name="OwnerLabel" StyleClasses="SWTermValue" />
+                <Label Name="StatusLabel" StyleClasses="SWTermText" />
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8" Name="CardPanel" Visible="False">
+            <TextureRect Name="CardIconRect" SetSize="32 32" Stretch="KeepAspectCentered" />
+            <BoxContainer Orientation="Vertical">
+                <Label Name="CardNameLabel" StyleClasses="SWTermValue" />
+                <Label Name="CardJobLabel" StyleClasses="SWTermText" />
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" SeparationOverride="2">
+            <Label Name="TelemetryCoreLabel" StyleClasses="SWTermText" />
+            <Label Name="TelemetrySignalLabel" StyleClasses="SWTermText" />
+            <Label Name="TelemetryCapLabel" StyleClasses="SWTermText" />
+            <Label Name="TelemetryUptimeLabel" StyleClasses="SWTermText" />
+            <Label Name="RewriteTimerLabel" StyleClasses="SWTermText" />
+            <Label Name="PayoutTimerLabel" StyleClasses="SWTermText" />
+        </BoxContainer>
+        <Label Text="{Loc 'sw-spire-capture-progress'}" StyleClasses="SWTermText" />
+        <ProgressBar Name="CaptureBar" MaxValue="1" />
+        <Label Text="{Loc 'sw-spire-payout-progress'}" StyleClasses="SWTermText" />
+        <ProgressBar Name="PayoutBar" MaxValue="1" />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Button Name="CaptureButton" HorizontalExpand="True">
+                <Label ClipText="True" HorizontalExpand="True" Text="{Loc 'sw-spire-capture-button'}" />
+            </Button>
+            <Button Name="EjectButton" HorizontalExpand="True" Visible="False">
+                <Label ClipText="True" HorizontalExpand="True" Text="{Loc 'sw-spire-eject-button'}" />
+            </Button>
+        </BoxContainer>
+        <PanelContainer Name="TickerFrame" StyleClasses="SWTermFrame" HorizontalExpand="True">
+            <PanelContainer Name="TickerPanel" RectClipContent="True" HorizontalExpand="True" Margin="6 4">
+                <BoxContainer Name="TickerBox" Orientation="Horizontal">
+                    <Label Name="TickerTextA" StyleClasses="SWTermText" />
+                    <Label Name="TickerTextB" StyleClasses="SWTermText" Margin="60 0 0 0" />
+                </BoxContainer>
+            </PanelContainer>
+        </PanelContainer>
+    </BoxContainer>
+</ui:SWTerminalWindow>

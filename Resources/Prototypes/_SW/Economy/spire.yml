@@ -1,0 +1,64 @@
+- type: entity
+  id: SWFactionSpire
+  name: Faction control spire
+  description: A Calicomp relay spire. The screen shows which faction holds it.
+  parent: BaseStructure
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _SW/Economy/control_spire/spire.rsi
+    noRot: true
+    offset: 0, 2.0
+    drawdepth: OverMobs
+    layers:
+    - state: spire
+    - state: screen_none
+      shader: unshaded
+    - sprite: _SW/Economy/control_spire/spire_glitch.rsi
+      state: glitch_none
+      visible: false
+      shader: unshaded
+    - sprite: _SW/Economy/control_spire/spire_beam.rsi
+      state: beam
+      offset: 0, 4.5
+      visible: false
+      shader: unshaded
+  - type: PointLight
+    radius: 4
+    energy: 2
+    color: "#ffffff"
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1,-0.5,1,0.5"
+        density: 1000
+        mask:
+        - HighImpassable
+        layer:
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: Storage
+    grid:
+    - 0,0,0,1
+    maxItemSize: Small
+    clickInsert: true
+    openOnActivate: false
+    showVerb: true
+    whitelist:
+      components:
+      - IdCard
+  - type: ActivatableUI
+    key: enum.SWFactionSpireUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWFactionSpireUiKey.Key:
+        type: SWFactionSpireBoundUserInterface
+  - type: SWFactionSpire

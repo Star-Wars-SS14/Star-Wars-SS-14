@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Discord histendik",
+  "size": {
+    "x": 176,
+    "y": 154
+  },
+  "states": [
+    {
+      "name": "calicomp"
+    },
+    {
+      "name": "calicomp_lag",
+      "delays": [
+        [
+          0.07,
+          0.07,
+          0.07,
+          0.26,
+          0.07,
+          0.07,
+          0.07,
+          0.07,
+          0.07,
+          0.19,
+          0.07,
+          0.07
+        ]
+      ]
+    }
+  ]
+}

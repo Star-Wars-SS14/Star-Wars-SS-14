@@ -1,0 +1,36 @@
+- type: entity
+  id: SWSpireMonitorConsole
+  name: Calicomp spire monitor
+  description: A Calicomp network terminal showing the status of every control spire.
+  parent: BaseStructure
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ExchangeComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: task_monitor
+      shader: unshaded
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        density: 500
+        mask:
+        - HighImpassable
+        layer:
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+  - type: ActivatableUI
+    key: enum.SWSpireMonitorUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSpireMonitorUiKey.Key:
+        type: SWSpireMonitorBoundUserInterface
+  - type: SWSpireMonitor

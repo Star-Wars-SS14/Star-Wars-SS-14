@@ -1,0 +1,38 @@
+<ui:SWTerminalWindow xmlns:ui="clr-namespace:Content.Client._SW.UserInterface;assembly=Content.Client"
+                     xmlns="https://spacestation14.io"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     x:Class="Content.Client._SW.Economy.SWSpireMonitorWindow"
+                     MinSize="560 480" SetSize="640 560">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Label Name="TitleLabel" StyleClasses="SWTermTitle" HorizontalExpand="True" Text="{Loc 'sw-spire-monitor-title'}" />
+            <TextureRect Name="MascotRect" SetSize="88 77" HorizontalAlignment="Right" VerticalAlignment="Top" Stretch="KeepAspectCentered" />
+        </BoxContainer>
+        <PanelContainer StyleClasses="SWTermFrame" HorizontalExpand="True" VerticalExpand="True">
+            <ScrollContainer Name="ListScroll" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Name="SpireListBox" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" />
+            </ScrollContainer>
+        </PanelContainer>
+        <PanelContainer Name="DetailPanel" StyleClasses="SWTermFrame" HorizontalExpand="True" Visible="False">
+            <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="4" HorizontalExpand="True">
+                <Label Name="DetailNameLabel" StyleClasses="SWTermValue" />
+                <Label Name="DetailOwnerLabel" StyleClasses="SWTermText" />
+                <Label Name="DetailCapturingLabel" StyleClasses="SWTermText" Visible="False" />
+                <Label Text="{Loc 'sw-spire-capture-progress'}" StyleClasses="SWTermText" />
+                <ProgressBar Name="DetailCaptureBar" MaxValue="1" />
+                <Label Name="DetailCaptureTimerLabel" StyleClasses="SWTermText" />
+                <Label Text="{Loc 'sw-spire-payout-progress'}" StyleClasses="SWTermText" />
+                <ProgressBar Name="DetailPayoutBar" MaxValue="1" />
+                <Label Name="DetailPayoutTimerLabel" StyleClasses="SWTermText" />
+            </BoxContainer>
+        </PanelContainer>
+        <PanelContainer Name="TickerFrame" StyleClasses="SWTermFrame" HorizontalExpand="True">
+            <PanelContainer Name="TickerPanel" RectClipContent="True" HorizontalExpand="True" Margin="6 4">
+                <BoxContainer Name="TickerBox" Orientation="Horizontal">
+                    <Label Name="TickerTextA" StyleClasses="SWTermText" />
+                    <Label Name="TickerTextB" StyleClasses="SWTermText" Margin="60 0 0 0" />
+                </BoxContainer>
+            </PanelContainer>
+        </PanelContainer>
+    </BoxContainer>
+</ui:SWTerminalWindow>

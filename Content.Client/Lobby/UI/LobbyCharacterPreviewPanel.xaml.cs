@@ -27,11 +27,26 @@ public sealed partial class LobbyCharacterPreviewPanel : Control
     {
         Loaded.Visible = value;
         Unloaded.Visible = !value;
+        if (!value)
+            SetCharacterDetails(null, null);
     }
 
-    public void SetSummaryText(string value)
+    public void SetCharacterDetails(string? name, string? job)
     {
-        Summary.Text = value;
+        CharacterDetails.Visible = name != null;
+        CharacterName.Text = name;
+        CharacterName.ToolTip = name;
+
+        string? priorityText = null;
+        if (name != null)
+        {
+            priorityText = job == null
+                ? Loc.GetString("lobby-character-preview-panel-priority-job-none")
+                : Loc.GetString("lobby-character-preview-panel-priority-job", ("job", job));
+        }
+
+        PriorityJob.Text = priorityText;
+        PriorityJob.ToolTip = priorityText;
     }
 
     public void SetSprite(EntityUid uid)

@@ -1,0 +1,214 @@
+- type: entity
+  parent: SWEnergySwordBase
+  id: SWModularSaber
+  name: modular single-bladed lightsaber
+  description: A lightsaber hilt with replaceable components.
+  components:
+  - type: Construction
+    graph: SWSaberHilt
+    node: finished
+  - type: ItemToggle
+    predictable: false
+    onActivate: false
+  - type: EnergySword
+    colorOptions: []
+  - type: SWModularSaber
+  - type: ContainerContainer
+    containers:
+      saber-crystal: !type:ContainerSlot
+      saber-emitter: !type:ContainerSlot
+      saber-focus: !type:ContainerSlot
+  - type: ItemSlots
+    slots:
+      saber-crystal:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-crystal
+        whitelist:
+          tags: [ KyberCrystalTag ]
+      saber-emitter:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-emitter
+        whitelist:
+          tags: [ SWSaberEmitter ]
+      saber-focus:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-focus
+        whitelist:
+          tags: [ SWSaberFocus ]
+- type: entity
+  parent: SWModularSaber
+  id: SWModularSaberDouble
+  name: modular double-bladed lightsaber
+  description: A one-handed double-bladed lightsaber hilt with replaceable components.
+  components:
+  - type: ItemTogglePrefix
+    prefixOn: wielded
+  - type: Construction
+    graph: SWSaberDoubleHilt
+    node: finished
+  - type: SWSwordThrowable
+    returnToAnyHand: true
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/e_sword_double.rsi
+    layers:
+    - state: e_sword_double
+    - state: e_sword_double_blade
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Item
+    sprite: Objects/Weapons/Melee/e_sword_double-inhands.rsi
+
+- type: entity
+  parent: SWModularSaber
+  id: SWModularSaberDualPhase
+  name: modular dual-phase lightsaber
+  description: A modular hilt for a longer, more powerful blade with slower swings.
+  components:
+  - type: Construction
+    deconstructionTarget: null
+  - type: SWModularSaber
+    activatedDamageBonus:
+      types:
+        Slash: 8
+        Heat: 10
+    baseAttackRate: 0.65
+  - type: MeleeWeapon
+    range: 1.80
+  - type: SWWeaponBlock
+    blockDuration: 4
+    delayBetweenBlocks: 1.2
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/dual_phase_saber.rsi
+    layers:
+    - state: hilt
+    - state: blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Item
+    sprite: _SW/Objects/Weapons/Melee/dual_phase_saber.rsi
+
+- type: entity
+  parent: SWModularSaber
+  id: SWModularSaberLongHilt
+  name: modular long-hilt lightsaber
+  description: An elongated modular hilt designed for reach and a longer guard.
+  components:
+  - type: Construction
+    deconstructionTarget: null
+  - type: SWModularSaber
+    activatedDamageBonus:
+      types:
+        Slash: 3
+        Heat: 2
+    baseAttackRate: 0.85
+  - type: MeleeWeapon
+    range: 1.65
+  - type: SWWeaponBlock
+    blockDuration: 6.5
+    delayBetweenBlocks: 0.8
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/long_hilt_saber.rsi
+    layers:
+    - state: hilt
+    - state: blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Item
+    sprite: _SW/Objects/Weapons/Melee/long_hilt_saber.rsi
+
+- type: entity
+  parent: BaseItem
+  id: SWSaberEmitterStandard
+  name: standard lightsaber emitter
+  description: A standard emitter for a modular lightsaber.
+  components:
+  - type: Construction
+    graph: SWSaberEmitterStandard
+    node: finished
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: capacitor
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags: [ SWSaberEmitter ]
+  - type: SWSaberEmitter
+    damage:
+      types:
+        Slash: 25
+        Heat: 35
+        Structural: 20
+
+- type: entity
+  parent: BaseItem
+  id: SWSaberFocusStandard
+  name: standard lightsaber focusing assembly
+  description: A standard focusing assembly for a modular lightsaber.
+  components:
+  - type: Construction
+    graph: SWSaberFocusStandard
+    node: finished
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: adv_scan_module
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags: [ SWSaberFocus ]
+  - type: SWSaberFocus
+
+- type: entity
+  parent: SWSaberEmitterStandard
+  id: SWSaberEmitterReinforced
+  name: reinforced lightsaber emitter
+  description: An emitter designed to damage structures.
+  components:
+  - type: Construction
+    graph: SWSaberEmitterReinforced
+    node: finished
+  - type: SWSaberEmitter
+    damage:
+      types:
+        Slash: 23
+        Heat: 32
+        Structural: 40
+  - type: Sprite
+    state: super_capacitor
+
+- type: entity
+  parent: SWSaberFocusStandard
+  id: SWSaberFocusFast
+  name: rapid lightsaber focusing assembly
+  components:
+  - type: Construction
+    graph: SWSaberFocusFast
+    node: finished
+  - type: SWSaberFocus
+    damageMultiplier: 0.9
+    attackRateMultiplier: 1.1
+  - type: Sprite
+    state: scan_module
+
+- type: entity
+  parent: SWSaberFocusStandard
+  id: SWSaberFocusHeavy
+  name: heavy lightsaber focusing assembly
+  components:
+  - type: Construction
+    graph: SWSaberFocusHeavy
+    node: finished
+  - type: SWSaberFocus
+    damageMultiplier: 1.1
+    attackRateMultiplier: 0.9
+  - type: Sprite
+    state: adv_scan_module_static

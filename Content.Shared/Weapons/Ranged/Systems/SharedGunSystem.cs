@@ -342,6 +342,13 @@ public abstract partial class SharedGunSystem : EntitySystem
             gun.NextFire = TimeSpan.FromSeconds(Math.Max(lastFire.TotalSeconds + SafetyNextFire, gun.NextFire.TotalSeconds));
             return false;
         }
+
+        //SW start
+        // Respect a gate-provided shoot target (e.g. a mounted turret fires along its barrel
+        // instead of the raw cursor coordinates). Falls back to the requested target.
+        var shootCoordinates = attemptEv.ToCoordinates ?? toCoordinates.Value;
+        //SW end
+
         var fromCoordinates = Transform(user).Coordinates;
 
         //SW start
@@ -413,7 +420,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         }
 
         // Shoot confirmed - sounds also played here in case it's invalid (e.g. cartridge already spent).
-        Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
+        Shoot(gunUid, gun, ev.Ammo, fromCoordinates, shootCoordinates, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
         var shotEv = new GunShotEvent(user, ev.Ammo);
         RaiseLocalEvent(gunUid, ref shotEv);
 
@@ -424,7 +431,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         RaiseLocalEvent(user, ref shooterEv);
 
         if (shooterEv.Push)
-            CauseImpulse(fromCoordinates, toCoordinates.Value, user, userPhysics);
+            CauseImpulse(fromCoordinates, shootCoordinates, user, userPhysics);
         return true;
     }
 

@@ -93,3 +93,11 @@
   frequency: 2044
   color: "#f7bfbf"
   longRange: true
+
+- type: radioChannel
+  id: SWOrder
+  name: sw-radio-channel-order
+  keycode: 'ж'
+  frequency: 2046
+  color: "#ff4500"
+  longRange: true

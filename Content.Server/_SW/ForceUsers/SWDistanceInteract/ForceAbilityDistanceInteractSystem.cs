@@ -78,6 +78,12 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
             if (comp.IsAttracting && comp.CurrentAttractingItem != null)
             {
+                if (TerminatingOrDeleted(comp.CurrentAttractingItem.Value))
+                {
+                    StopAttractingByForce(uid, comp);
+                    continue;
+                }
+
                 MapCoordinates usercords = _transformSystem.GetMapCoordinates(uid);
                 MapCoordinates targetcords = _transformSystem.GetMapCoordinates(comp.CurrentAttractingItem.Value);
                 if (_interactionSystem.InRangeUnobstructed(usercords, comp.CurrentAttractingItem.Value, range: 100f) &&
@@ -88,17 +94,25 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
                 else
                 {
                     var item = comp.CurrentAttractingItem.Value;
+                    var returnToAnyHand = comp.ReturnToAnyHand;
                     StopAttractingByForce(uid, comp);
-                    if ((usercords.Position - targetcords.Position).Length() < SharedInteractionSystem.InteractionRange)
-                    {
+                    if ((usercords.Position - targetcords.Position).Length() >= SharedInteractionSystem.InteractionRange)
+                        continue;
+
+                    if (returnToAnyHand)
+                        _handsSystem.TryPickupAnyHand(uid, item);
+                    else
                         _handsSystem.TryPickup(uid, item);
-                    }
                 }
             }
         }
     }
 
-    public void StartAttractingByForce(EntityUid forceUser, EntityUid target, ForceAbilityDistanceInteractComponent? comp = null)
+    public void StartAttractingByForce(
+        EntityUid forceUser,
+        EntityUid target,
+        ForceAbilityDistanceInteractComponent? comp = null,
+        bool returnToAnyHand = false)
     {
         if (!TryComp(forceUser, out comp))
         {
@@ -114,8 +128,18 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
             return;
         }
 
+        if (comp.IsAttracting && comp.CurrentAttractingItem == target)
+        {
+            comp.ReturnToAnyHand |= returnToAnyHand;
+            return;
+        }
+
+        if (comp.CurrentAttractingItem != null)
+            StopAttractingByForce(forceUser, comp);
+
         comp.IsAttracting = true;
         comp.CurrentAttractingItem = target;
+        comp.ReturnToAnyHand = returnToAnyHand;
         EnsureComp<BeingAttractedByForceComponent>(target).User = forceUser;
         EnsureComp<SWUnpickuppableComponent>(target);
     }
@@ -136,10 +160,15 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
             return;
         }
 
-        _physicsSystem.SetLinearVelocity(comp.CurrentAttractingItem.Value, Vector2.Zero);
+        var item = comp.CurrentAttractingItem.Value;
         comp.IsAttracting = false;
-        RemComp<BeingAttractedByForceComponent>(comp.CurrentAttractingItem.Value);
-        RemComp<SWUnpickuppableComponent>(comp.CurrentAttractingItem.Value);
         comp.CurrentAttractingItem = null;
+        comp.ReturnToAnyHand = false;
+        if (TerminatingOrDeleted(item))
+            return;
+
+        _physicsSystem.SetLinearVelocity(item, Vector2.Zero);
+        RemComp<BeingAttractedByForceComponent>(item);
+        RemComp<SWUnpickuppableComponent>(item);
     }
 }

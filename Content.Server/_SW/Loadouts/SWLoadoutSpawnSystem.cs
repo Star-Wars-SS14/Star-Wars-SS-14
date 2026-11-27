@@ -1,4 +1,5 @@
 using Content.Server.Armor;
+using Content.Server._SW.GlobalWar.Spawning;
 using Content.Server.Cargo.Systems;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Weapons.Ranged.Systems;
@@ -28,7 +29,7 @@ public sealed class SWLoadoutSpawnSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnBeforeSpawn);
+        SubscribeLocalEvent<SWGlobalWarBeforeSpawnEvent>(OnBeforeSpawn);
         SubscribeLocalEvent<InventoryComponent, StartingGearEquippedEvent>(OnGearEquipped);
 
         // Last, because these add to the price and would put back what this takes away.
@@ -41,9 +42,9 @@ public sealed class SWLoadoutSpawnSystem : EntitySystem
     /// that. What is no longer allowed is dropped here and the group falls back to its default. This edits the cached
     /// profile only: the database stays as it is until the player saves again.
     /// </summary>
-    private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
+    private void OnBeforeSpawn(ref SWGlobalWarBeforeSpawnEvent ev)
     {
-        if (ev.Profile.Loadouts.TryGetValue(LoadoutSystem.GetJobPrototype(ev.JobId), out var loadout))
+        if (ev.Profile.Loadouts.TryGetValue(LoadoutSystem.GetJobPrototype(ev.Job), out var loadout))
             loadout.EnsureValid(ev.Profile, ev.Player, _dependencies);
     }
 

@@ -59,7 +59,8 @@
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [ForceUserSithGear]
+    prototypes: [ForceUserSithNpcGear]
+  - type: SWSaberInitialAssembly
   - type: SWLightningAbility
     damage:
       types:
@@ -73,7 +74,8 @@
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [ForceUserJediGear]
+    prototypes: [ForceUserJediNpcGear]
+  - type: SWSaberInitialAssembly
   - type: SWPushAbility
   - type: SWHealAbility
     damageContainers:

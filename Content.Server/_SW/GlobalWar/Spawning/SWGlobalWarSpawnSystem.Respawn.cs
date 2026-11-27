@@ -5,6 +5,7 @@ using Content.Server._SW.GlobalWar.Politics;
 using Content.Server.GameTicking;
 using Content.Server.Ghost.Roles.Components;
 using Content.Shared._SW;
+using Content.Shared._SW.Loadouts;
 using Content.Shared._SW.ForceAbilities;
 using Content.Shared._SW.ForceAbilities.SWHealAbility;
 using Content.Shared._SW.ForceAbilities.SWStrangulatуAbility;
@@ -12,7 +13,6 @@ using Content.Shared._SW.GlobalWar;
 using Content.Shared.Actions;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
-using Content.Shared.Inventory;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
@@ -27,15 +27,12 @@ public sealed partial class SWGlobalWarSpawnSystem
 {
     private static readonly TimeSpan RespawnSyncPeriod = TimeSpan.FromSeconds(2);
     private static readonly ProtoId<TagPrototype> ForceUserTag = "ForceUser";
-    private const string SaberSlot = "pocket1";
-    private const string SaberPrototypePrefix = "SWEnergySword";
 
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly SWGlobalWarAssignmentsSystem _assignments = default!;
     [Dependency] private readonly ForceAbilityDistanceInteractSystem _forceInteract = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly TagSystem _tags = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
 
     private readonly Dictionary<NetUserId, (Guid Life, TimeSpan ReadyAt, string? Civilian, bool Carrier, string? Force)>
         _lastRespawnStates = new();
@@ -132,8 +129,6 @@ public sealed partial class SWGlobalWarSpawnSystem
         }
 
         EndLife(life, oldMind, oldCurrent);
-        if (force)
-            RemoveReturnSaber(_lives[user].Body);
         SendRespawnState(user, _lives[user]);
         message = string.Empty;
         return true;
@@ -183,11 +178,10 @@ public sealed partial class SWGlobalWarSpawnSystem
             reason = Loc.GetString("sw-global-war-respawn-force-not-carrier");
             return false;
         }
-        foreach (var (id, entry) in configuration.Roles)
+        if (configuration.Roles.TryGetValue(life.Job, out var entry) &&
+            entry.Force && entry.Faction == life.Faction)
         {
-            if (!entry.Force || entry.Faction != life.Faction)
-                continue;
-            job = id;
+            job = life.Job;
             role = entry;
             return true;
         }
@@ -204,17 +198,6 @@ public sealed partial class SWGlobalWarSpawnSystem
         if (body != null && !TerminatingOrDeleted(body.Value))
             QueueDel(body.Value);
         _minds.SetUserId(oldMind, user);
-    }
-
-    /// <summary>
-    /// The first Force entry comes with a saber because there is no recipe for one. A return must not add another:
-    /// the old saber stays on the old body, where it can be recovered.
-    /// </summary>
-    private void RemoveReturnSaber(EntityUid body)
-    {
-        if (_inventory.TryGetSlotEntity(body, SaberSlot, out var item) &&
-            MetaData(item.Value).EntityPrototype?.ID.StartsWith(SaberPrototypePrefix, StringComparison.Ordinal) == true)
-            Del(item.Value);
     }
 
     private void EndLife(SWGlobalWarLife life, EntityUid oldMind, EntityUid? oldCurrent)

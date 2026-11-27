@@ -76,7 +76,7 @@
     sidewaysFriction: 15
     turnSpeedReference: 2.5
   - type: SWVehicleMobCollision
-    paralyzeTime: 5
+    knockdownTime: 1
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/speeder.ogg

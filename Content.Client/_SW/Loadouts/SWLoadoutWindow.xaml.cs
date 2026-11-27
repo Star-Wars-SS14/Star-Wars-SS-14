@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Client._SW.UserInterface;
 using Content.Client.Lobby;
 using Content.Shared._SW.Loadouts;
+using Content.Shared._SW.ModularSaber;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.Preferences;
@@ -341,9 +342,14 @@ public sealed partial class SWLoadoutWindow : SWTerminalWindow
 
     private string DescriptionOf(LoadoutPrototype item)
     {
-        return IconOf(item) is { } entity && _proto.TryIndex(entity, out var entityProto)
-            ? entityProto.Description
-            : string.Empty;
+        if (IconOf(item) is not { } entity || !_proto.TryIndex(entity, out var entityProto))
+            return string.Empty;
+
+        var description = entityProto.Description;
+        if (_entMan.System<SWSaberPartDetailsSystem>().GetPrototypeDetails(entityProto) is not { } details)
+            return description;
+
+        return string.IsNullOrEmpty(description) ? details : $"{description}\n{details}";
     }
 
     /// <summary>

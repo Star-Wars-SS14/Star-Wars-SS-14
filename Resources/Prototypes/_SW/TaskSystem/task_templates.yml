@@ -1,4 +1,30 @@
 - type: entity
+  parent: SWTaskBase
+  id: SWTaskManualBase
+  name: кастомное задание
+  abstract: true
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name:  Здесь ничего нет
+    description: Здесь ничего нет.
+  - type: Transform
+    anchored: true
+  - type: Marker
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Tag
+    tags:
+    - ForceFixRotations
+  - type: Sprite
+    drawdepth: Overdoors
+    sprite: Markers/cross.rsi
+    layers:
+    - state: green
+
+- type: entity
   parent: SWTaskManualBase
   id: SWTaskBlackSunBase
   name: задание черное солнце
@@ -18,6 +44,42 @@
   components:
   - type: SWManualControlledTask
     faction: MandalorianFaction
+  - type: SWTask
+    name: "задание"
+    description: "Тут ничего нет, но, наверное, скоро появится"
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskEmpireBase
+  name: задание империя
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: EmpireFaction
+  - type: SWTask
+    name: "задание"
+    description: "Тут ничего нет, но, наверное, скоро появится"
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskRepublicBase
+  name: задание республика
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "задание"
+    description: "Тут ничего нет, но, наверное, скоро появится"
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskExchangeBase
+  name: задание обмен
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: ExchangeFaction
   - type: SWTask
     name: "задание"
     description: "Тут ничего нет, но, наверное, скоро появится"

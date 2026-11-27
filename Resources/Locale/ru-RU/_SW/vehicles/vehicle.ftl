@@ -5,6 +5,7 @@ sw-vehicle-role-shooter = Стрелок
 sw-vehicle-role-landspeeder-passenger = Пассажир
 sw-vehicle-extract-verb = Извлечь: {$role}
 sw-vehicle-extract-finished = Пассажир извлечён.
+
 ent-SWVehicleToggleHeadlightsAction = Переключить фары
     .desc = Включить или выключить фары транспорта.
 ent-SWStormCaller = Буревестник
@@ -24,7 +25,3 @@ ent-SWLandspeeder = лендспидер
   .desc = Быстрый гражданский репульсорный транспорт с открытой кабиной на пять мест и сдвоенной носовой пушкой. Имеет вместительный багажник.
 ent-SWLandspeederCannon = пушка лендспидера
   .desc = Сдвоенная носовая пушка лендспидера.
-sw-vehicle-role-landspeeder-passenger-1 = Пассажир 1
-sw-vehicle-role-landspeeder-passenger-2 = Пассажир 2
-sw-vehicle-role-landspeeder-passenger-3 = Пассажир 3
-sw-vehicle-role-landspeeder-passenger-4 = Пассажир 4  

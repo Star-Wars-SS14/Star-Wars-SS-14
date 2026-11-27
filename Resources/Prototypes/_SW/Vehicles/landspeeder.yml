@@ -85,12 +85,12 @@
       enum.StorageUiKey.Key:
         type: StorageBoundUserInterface
   - type: Storage
+    clickOpen: false
+    openOnActivate: false
+    showVerb: true
     grid:
     - 0,0,9,9
     maxItemSize: Huge
-    openOnActivate: false
-    clickInsert: false
-    showVerb: true
   - type: ContainerContainer
     containers:
       storagebase: !type:Container
@@ -148,9 +148,11 @@
     part: driver_seat
   - type: SWVehicleProjectilePass
 
+# Review: passenger roles stay separate ONLY because each one buckles to its own
+# seat part (SWBuckleToVehiclePart); the menu name is shared per lead review.
 - type: swVehicleRole
   id: SWVehicleRoleLandspeederPassenger1
-  localizedName: sw-vehicle-role-landspeeder-passenger-1
+  localizedName: sw-vehicle-role-landspeeder-passenger
   components:
   - type: SWVehicleRequiresHandsUser
     hands: 0
@@ -162,7 +164,7 @@
 
 - type: swVehicleRole
   id: SWVehicleRoleLandspeederPassenger2
-  localizedName: sw-vehicle-role-landspeeder-passenger-2
+  localizedName: sw-vehicle-role-landspeeder-passenger
   components:
   - type: SWVehicleRequiresHandsUser
     hands: 0
@@ -174,7 +176,7 @@
 
 - type: swVehicleRole
   id: SWVehicleRoleLandspeederPassenger3
-  localizedName: sw-vehicle-role-landspeeder-passenger-3
+  localizedName: sw-vehicle-role-landspeeder-passenger
   components:
   - type: SWVehicleRequiresHandsUser
     hands: 0
@@ -186,7 +188,7 @@
 
 - type: swVehicleRole
   id: SWVehicleRoleLandspeederPassenger4
-  localizedName: sw-vehicle-role-landspeeder-passenger-4
+  localizedName: sw-vehicle-role-landspeeder-passenger
   components:
   - type: SWVehicleRequiresHandsUser
     hands: 0

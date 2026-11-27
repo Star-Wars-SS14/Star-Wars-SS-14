@@ -47,6 +47,11 @@ public sealed class SWVehicleKnockbackSystem : EntitySystem
         var mobPosition = Transform(args.OtherEntity).MapPosition.Position;
         var direction = mobPosition - vehiclePosition;
 
+        // Degenerate-case guard: if the mob happens to be exactly at the vehicle
+        // center (coincident positions), direction is a zero vector and
+        // Normalized() would return zero/NaN, so TryThrow would either not throw
+        // anyone or toss the mob in an unpredictable direction. Fall back to a
+        // default direction so a point-blank hit still knocks the mob away.
         if (direction.LengthSquared() < 0.0001f)
             direction = new Vector2(0f, 1f);
 
